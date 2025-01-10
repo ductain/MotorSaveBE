@@ -19,6 +19,9 @@ const options = {
     },
     servers: [
       {
+        url: "https://motor-save-be.vercel.app/api/v1/",
+      },
+      {
         url: "http://localhost:5000/api/v1/",
       },
     ],
