@@ -2,13 +2,13 @@ const accountService = require("../services/accountService");
 
 const register = async (req, res) => {
   try {
-    const { username, password, email, fullName, phone } = req.body;
+    const { username, password, fullName, phone } = req.body;
 
     // Validate required fields
     if (!username || !password || !fullName || !phone) {
       return res.status(400).json({ message: "All fields are required." });
     }
-    
+
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phone)) {
       return res
@@ -20,7 +20,6 @@ const register = async (req, res) => {
     const result = await accountService.register({
       username,
       password,
-      email,
       fullName,
       phone,
     });
