@@ -8,29 +8,23 @@ const register = async (userData) => {
   const {
     username,
     password,
-    email,
     fullName,
-    gender,
-    dob,
-    phone,
-    address,
-    licensePlate,
+    phone
   } = userData;
+  
 
-  // Check if username, email, or phone already exists
+  // Check if username or phone already exists
   const checkQuery = `
       SELECT * FROM accounts 
-      WHERE username = $1 OR email = $2 OR phone = $3 OR licenseplate = $4
+      WHERE username = $1 OR phone = $2
     `;
   const existingUser = await query(checkQuery, [
     username,
-    email,
     phone,
-    licensePlate,
   ]);
   if (existingUser.rows.length > 0) {
     const error = new Error(
-      "Username, email, phone hoặc licensePlate đã tồn tại."
+      "Username hoặc phone đã tồn tại."
     );
     error.statusCode = 404;
     throw error;
@@ -55,19 +49,14 @@ const register = async (userData) => {
   // Insert the new user into the database
   const insertQuery = `
       INSERT INTO accounts 
-      (username, password, email, fullname, gender, dob, phone, address, licenseplate, createddate, updateddate, roleid, statusid)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      (username, password, fullname, phone, createddate, updateddate, roleid, statusid)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `;
   const result = await query(insertQuery, [
     username,
     hashedPassword,
-    email,
     fullName,
-    gender,
-    dob,
     phone,
-    address,
-    licensePlate,
     createdDate,
     updatedDate,
     roleId,
