@@ -20,7 +20,7 @@ router.post("/login", accountController.login);
  *     tags: [Auth]
  *     requestBody:
  *      required: true
- *      description: Input username, password, email, fullName, gender, dob, phone, address, licensePlate
+ *      description: Input username, password, fullName, phone
  *      content:
  *          application/json:
  *              schema:
@@ -30,26 +30,15 @@ router.post("/login", accountController.login);
  *                          type: string
  *                      password:
  *                          type: string
- *                      email: 
- *                          type: string
  *                      fullName:
  *                          type: string
- *                      gender:
- *                          type: boolean
- *                      dob:
- *                          type: string
- *                          format: date
  *                      phone:
- *                          type: string
- *                      address:
- *                          type: string
- *                      licensePlate:
  *                          type: string
  *     responses:
  *       201:
  *         description: Đăng ký thành công
  *       404:
- *         description: Username, email, phone hoặc licensePlate đã tồn tại.
+ *         description: Username hoặc phone đã tồn tại.
  *       400:
  *         description: Password phải có ít nhất 6 ký tự.
  *       500:
