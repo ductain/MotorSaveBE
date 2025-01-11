@@ -1,6 +1,4 @@
-const bcrypt = require("bcrypt");
 const accountService = require("../services/accountService");
-const transporter = require("../config/nodemailerConfig");
 
 const register = async (req, res) => {
   try {
