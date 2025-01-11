@@ -2,19 +2,13 @@ const accountService = require("../services/accountService");
 
 const register = async (req, res) => {
   try {
-    const { username, password, email, fullName, phone } = req.body;
+    const { username, password, fullName, phone } = req.body;
 
     // Validate required fields
-    if (!username || !password || !email || !fullName || !phone) {
+    if (!username || !password || !fullName || !phone) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    if (!emailRegex.test(email)) {
-      return res
-        .status(400)
-        .json({ message: "Email phải hợp lệ (e.g., user@gmail.com)." });
-    }
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phone)) {
       return res
@@ -26,7 +20,6 @@ const register = async (req, res) => {
     const result = await accountService.register({
       username,
       password,
-      email,
       fullName,
       phone,
     });
@@ -82,44 +75,41 @@ const getProfileById = async (req, res) => {
   }
 };
 
-const sendOtp = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const result = await accountService.sendOtp(email);
-    res.status(result.status).json({ message: result.message });
-  } catch (err) {
-    console.error("Error sending OTP:", err);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
+// const sendOtp = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+//     const result = await accountService.sendOtp(email);
+//     res.status(result.status).json({ message: result.message });
+//   } catch (err) {
+//     console.error("Error sending OTP:", err);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 
-const verifyOtp = async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-    const result = await accountService.verifyOtp(email, otp);
-    res.status(result.status).json({ message: result.message });
-  } catch (err) {
-    console.error("Error verifying OTP:", err);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
+// const verifyOtp = async (req, res) => {
+//   try {
+//     const { email, otp } = req.body;
+//     const result = await accountService.verifyOtp(email, otp);
+//     res.status(result.status).json({ message: result.message });
+//   } catch (err) {
+//     console.error("Error verifying OTP:", err);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 
-const resetPassword = async (req, res) => {
-  try {
-    const { email, newPassword } = req.body;
-    const result = await accountService.resetPassword(email, newPassword);
-    res.status(result.status).json({ message: result.message });
-  } catch (err) {
-    console.error("Error resetting password:", err);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
+// const resetPassword = async (req, res) => {
+//   try {
+//     const { email, newPassword } = req.body;
+//     const result = await accountService.resetPassword(email, newPassword);
+//     res.status(result.status).json({ message: result.message });
+//   } catch (err) {
+//     console.error("Error resetting password:", err);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 
 module.exports = {
   register: register,
   login: login,
   getProfileById: getProfileById,
-  sendOtp: sendOtp,
-  verifyOtp: verifyOtp,
-  resetPassword: resetPassword,
 };

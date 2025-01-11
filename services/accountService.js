@@ -1,21 +1,20 @@
 const query = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const transporter = require("../config/nodemailerConfig");
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
 const register = async (userData) => {
-  const { username, password, email, fullName, phone } = userData;
+  const { username, password, fullName, phone } = userData;
 
   // Check if username or phone already exists
   const checkQuery = `
       SELECT * FROM accounts 
-      WHERE username = $1 OR phone = $2 OR email = $3
+      WHERE username = $1 OR phone = $2
     `;
-  const existingUser = await query(checkQuery, [username, phone, email]);
+  const existingUser = await query(checkQuery, [username, phone]);
   if (existingUser.rows.length > 0) {
-    const error = new Error("Username, phone hoặc email đã tồn tại.");
+    const error = new Error("Username hoặc phone đã tồn tại.");
     error.statusCode = 404;
     throw error;
   }
@@ -39,13 +38,12 @@ const register = async (userData) => {
   // Insert the new user into the database
   const insertQuery = `
       INSERT INTO accounts 
-      (username, password, email, fullname, phone, createddate, updateddate, roleid, statusid)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      (username, password, fullname, phone, createddate, updateddate, roleid, statusid)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `;
   await query(insertQuery, [
     username,
     hashedPassword,
-    email,
     fullName,
     phone,
     createdDate,
@@ -119,78 +117,75 @@ const getProfileById = async (userId) => {
   };
 };
 
-const sendOtp = async (email) => {
-  // Check if the email exists in the database
-  const result = await query("SELECT * FROM accounts WHERE email = $1", [
-    email,
-  ]);
-  const user = result.rows[0];
-  if (!user) {
-    return { status: 404, message: "Không tìm thấy email!" };
-  }
+// const sendOtp = async (email) => {
+//   // Check if the email exists in the database
+//   const result = await query("SELECT * FROM accounts WHERE email = $1", [
+//     email,
+//   ]);
+//   const user = result.rows[0];
+//   if (!user) {
+//     return { status: 404, message: "Không tìm thấy email!" };
+//   }
 
-  // Generate a random 6-digit OTP
-  const otp = Math.floor(100000 + Math.random() * 900000);
+//   // Generate a random 6-digit OTP
+//   const otp = Math.floor(100000 + Math.random() * 900000);
 
-  // Save the OTP and expiry time to the database
-  const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-  await query(`UPDATE accounts SET otp = $1, otpExpiry = $2 WHERE email = $3`, [
-    otp,
-    otpExpiry,
-    email,
-  ]);
+//   // Save the OTP and expiry time to the database
+//   const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+//   await query(`UPDATE accounts SET otp = $1, otpExpiry = $2 WHERE email = $3`, [
+//     otp,
+//     otpExpiry,
+//     email,
+//   ]);
 
-  // Send the OTP via email
-  const mailOptions = {
-    from: {
-      name: "MotorSave",
-      address: process.env.EMAIL,
-    },
-    to: email,
-    subject: "Password Reset OTP",
-    text: `Your OTP for password reset is: ${otp}`,
-  };
+//   // Send the OTP via email
+//   const mailOptions = {
+//     from: {
+//       name: "MotorSave",
+//       address: process.env.EMAIL,
+//     },
+//     to: email,
+//     subject: "Password Reset OTP",
+//     text: `Your OTP for password reset is: ${otp}`,
+//   };
 
-  await transporter.sendMail(mailOptions);
+//   await transporter.sendMail(mailOptions);
 
-  return { status: 200, message: "OTP gửi thành công!" };
-};
+//   return { status: 200, message: "OTP gửi thành công!" };
+// };
 
-const verifyOtp = async (email, otp) => {
-  const result = await query("SELECT * FROM accounts WHERE email = $1", [
-    email,
-  ]);
-  const user = result.rows[0];
+// const verifyOtp = async (email, otp) => {
+//   const result = await query("SELECT * FROM accounts WHERE email = $1", [
+//     email,
+//   ]);
+//   const user = result.rows[0];
 
-  if (!user) {
-    return { status: 404, message: "Không tìm thấy email!" };
-  }
+//   if (!user) {
+//     return { status: 404, message: "Không tìm thấy email!" };
+//   }
 
-  if (user.otp !== otp || new Date(user.otpExpiry) < new Date()) {
-    return { status: 400, message: "OTP không hợp lệ hoặc hết hạn!" };
-  }
+//   if (user.otp !== otp || new Date(user.otpExpiry) < new Date()) {
+//     return { status: 400, message: "OTP không hợp lệ hoặc hết hạn!" };
+//   }
 
-  return { status: 200, message: "Xác thực OTP thành công!" };
-};
+//   return { status: 200, message: "Xác thực OTP thành công!" };
+// };
 
-const resetPassword = async (email, newPassword) => {
-  if (newPassword.length < 6) {
-    return { status: 400, message: "Password phải có ít nhất 6 ký tự!" };
-  }
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-  await query(
-    `UPDATE accounts SET password = $1, otp = NULL, otpExpiry = NULL WHERE email = $2`,
-    [hashedPassword, email]
-  );
+// const resetPassword = async (email, newPassword) => {
+//   if (newPassword.length < 6) {
+//     return { status: 400, message: "Password phải có ít nhất 6 ký tự!" };
+//   }
+//   const hashedPassword = await bcrypt.hash(newPassword, 10);
+//   await query(
+//     `UPDATE accounts SET password = $1, otp = NULL, otpExpiry = NULL WHERE email = $2`,
+//     [hashedPassword, email]
+//   );
 
-  return { status: 200, message: "Cập nhật password thành công!" };
-};
+//   return { status: 200, message: "Cập nhật password thành công!" };
+// };
 
 module.exports = {
   register: register,
   login: login,
   getProfileById: getProfileById,
-  sendOtp: sendOtp,
-  verifyOtp: verifyOtp,
-  resetPassword: resetPassword,
 };
