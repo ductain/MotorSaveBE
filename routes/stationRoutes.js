@@ -20,7 +20,7 @@ module.exports = router;
  * @swagger
  * tags:
  *   name: Stations
- *   description: API for managing stations
+ *   description: APIIIIII for managinggggggggggggggggggggggggggg stations
  */
 
 /**
