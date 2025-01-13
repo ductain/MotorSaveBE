@@ -64,7 +64,7 @@ const login = async (identifier, password) => {
   const result = await query(userQuery, [identifier]);
 
   if (result.rows.length === 0) {
-    const error = new Error("Sai username/phone hoặc password.");
+    const error = new Error("Sai username hoặc phone hoặc password.");
     error.statusCode = 401;
     throw error;
   }
@@ -74,7 +74,7 @@ const login = async (identifier, password) => {
   // Verify the password
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
-    const error = new Error("Sai username/phone hoặc password.");
+    const error = new Error("Sai username hoặc phone hoặc password.");
     error.statusCode = 401;
     throw error;
   }
