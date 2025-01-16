@@ -7,6 +7,9 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const authRoute = require("./routes/accountRoutes");
 const stationRoute = require("./routes/stationRoutes");
 const staffInStationRoute = require("./routes/staffInStationRoutes");
+const customerVehicleRoute = require("./routes/customerVehicleRoutes");
+const driverVehicleRoute = require("./routes/driverVehicleRoutes");
+const feedbackRoute = require("./routes/feedbackRoutes");
 
 const CSS_URL =
   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.9/swagger-ui.min.css";
@@ -54,6 +57,9 @@ app.use(express.json());
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/stations", stationRoute);
 app.use("/api/v1/staffinstations", staffInStationRoute);
+app.use("/api/v1/customerVehicles", customerVehicleRoute);
+app.use("/api/v1/driverVehicles", driverVehicleRoute);
+app.use("/api/v1/feedbacks", feedbackRoute);
 
 app.listen(port, () => {
   console.log(`Backend is running at port ${port}`);
