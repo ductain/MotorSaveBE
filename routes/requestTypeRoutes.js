@@ -1,17 +1,17 @@
 const {
-    getBrands,
-    getBrandById,
-    createBrand,
-    updateBrand,
-    deleteBrand } = require("../controllers/brandController");
+    getRequestTypes,
+    getRequestTypeById,
+    createRequestType,
+    updateRequestType,
+    deleteRequestType } = require("../controllers/requestTypeController");
 
 const router = require("express").Router();
 
-router.get("/", getBrands);
-router.get("/:id", getBrandById);
-router.post("/", createBrand);
-router.put("/:id", updateBrand);
-router.delete("/:id", deleteBrand);
+router.get("/", getRequestTypes);
+router.get("/:id", getRequestTypeById);
+router.post("/", createRequestType);
+router.put("/:id", updateRequestType);
+router.delete("/:id", deleteRequestType);
 
 module.exports = router;
 
@@ -19,19 +19,19 @@ module.exports = router;
 /**
  * @swagger
  * tags:
- *   name: Brands
- *   description: API for managing brands
+ *   name: RequestTypes
+ *   description: API for managing requestTypes
  */
 
 /**
  * @swagger
- * /brands:
+ * /requestTypes:
  *   get:
- *     summary: Get all (motorcycle) brands
- *     tags: [Brands]
+ *     summary: Get all requestTypes
+ *     tags: [RequestTypes]
  *     responses:
  *       200:
- *         description: List of all brands
+ *         description: List of all requestTypes
  *         content:
  *           application/json:
  *             schema:
@@ -41,30 +41,30 @@ module.exports = router;
  *                 properties:
  *                   id:
  *                     type: integer
- *                     description: Brand's ID
+ *                     description: RequestType's ID
  *                   name:
  *                     type: string
- *                     description: Brand's name
+ *                     description: RequestType's name
  *       500:
  *         description: Internal Server Error
  */
 
 /**
  * @swagger
- * /brands/{id}:
+ * /requestTypes/{id}:
  *   get:
- *     summary: Get a specific brand by ID
- *     tags: [Brands]
+ *     summary: Get a specific request type by ID
+ *     tags: [RequestTypes]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the brand
+ *         description: The ID of the request type
  *     responses:
  *       200:
- *         description: Details of the specified brand
+ *         description: Details of the specified request type
  *         content:
  *           application/json:
  *             schema:
@@ -75,17 +75,17 @@ module.exports = router;
  *                 name:
  *                   type: string
  *       404:
- *         description: Brand not found
+ *         description: RequestType not found
  *       500:
  *         description: Internal Server Error
  */
 
 /**
  * @swagger
- * /brands:
+ * /requestTypes:
  *   post:
- *     summary: Create a new brand
- *     tags: [Brands]
+ *     summary: Create a new request type
+ *     tags: [RequestTypes]
  *     requestBody:
  *       required: true
  *       content:
@@ -95,29 +95,29 @@ module.exports = router;
  *             properties:
  *               name:
  *                 type: string
- *                 description: Brand's name
+ *                 description: RequestType's name
  *     responses:
  *       200:
- *         description: Brand created successfully
+ *         description: RequestType created successfully
  *       401:
- *         description: Brand name already exists
+ *         description: RequestType name already exists
  *       500:
  *         description: Internal Server Error
  */
 
 /**
  * @swagger
- * /brands/{id}:
+ * /requestTypes/{id}:
  *   put:
- *     summary: Update an existing brand
- *     tags: [Brands]
+ *     summary: Update an existing request type
+ *     tags: [RequestTypes]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the brand
+ *         description: The ID of the request type
  *     requestBody:
  *       required: true
  *       content:
@@ -127,36 +127,36 @@ module.exports = router;
  *             properties:
  *               name:
  *                 type: string
- *                 description: Updated name of the brand
+ *                 description: Updated name of the request type
  *     responses:
  *       200:
- *         description: Brand updated successfully
+ *         description: RequestType updated successfully
  *       401:
- *         description: Brand name already exists
+ *         description: RequestType name already exists
  *       404:
- *         description: Brand not found
+ *         description: RequestType not found
  *       500:
  *         description: Internal Server Error
  */
 
 /**
  * @swagger
- * /brands/{id}:
+ * /requestTypes/{id}:
  *   delete:
- *     summary: Delete a brand
- *     tags: [Brands]
+ *     summary: Delete a request type
+ *     tags: [RequestTypes]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: Brand's ID
+ *         description: RequestType's ID
  *     responses:
  *       200:
- *         description: Brand deleted successfully
+ *         description: RequestType deleted successfully
  *       404:
- *         description: Brand not found
+ *         description: RequestType not found
  *       500:
  *         description: Internal Server Error
  */

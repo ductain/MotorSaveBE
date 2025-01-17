@@ -12,6 +12,7 @@ const driverVehicleRoute = require("./routes/driverVehicleRoutes");
 const feedbackRoute = require("./routes/feedbackRoutes");
 const vehicleTypeRoute = require("./routes/vehicleTypeRoutes");
 const brandRoute = require("./routes/brandRoutes");
+const requestTypeRoute = require("./routes/requestTypeRoutes");
 
 const CSS_URL =
   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.9/swagger-ui.min.css";
@@ -64,6 +65,7 @@ app.use("/api/v1/driverVehicles", driverVehicleRoute);
 app.use("/api/v1/feedbacks", feedbackRoute);
 app.use("/api/v1/vehicletypes", vehicleTypeRoute);
 app.use("/api/v1/brands", brandRoute);
+app.use("/api/v1/requestTypes", requestTypeRoute);
 
 app.listen(port, () => {
   console.log(`Backend is running at port ${port}`);
