@@ -2,7 +2,7 @@ const query = require("../config/dbConfig");
 
 const getAll = async () => {
     const results = await query(`SELECT * FROM staffinstation`);
-    return results;
+    return results.rows;
 };
 
 const getStaffsInAStation = async (stationId) => {
@@ -10,7 +10,7 @@ const getStaffsInAStation = async (stationId) => {
         `SELECT * FROM staffinstation 
         LEFT JOIN accounts ON (staffinstation.staffid = accounts.id)
         LEFT JOIN roles ON (accounts.roleid = roles.id) WHERE stationid = $1`, [stationId]);
-    return results;
+    return results.rows;
 };
 
 const checkIfStaffIsInAnyStation = async (staffId) => {
