@@ -27,7 +27,7 @@ const getBrandById = async (req, res) => {
 const createBrand = async (req, res) => {
   try {
     const brandData = req.body;
-    const isTaken = await isBrandNameTaken(brandData.name);
+    const isTaken = await brandService.isBrandNameTaken(brandData.name);
     if (isTaken) {
       return res.status(401).json({ message: "Brand name already exists! Choose another one." });
     }
@@ -43,7 +43,7 @@ const updateBrand = async (req, res) => {
   try {
     const brandId = req.params.id;
     const brandData = req.body;
-    const isTaken = await isBrandNameTaken(brandData.name, brandId);
+    const isTaken = await brandService.isBrandNameTaken(brandData.name, brandId);
     if (isTaken) {
       return res.status(401).json({ message: "Brand name already exists! Choose another one." });
     }

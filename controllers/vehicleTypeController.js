@@ -27,6 +27,10 @@ const getVehicleTypeById = async (req, res) => {
 const createVehicleType = async (req, res) => {
   try {
     const vehicleTypeData = req.body;
+    const isTaken = await vehiceTypeService.isVehicleTypeTaken(vehicleTypeData.name);
+    if (isTaken) {
+      return res.status(401).json({ message: "VehicleType name already exists! Choose another one." });
+    }
     const result = await vehiceTypeService.createVehicleType(vehicleTypeData);
     res.status(200).json(result);
   } catch (err) {
@@ -39,11 +43,15 @@ const updateVehicleType = async (req, res) => {
   try {
     const vehicleTypeId = req.params.id;
     const vehicleTypeData = req.body;
+    const isTaken = await vehiceTypeService.isVehicleTypeTaken(vehicleTypeData.name, vehicleTypeId);
+    if (isTaken) {
+      return res.status(401).json({ message: "VehicleType name already exists! Choose another one." });
+    }
     const updatedVehicleType = await vehiceTypeService.updateVehicleType(vehicleTypeId, vehicleTypeData);
     if (!updatedVehicleType) {
       return res.status(404).json({ message: "vehicleType not found" });
     }
-    res.status(200).json({updatedVehicleType, message: "vehicleType updated!" });
+    res.status(200).json({ updatedVehicleType, message: "vehicleType updated!" });
   } catch (err) {
     console.error("Error updating vehicleType:", err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -66,9 +74,9 @@ const deleteVehicleType = async (req, res) => {
 };
 
 module.exports = {
-    getVehicleTypes,
-    getVehicleTypeById,
-    createVehicleType,
-    updateVehicleType,
-    deleteVehicleType
+  getVehicleTypes,
+  getVehicleTypeById,
+  createVehicleType,
+  updateVehicleType,
+  deleteVehicleType
 }

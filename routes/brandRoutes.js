@@ -101,6 +101,8 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Brand created successfully
+ *       401:
+ *         description: Brand name already exists
  *       500:
  *         description: Internal Server Error
  */
@@ -131,6 +133,8 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Brand updated successfully
+ *       401:
+ *         description: Brand name already exists
  *       404:
  *         description: Brand not found
  *       500:

@@ -107,6 +107,8 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Vehicle type created successfully
+ *       401:
+ *         description: Vehicle type already exists 
  *       500:
  *         description: Internal Server Error
  */
@@ -140,6 +142,8 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Vehicle type updated successfully
+ *       401:
+ *         description: Vehicle type already exists
  *       404:
  *         description: Vehicle type not found
  *       500:

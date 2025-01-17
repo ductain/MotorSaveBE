@@ -25,7 +25,7 @@ const updateVehicleType = async (vehicleTypeId, vehicleTypeData) => {
     const result = await query(
         `UPDATE vehicletypes SET name = $1, rate = $2
        WHERE id = $3 RETURNING *`,
-        [name, rate,vehicleTypeId]
+        [name, rate, vehicleTypeId]
     );
 
     return result.rows[0];
@@ -34,12 +34,24 @@ const updateVehicleType = async (vehicleTypeId, vehicleTypeData) => {
 const deleteVehicleType = async (vehicleTypeId) => {
     const { rowCount } = await query(`DELETE FROM vehicletypes WHERE id = $1`, [vehicleTypeId]);
     return rowCount > 0;
-  };
+};
+
+const isVehicleTypeTaken = async (name, excludeId = null) => {
+    const queryText = excludeId
+        ? `SELECT * FROM vehicletypes WHERE name = $1 AND id != $2`
+        : `SELECT * FROM vehicletypes WHERE name = $1`;
+
+    const values = excludeId ? [name, excludeId] : [name];
+    const result = await query(queryText, values);
+
+    return result.rows.length > 0;
+};
 
 module.exports = {
     getVehicleTypes,
     getVehicleTypeById,
     createVehicleType,
     updateVehicleType,
-    deleteVehicleType
+    deleteVehicleType,
+    isVehicleTypeTaken
 }
