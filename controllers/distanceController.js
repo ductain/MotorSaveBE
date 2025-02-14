@@ -2,7 +2,7 @@ const distanceService = require("../services/distanceService");
 
 const calculateMoney = async (req, res) => {
   try {
-    const { distance } = req.body;
+    const { distance } = req.query;
 
     if (!distance || distance < 0) {
       return res.status(400).json({ message: "Invalid distance input" });

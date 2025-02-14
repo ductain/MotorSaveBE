@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const distanceController = require("../controllers/distanceController");
 
-router.post("/calculate", distanceController.calculateMoney);
+router.get("/calculate", distanceController.calculateMoney);
 
 /**
  * @swagger
@@ -14,19 +14,14 @@ router.post("/calculate", distanceController.calculateMoney);
 /**
  * @swagger
  * /distance/calculate:
- *   post:
+ *   get:
  *     summary: calculate money
  *     tags: [DistanceRate]
- *     requestBody:
- *      required: true
- *      description: Input distance (m)
- *      content:
- *          application/json:
- *              schema:
- *                  type: object
- *                  properties:
- *                      distance:
- *                          type: number
+ *     parameters:
+ *       - in: query
+ *         name: distance
+ *         schema:
+ *           type: number
  *     responses:
  *       201:
  *         description: totalMoney
