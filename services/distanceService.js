@@ -26,7 +26,8 @@ const calculateMoney = async (distance) => {
   } else {
     totalMoney = m1 + ((d2 - d1) * m2) + (s - d2) * m3;
   }
-
+  
+  totalMoney = Math.round(totalMoney / 1000) * 1000
   return totalMoney;
 };
 
