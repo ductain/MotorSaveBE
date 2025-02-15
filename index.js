@@ -14,7 +14,8 @@ const vehicleTypeRoute = require("./routes/vehicleTypeRoutes");
 const brandRoute = require("./routes/brandRoutes");
 const requestTypeRoute = require("./routes/requestTypeRoutes");
 const serPackageRoute = require("./routes/serPackageRoutes");
-const distanceRoute = require("./routes/distanceRoutes")
+const distanceRoute = require("./routes/distanceRoutes");
+const requestRoute = require("./routes/requestRoutes");
 
 const CSS_URL =
   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.9/swagger-ui.min.css";
@@ -70,6 +71,7 @@ app.use("/api/v1/brands", brandRoute);
 app.use("/api/v1/requestTypes", requestTypeRoute);
 app.use("/api/v1/servicepackages", serPackageRoute);
 app.use("/api/v1/distance", distanceRoute);
+app.use("/api/v1/requests", requestRoute);
 
 app.listen(port, () => {
   console.log(`Backend is running at port ${port}`);
