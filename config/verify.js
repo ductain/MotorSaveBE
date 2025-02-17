@@ -24,7 +24,7 @@ const verifyDriver = (req, res, next) => {
     if (req.user.role === "Driver" || req.user.role === "Admin") {
       next();
     } else {
-      return res.status(403).json({ message: "You are not authorized" });
+      return res.status(403).json({ message: "You need to login as Driver or Admin" });
     }
   });
 };
@@ -34,7 +34,7 @@ const verifyMechanic = (req, res, next) => {
     if (req.user.role === "Mechanic" || req.user.role === "Admin") {
       next();
     } else {
-      return res.status(403).json({ message: "You are not authorized" });
+      return res.status(403).json({ message: "You need to login as Mechanic or Admin" });
     }
   });
 };
@@ -44,7 +44,7 @@ const verifyAdmin = (req, res, next) => {
     if (req.user.role === "Admin") {
       next();
     } else {
-      return res.status(403).json({ message: "You are not authorized" });
+      return res.status(403).json({ message: "You need to login as Admin" });
     }
   });
 };
