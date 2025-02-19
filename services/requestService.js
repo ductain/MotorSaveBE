@@ -60,22 +60,23 @@ const createRescueRequest = async (data, customerId) => {
   }
 };
 
-const getAllPendingRescueRequests = async () => {
+const getRequests = async () => {
   try {
     const result = await query(
       `SELECT 
         r.id AS requestid, 
         a.fullname, 
         a.phone, 
+        rt.name AS requesttype,
         rd.id AS requestdetailid,
         rd.pickuplocation, 
-        rd.destination, 
         rd.requeststatus,
         r.createddate
       FROM requests r
       JOIN accounts a ON r.customerid = a.id
       JOIN requestdetails rd ON r.id = rd.requestid
-      WHERE rd.requeststatus = 'Pending'
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      WHERE rd.requeststatus <> 'Cancel'
       ORDER BY r.createddate DESC`
     );
 
@@ -110,6 +111,6 @@ const acceptRequest = async (requestDetailId, driverId) => {
 
 module.exports = {
   createRescueRequest: createRescueRequest,
-  getAllPendingRescueRequests: getAllPendingRescueRequests,
+  getRequests: getRequests,
   acceptRequest: acceptRequest,
 };

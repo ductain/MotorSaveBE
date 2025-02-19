@@ -10,9 +10,9 @@ router.post(
 );
 
 router.get(
-  "/pending",
+  "/",
   verifyDriver,
-  requestController.getAllPendingRescueRequests
+  requestController.getRequests
 );
 
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
@@ -62,15 +62,15 @@ router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptReq
 
 /**
  * @swagger
- * /requests/pending:
+ * /requests:
  *   get:
- *     summary: Get all pending rescue requests (Driver)
+ *     summary: Get all requests (Driver)
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of pending rescue requests
+ *         description: List of requests
  *       403:
  *         description: You need to login as Driver or Admin
  *       500:

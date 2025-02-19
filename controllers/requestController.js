@@ -15,9 +15,9 @@ const createRescueRequest = async (req, res) => {
   }
 };
 
-const getAllPendingRescueRequests = async (req, res) => {
+const getRequests = async (req, res) => {
   try {
-    const requests = await requestService.getAllPendingRescueRequests();
+    const requests = await requestService.getRequests();
     res.status(200).json(requests);
   } catch (error) {
     res
@@ -57,6 +57,6 @@ const acceptRequest = async (req, res) => {
 
 module.exports = {
   createRescueRequest: createRescueRequest,
-  getAllPendingRescueRequests: getAllPendingRescueRequests,
+  getRequests: getRequests,
   acceptRequest: acceptRequest,
 };
