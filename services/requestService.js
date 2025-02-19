@@ -89,7 +89,7 @@ const getRequests = async () => {
 
 const acceptRequest = async (requestDetailId, driverId) => {
   try {
-    const updatedDate = new Date;
+    const updatedDate = new Date();
     const result = await query(
       `UPDATE requestdetails 
        SET requeststatus = 'Accepted', staffid = $1, updateddate = $3
@@ -109,8 +109,49 @@ const acceptRequest = async (requestDetailId, driverId) => {
   }
 };
 
+const getRequestDetailByDriver = async (requestDetailId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        a.fullname, 
+        a.phone, 
+        rt.name AS requesttype,
+        rd.id AS requestdetailid,
+        rd.pickuplong,
+        rd.pickuplat,
+        rd.deslng,
+        rd.deslat,
+        rd.note,
+        rd.pickuplocation,
+        rd.destination,
+        rd.totalprice,
+        r.createddate,
+        rd.requeststatus,
+        rd.requestid,
+        rd.staffid,
+        rd.estimatedtime
+      FROM requestdetails rd
+      JOIN requests r ON rd.requestid = r.id
+      JOIN accounts a ON r.customerid = a.id
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      WHERE rd.id = $1`,
+      [requestDetailId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // No request found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching request details:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   getRequests: getRequests,
   acceptRequest: acceptRequest,
+  getRequestDetailByDriver: getRequestDetailByDriver,
 };

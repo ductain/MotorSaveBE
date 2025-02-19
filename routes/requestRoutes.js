@@ -17,6 +17,8 @@ router.get(
 
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
 
+router.get("/driver/:requestDetailId", verifyDriver, requestController.getRequestDetailByDriver);
+
 /**
  * @swagger
  * tags:
@@ -99,6 +101,30 @@ router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptReq
  *         description: You need to login as Driver or Admin
  *       404:
  *         description: Request not found or already accepted
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/driver/{requestDetailId}:
+ *   get:
+ *     summary: Get request details
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved request details
+ *       404:
+ *         description: Request not found
  *       500:
  *         description: Internal Server Error
  */
