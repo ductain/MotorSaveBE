@@ -42,12 +42,30 @@ const acceptRequest = async (req, res) => {
         .json({ message: "Request not found or already accepted" });
     }
 
+    res.status(200).json({
+      message: "Request accepted successfully!",
+      requestDetail: updatedRequest,
+    });
+  } catch (error) {
     res
-      .status(200)
-      .json({
-        message: "Request accepted successfully!",
-        requestDetail: updatedRequest,
-      });
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const getRequestDetailByDriver = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+
+    const requestDetail = await requestService.getRequestDetailByDriver(
+      requestDetailId
+    );
+
+    if (!requestDetail) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    res.status(200).json(requestDetail);
   } catch (error) {
     res
       .status(500)
@@ -59,4 +77,5 @@ module.exports = {
   createRescueRequest: createRescueRequest,
   getRequests: getRequests,
   acceptRequest: acceptRequest,
+  getRequestDetailByDriver: getRequestDetailByDriver,
 };
