@@ -19,6 +19,8 @@ router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptReq
 
 router.get("/driver/:requestDetailId", verifyDriver, requestController.getRequestDetailByDriver);
 
+router.put("/:requestDetailId/status", verifyToken, requestController.updateRequestStatus);
+
 /**
  * @swagger
  * tags:
@@ -123,10 +125,50 @@ router.get("/driver/:requestDetailId", verifyDriver, requestController.getReques
  *     responses:
  *       200:
  *         description: Successfully retrieved request details
+ *       400:
+ *         description: Invalid request status.
  *       404:
  *         description: Request not found
  *       500:
  *         description: Internal Server Error
  */
 
+/**
+ * @swagger
+ * /requests/{requestDetailId}/status:
+ *   put:
+ *     summary: Update request status
+ *     description: Update the status of a request (Pickup, Processing, Done, or Cancel).
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newStatus:
+ *                 type: string
+ *                 enum: [Pickup, Processing, Done, Cancel]
+ *                 example: Processing
+ *     responses:
+ *       200:
+ *         description: Request status updated successfully.
+ *       400:
+ *         description: Invalid request status.
+ *       404:
+ *         description: Request not found.
+ *       500:
+ *         description: Internal Server Error.
+ */
 module.exports = router;

@@ -149,9 +149,32 @@ const getRequestDetailByDriver = async (requestDetailId) => {
   }
 };
 
+const updateRequestStatus = async (requestDetailId, newStatus) => {
+  try {
+    const updatedDate = new Date();
+    const result = await query(
+      `UPDATE requestdetails 
+       SET requeststatus = $1, updateddate = $2
+       WHERE id = $3
+       RETURNING *`,
+      [newStatus, updatedDate, requestDetailId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // Request not found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating request status:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   getRequests: getRequests,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
+  updateRequestStatus: updateRequestStatus,
 };
