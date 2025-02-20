@@ -35,7 +35,7 @@ const createRescueRequest = async (data, customerId) => {
     const requestId = requestResult.rows[0].id;
 
     // Insert into RequestDetails table
-    await query(
+    const requestDetailResult = await query(
       `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
         pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Pending', 1) RETURNING id`,
