@@ -38,7 +38,7 @@ const createRescueRequest = async (data, customerId) => {
     await query(
       `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
         pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Pending', 1)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Pending', 1) RETURNING id`,
       [
         requestId,
         pickuplong,
@@ -53,7 +53,13 @@ const createRescueRequest = async (data, customerId) => {
       ]
     );
 
-    return { message: "Rescue request created successfully!" };
+    const requestDetailId = requestDetailResult.rows[0].id;
+
+    return {
+      message: "Rescue request created successfully!",
+      requestdetailid: requestDetailId,
+      totalprice: totalprice,
+    };
   } catch (error) {
     console.error("Error creating rescue request:", error);
     throw error;
