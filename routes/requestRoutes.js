@@ -111,7 +111,7 @@ router.put("/:requestDetailId/status", verifyToken, requestController.updateRequ
  * @swagger
  * /requests/driver/{requestDetailId}:
  *   get:
- *     summary: Get request details by driver
+ *     summary: Get request details
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []
