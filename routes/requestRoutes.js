@@ -17,7 +17,7 @@ router.get(
 
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
 
-router.get("/driver/:requestDetailId", verifyDriver, requestController.getRequestDetailByDriver);
+router.get("/driver/:requestDetailId", verifyToken, requestController.getRequestDetailByDriver);
 
 router.put("/:requestDetailId/status", verifyToken, requestController.updateRequestStatus);
 
@@ -111,7 +111,7 @@ router.put("/:requestDetailId/status", verifyToken, requestController.updateRequ
  * @swagger
  * /requests/driver/{requestDetailId}:
  *   get:
- *     summary: Get request details
+ *     summary: Get request details by driver
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []
