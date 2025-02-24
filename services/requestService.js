@@ -154,8 +154,8 @@ const getRequestDetailByDriver = async (requestDetailId) => {
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN accounts d ON rd.staffid = d.id -- Get driver details
       LEFT JOIN dvehicles v ON d.id = v.driverid -- Get vehicle details
-      JOIN brands br ON v.brandid = br.id
-      JOIN vehicletypes vt ON v.vehicletypeid = vt.id
+      LEFT JOIN brands br ON v.brandid = br.id
+      LEFT JOIN vehicletypes vt ON v.vehicletypeid = vt.id
 
       WHERE rd.id = $1`,
       [requestDetailId]
