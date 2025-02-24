@@ -119,9 +119,12 @@ const getRequestDetailByDriver = async (requestDetailId) => {
   try {
     const result = await query(
       `SELECT 
-        a.fullname, 
-        a.phone, 
+        -- Customer Information
+        c.fullname AS customername, 
+        c.phone AS customerphone, 
         rt.name AS requesttype,
+        
+        -- Request Details
         rd.id AS requestdetailid,
         rd.pickuplong,
         rd.pickuplat,
@@ -135,11 +138,25 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         rd.requeststatus,
         rd.requestid,
         rd.staffid,
-        rd.estimatedtime
+        rd.estimatedtime,
+
+        -- Driver Information
+        d.fullname AS drivername,
+        d.phone AS driverphone,
+        v.licenseplate,
+        br.name AS brandname,
+        vt.name AS vehicletype,
+        v.vehiclestatus
+
       FROM requestdetails rd
       JOIN requests r ON rd.requestid = r.id
-      JOIN accounts a ON r.customerid = a.id
+      JOIN accounts c ON r.customerid = c.id
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      LEFT JOIN accounts d ON rd.staffid = d.id -- Get driver details
+      LEFT JOIN dvehicles v ON d.id = v.driverid -- Get vehicle details
+      JOIN brands br ON v.brandid = br.id
+      JOIN vehicletypes vt ON v.vehicletypeid = vt.id
+
       WHERE rd.id = $1`,
       [requestDetailId]
     );
