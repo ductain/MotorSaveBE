@@ -66,7 +66,7 @@ const createRescueRequest = async (data, customerId) => {
   }
 };
 
-const getRequests = async () => {
+const getRequestsByDriver = async (staffId) => {
   try {
     const result = await query(
       `SELECT 
@@ -77,18 +77,21 @@ const getRequests = async () => {
         rd.id AS requestdetailid,
         rd.pickuplocation, 
         rd.requeststatus,
-        r.createddate
+        r.createddate,
+        rd.staffid
       FROM requests r
       JOIN accounts a ON r.customerid = a.id
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
-      WHERE rd.requeststatus <> 'Cancel'
-      ORDER BY r.createddate DESC`
+      WHERE (rd.requeststatus = 'Pending' OR rd.staffid = $1)
+      AND rd.requeststatus <> 'Cancel'
+      ORDER BY r.createddate DESC`,
+      [staffId]
     );
 
     return result.rows;
   } catch (error) {
-    console.error("Error fetching pending rescue requests:", error);
+    console.error("Error fetching requests:", error);
     throw error;
   }
 };
@@ -196,7 +199,7 @@ const updateRequestStatus = async (requestDetailId, newStatus) => {
 
 module.exports = {
   createRescueRequest: createRescueRequest,
-  getRequests: getRequests,
+  getRequestsByDriver: getRequestsByDriver,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
