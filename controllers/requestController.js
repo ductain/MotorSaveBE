@@ -15,9 +15,10 @@ const createRescueRequest = async (req, res) => {
   }
 };
 
-const getRequests = async (req, res) => {
+const getRequestsByDriver = async (req, res) => {
   try {
-    const requests = await requestService.getRequests();
+    const staffid = req.user.id;
+    const requests = await requestService.getRequestsByDriver(staffid);
     res.status(200).json(requests);
   } catch (error) {
     res
@@ -103,7 +104,7 @@ const updateRequestStatus = async (req, res) => {
 
 module.exports = {
   createRescueRequest: createRescueRequest,
-  getRequests: getRequests,
+  getRequestsByDriver: getRequestsByDriver,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,

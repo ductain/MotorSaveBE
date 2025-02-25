@@ -10,9 +10,9 @@ router.post(
 );
 
 router.get(
-  "/",
+  "/driver",
   verifyDriver,
-  requestController.getRequests
+  requestController.getRequestsByDriver
 );
 
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
@@ -66,7 +66,7 @@ router.put("/:requestDetailId/status", verifyToken, requestController.updateRequ
 
 /**
  * @swagger
- * /requests:
+ * /requests/driver:
  *   get:
  *     summary: Get all requests (Driver)
  *     tags: [Requests]
