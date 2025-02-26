@@ -13,7 +13,7 @@ const getFeedbacks = async (req, res) => {
 const getFeedbackById = async (req, res) => {
   try {
     const feedbackId = req.params.id;
-    const feedback = await feedbackService.getFeedbackById(feedbackId)
+    const feedback = await feedbackService.getFeedbackById(feedbackId);
     if (!feedback) {
       return res.status(404).json({ message: "feedback not found" });
     }
@@ -24,7 +24,32 @@ const getFeedbackById = async (req, res) => {
   }
 };
 
+const createFeedback = async (req, res) => {
+  try {
+    const { requestdetailid } = req.params;
+    const { rating, comment } = req.body;
+
+    // Validate input
+    if (!requestdetailid || !rating || !comment) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const feedback = await feedbackService.createFeedback(
+      requestdetailid,
+      rating,
+      comment
+    );
+    res.status(201).json(feedback);
+  } catch (error) {
+    if (error.message === "Not found") {
+      return res.status(404).json({ error: "Request detail not found" });
+    }
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getFeedbacks: getFeedbacks,
   getFeedbackById: getFeedbackById,
+  createFeedback: createFeedback,
 };
