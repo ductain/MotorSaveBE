@@ -197,10 +197,33 @@ const updateRequestStatus = async (requestDetailId, newStatus) => {
   }
 };
 
+const cancelRequestWithReason = async (requestdetailid, note) => {
+  // Check if request exists
+  const existingRequest = await query(
+    "SELECT * FROM requestdetails WHERE id = $1",
+    [requestdetailid]
+  );
+
+  if (existingRequest.rowCount === 0) {
+    throw new Error("Not Found");
+  }
+
+  // Update request status to "Cancel" with note
+  await query(
+    `UPDATE requestdetails 
+     SET requeststatus = 'Cancel', note = $2, updateddate = NOW()
+     WHERE id = $1`,
+    [requestdetailid, note]
+  );
+
+  return { message: "Request successfully canceled" };
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   getRequestsByDriver: getRequestsByDriver,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
+  cancelRequestWithReason: cancelRequestWithReason,
 };
