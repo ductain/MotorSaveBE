@@ -102,10 +102,30 @@ const updateRequestStatus = async (req, res) => {
   }
 };
 
+const cancelRequestWithReason = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+    const { note } = req.body;
+
+    if (!note) {
+      return res.status(400).json({ error: "Note is required" });
+    }
+
+    const result = await requestService.cancelRequestWithReason(requestDetailId, note);
+    res.status(200).json(result);
+  } catch (error) {
+    if (error.message === "Not Found") {
+      res.status(404).json({ error: "Request not found" });
+    }
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   getRequestsByDriver: getRequestsByDriver,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
+  cancelRequestWithReason: cancelRequestWithReason,
 };
