@@ -115,9 +115,9 @@ const cancelRequestWithReason = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     if (error.message === "Not Found") {
-      res.status(404).json({ error: "Request not found" });
+      return res.status(404).json({ error: "Request not found" });
     }
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
