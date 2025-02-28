@@ -71,8 +71,8 @@ const getRequestsByDriver = async (staffId) => {
     const result = await query(
       `SELECT 
         r.id AS requestid, 
-        a.fullname, 
-        a.phone, 
+        a.fullname AS customername, 
+        a.phone AS customerphone, 
         rt.name AS requesttype,
         rd.id AS requestdetailid,
         rd.pickuplocation, 
@@ -83,7 +83,7 @@ const getRequestsByDriver = async (staffId) => {
       JOIN accounts a ON r.customerid = a.id
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
-      WHERE (rd.requeststatus = 'Pending' OR rd.staffid = $1)
+      WHERE rd.staffid = $1
       AND rd.requeststatus <> 'Cancel'
       ORDER BY r.createddate DESC`,
       [staffId]
