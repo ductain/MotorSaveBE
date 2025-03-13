@@ -6,6 +6,7 @@ const router = require("express").Router();
 router.post("/register", accountController.register);
 router.post("/login", accountController.login);
 router.get("/profile", verifyToken, accountController.getProfileById);
+router.put("/profile", verifyToken, accountController.updateAccountProfile);
 
 /**
  * @swagger
@@ -90,6 +91,87 @@ router.get("/profile", verifyToken, accountController.getProfileById);
  *       500:
  *          description: Internal Server Error
  */
+
+/**
+ * @swagger
+ * /auth/profile:
+ *   put:
+ *     summary: Update account profile
+ *     description: Updates the user's profile information. All fields are required.
+ *     tags: [Auth]
+ *     security:
+ *          - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullname:
+ *                 type: string
+ *                 example: "John Doe"
+ *               gender:
+ *                 type: boolean
+ *                 enum: ["Nam", "Nữ", "Khác"]
+ *                 example: "Nam"
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *                 example: "1990-05-15"
+ *               address:
+ *                 type: string
+ *                 example: "123 Main St, New York, NY"
+ *               licenseplate:
+ *                 type: string
+ *                 example: "ABC-1234"
+ *               avatar:
+ *                 type: string
+ *                 format: uri
+ *                 example: "https://example.com/avatar.jpg"
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Profile updated successfully"
+ *       400:
+ *         description: Bad request (Missing fields or invalid format)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "All fields are required"
+ *       404:
+ *         description: Account not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Account not found"
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ */
+
 
 
 module.exports = router;

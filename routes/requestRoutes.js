@@ -15,6 +15,12 @@ router.get(
   requestController.getRequestsByDriver
 );
 
+router.get(
+  "/customer",
+  verifyToken,
+  requestController.getRequestsByCustomer
+);
+
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
 
 router.get("/driver/:requestDetailId", verifyToken, requestController.getRequestDetailByDriver);
@@ -79,6 +85,23 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
  *         description: List of requests
  *       403:
  *         description: You need to login as Driver or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/customer:
+ *   get:
+ *     summary: Get all requests (Customer)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of requests
+ *       403:
+ *         description: You need to login
  *       500:
  *         description: Internal Server Error
  */

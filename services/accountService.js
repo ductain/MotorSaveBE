@@ -184,8 +184,27 @@ const getProfileById = async (userId) => {
 //   return { status: 200, message: "Cập nhật password thành công!" };
 // };
 
+const updateAccountProfile = async (accountId, fullname, gender, dob, address, licenseplate, avatar) => {
+  const existingAccount = await query(`SELECT * FROM accounts WHERE id = $1`, [accountId]);
+
+  if (existingAccount.rowCount === 0) {
+    throw new Error("Account Not Found");
+  }
+
+  const updateQuery = `
+    UPDATE accounts 
+    SET fullname = $1, gender = $2, dob = $3, address = $4, licenseplate = $5, avatar = $6, updateddate = NOW()
+    WHERE id = $7
+  `;
+
+  await query(updateQuery, [fullname, gender, dob, address, licenseplate, avatar, accountId]);
+
+  return { message: "Profile updated successfully" };
+};
+
 module.exports = {
   register: register,
   login: login,
   getProfileById: getProfileById,
+  updateAccountProfile: updateAccountProfile,
 };
