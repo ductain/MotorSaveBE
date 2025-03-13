@@ -101,7 +101,7 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
  *       200:
  *         description: List of requests
  *       403:
- *         description: You need to login
+ *         description: You are not authenticated
  *       500:
  *         description: Internal Server Error
  */
