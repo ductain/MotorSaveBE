@@ -108,8 +108,33 @@ const getProfileById = async (req, res) => {
 //   }
 // };
 
+const updateAccountProfile = async (req, res) => {
+  try {
+    const accountId = req.user.id;
+    const { fullname, gender, dob, address, licenseplate, avatar } = req.body;
+
+    if (!fullname || !gender || !dob || !address || !licenseplate || !avatar) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) {
+      return res.status(400).json({ error: "Invalid date format, use YYYY-MM-DD" });
+    }
+
+    const result = await accountService.updateAccountProfile(accountId, fullname, gender, dob, address, licenseplate, avatar);
+    return res.status(200).json(result);
+  } catch (error) {
+    if (error.message === "Account Not Found") {
+      return res.status(404).json({ error: "Account not found" });
+    }
+    console.error("Error updating profile:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   register: register,
   login: login,
   getProfileById: getProfileById,
+  updateAccountProfile: updateAccountProfile,
 };

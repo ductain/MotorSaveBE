@@ -96,6 +96,37 @@ const getRequestsByDriver = async (staffId) => {
   }
 };
 
+const getRequestsByCustomer = async (customerId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        r.id AS requestid, 
+        a.fullname AS drivername, 
+        a.phone AS driverphone, 
+        rt.name AS requesttype,
+        rd.id AS requestdetailid,
+        rd.pickuplocation,
+        rd.destination, 
+        rd.requeststatus,
+        r.createddate,
+        rd.staffid
+      FROM requests r
+      JOIN requestdetails rd ON r.id = rd.requestid
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      LEFT JOIN accounts a ON rd.staffid = a.id
+      WHERE r.customerid = $1
+      AND rd.requeststatus <> 'Cancel'
+      ORDER BY r.createddate DESC`,
+      [customerId]
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching customer requests:", error);
+    throw error;
+  }
+};
+
 const acceptRequest = async (requestDetailId, driverId) => {
   try {
     const updatedDate = new Date();
@@ -222,6 +253,7 @@ const cancelRequestWithReason = async (requestdetailid, note) => {
 module.exports = {
   createRescueRequest: createRescueRequest,
   getRequestsByDriver: getRequestsByDriver,
+  getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,

@@ -27,6 +27,18 @@ const getRequestsByDriver = async (req, res) => {
   }
 };
 
+const getRequestsByCustomer = async (req, res) => {
+  try {
+    const userid = req.user.id;
+    const requests = await requestService.getRequestsByCustomer(userid);
+    res.status(200).json(requests);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const acceptRequest = async (req, res) => {
   try {
     const { requestDetailId } = req.params;
@@ -73,6 +85,7 @@ const getRequestDetailByDriver = async (req, res) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 };
+
 
 const updateRequestStatus = async (req, res) => {
   try {
@@ -124,6 +137,7 @@ const cancelRequestWithReason = async (req, res) => {
 module.exports = {
   createRescueRequest: createRescueRequest,
   getRequestsByDriver: getRequestsByDriver,
+  getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
