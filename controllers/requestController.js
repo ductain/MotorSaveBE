@@ -15,6 +15,36 @@ const createRescueRequest = async (req, res) => {
   }
 };
 
+const createEmergencyRescueRequest = async (req, res) => {
+  try {
+    const customerId = req.user.id; // Assuming user ID comes from JWT
+    const result = await requestService.createEmergencyRescueRequest(
+      req.body,
+      customerId
+    );
+    res.status(201).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const createFloodRescueRequest = async (req, res) => {
+  try {
+    const customerId = req.user.id; // Assuming user ID comes from JWT
+    const result = await requestService.createFloodRescueRequest(
+      req.body,
+      customerId
+    );
+    res.status(201).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const getRequestsByDriver = async (req, res) => {
   try {
     const staffid = req.user.id;
@@ -136,6 +166,8 @@ const cancelRequestWithReason = async (req, res) => {
 
 module.exports = {
   createRescueRequest: createRescueRequest,
+  createEmergencyRescueRequest: createEmergencyRescueRequest,
+  createFloodRescueRequest: createFloodRescueRequest,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,
