@@ -111,7 +111,7 @@ const getProfileById = async (req, res) => {
 const updateAccountProfile = async (req, res) => {
   try {
     const accountId = req.user.id;
-    const { fullname, gender, dob, address, licenseplate, avatar } = req.body;
+    const { fullname, email, gender, dob, address, licenseplate, avatar } = req.body;
 
     // if (!fullname || !gender || !dob || !address || !licenseplate || !avatar) {
     //   return res.status(400).json({ error: "All fields are required" });
@@ -121,7 +121,7 @@ const updateAccountProfile = async (req, res) => {
       return res.status(400).json({ error: "Invalid date format, use YYYY-MM-DD" });
     }
 
-    const result = await accountService.updateAccountProfile(accountId, fullname, gender, dob, address, licenseplate, avatar);
+    const result = await accountService.updateAccountProfile(accountId, fullname, email, gender, dob, address, licenseplate, avatar);
     return res.status(200).json(result);
   } catch (error) {
     if (error.message === "Account Not Found") {

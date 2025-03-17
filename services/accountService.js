@@ -184,7 +184,7 @@ const getProfileById = async (userId) => {
 //   return { status: 200, message: "Cập nhật password thành công!" };
 // };
 
-const updateAccountProfile = async (accountId, fullname, gender, dob, address, licenseplate, avatar) => {
+const updateAccountProfile = async (accountId, fullname, email, gender, dob, address, licenseplate, avatar) => {
   const existingAccount = await query(`SELECT * FROM accounts WHERE id = $1`, [accountId]);
 
   if (existingAccount.rowCount === 0) {
@@ -193,11 +193,11 @@ const updateAccountProfile = async (accountId, fullname, gender, dob, address, l
 
   const updateQuery = `
     UPDATE accounts 
-    SET fullname = $1, gender = $2, dob = $3, address = $4, licenseplate = $5, avatar = $6, updateddate = NOW()
-    WHERE id = $7
+    SET fullname = $1, email = $2, gender = $3, dob = $4, address = $5, licenseplate = $6, avatar = $7, updateddate = NOW()
+    WHERE id = $8
   `;
 
-  await query(updateQuery, [fullname, gender, dob, address, licenseplate, avatar, accountId]);
+  await query(updateQuery, [fullname, email, gender, dob, address, licenseplate, avatar, accountId]);
 
   return { message: "Profile updated successfully" };
 };

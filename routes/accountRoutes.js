@@ -111,6 +111,9 @@ router.put("/profile", verifyToken, accountController.updateAccountProfile);
  *               fullname:
  *                 type: string
  *                 example: "John Doe"
+ *               email:
+ *                 type: string
+ *                 example: "John@gmail.com"
  *               gender:
  *                 type: boolean
  *                 enum: ["Nam", "Nữ", "Khác"]
