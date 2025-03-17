@@ -9,6 +9,18 @@ router.post(
   requestController.createRescueRequest
 );
 
+router.post(
+  "/emergencyRescue",
+  verifyToken,
+  requestController.createEmergencyRescueRequest
+);
+
+router.post(
+  "/floodRescue",
+  verifyToken,
+  requestController.createFloodRescueRequest
+);
+
 router.get(
   "/driver",
   verifyDriver,
@@ -62,6 +74,72 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
  *               pickuplocation:
  *                 type: string
  *               destination:
+ *                 type: string
+ *               totalprice:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Rescue request created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/emergencyRescue:
+ *   post:
+ *     summary: Create a new emergency rescue request
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pickuplong:
+ *                 type: number
+ *               pickuplat:
+ *                 type: number
+ *               deslng:
+ *                 type: number
+ *               deslat:
+ *                 type: number
+ *               pickuplocation:
+ *                 type: string
+ *               destination:
+ *                 type: string
+ *               totalprice:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Rescue request created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/floodRescue:
+ *   post:
+ *     summary: Create a new flood rescue request
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pickuplong:
+ *                 type: number
+ *               pickuplat:
+ *                 type: number
+ *               pickuplocation:
  *                 type: string
  *               totalprice:
  *                 type: number

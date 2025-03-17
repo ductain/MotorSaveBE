@@ -14,9 +14,9 @@ const createTransaction = async (data) => {
 
     // Insert into Payments table first
     const paymentResult = await query(
-      `INSERT INTO payments (totalamount, paymentmethod, paymentstatus)
-         VALUES ($1, $2, $3) RETURNING id`,
-      [totalamount, paymentmethod, paymentstatus]
+      `INSERT INTO payments (totalamount, paymentmethod, paymentstatus, requestdetailid)
+         VALUES ($1, $2, $3, $4) RETURNING id`,
+      [totalamount, paymentmethod, paymentstatus, requestdetailid]
     );
 
     const paymentId = paymentResult.rows[0].id;
