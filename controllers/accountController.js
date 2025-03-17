@@ -113,11 +113,11 @@ const updateAccountProfile = async (req, res) => {
     const accountId = req.user.id;
     const { fullname, gender, dob, address, licenseplate, avatar } = req.body;
 
-    if (!fullname || !gender || !dob || !address || !licenseplate || !avatar) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
+    // if (!fullname || !gender || !dob || !address || !licenseplate || !avatar) {
+    //   return res.status(400).json({ error: "All fields are required" });
+    // }
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dob) && dob !== null) {
       return res.status(400).json({ error: "Invalid date format, use YYYY-MM-DD" });
     }
 
