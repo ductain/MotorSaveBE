@@ -37,6 +37,8 @@ router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptReq
 
 router.get("/driver/:requestDetailId", verifyToken, requestController.getRequestDetailByDriver);
 
+router.post("/repair/:requestId", verifyToken, requestController.createRepairRequest);
+
 router.put("/:requestDetailId/status", verifyToken, requestController.updateRequestStatus);
 
 router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequestWithReason);
@@ -230,6 +232,32 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
  *         description: Successfully retrieved request details
  *       400:
  *         description: Invalid request status.
+ *       404:
+ *         description: Request not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/repair/{requestId}:
+ *   post:
+ *     summary: Create repair request
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request
+ *     responses:
+ *       200:
+ *         description: Request created successfully
+ *       403:
+ *         description: You need to login
  *       404:
  *         description: Request not found
  *       500:

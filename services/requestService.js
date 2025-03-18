@@ -184,6 +184,35 @@ const createFloodRescueRequest = async (data, customerId) => {
   }
 };
 
+const createRepairRequest = async (requestId) => {
+
+  try {
+    const createdDate = new Date();
+    const updatedDate = createdDate;
+
+    // Insert into RequestDetails table
+    const requestDetailResult = await query(
+      `INSERT INTO requestdetails (requestid, createddate, updateddate, requeststatus, requesttypeid)
+       VALUES ($1, $2, $3, 'Pending', 2) RETURNING id`,
+      [
+        requestId,
+        createdDate,
+        updatedDate,
+      ]
+    );
+
+    const requestDetailId = requestDetailResult.rows[0].id;
+
+    return {
+      message: "Repair request created successfully!",
+      requestdetailid: requestDetailId,
+    };
+  } catch (error) {
+    console.error("Error creating repair request:", error);
+    throw error;
+  }
+};
+
 const getRequestsByDriver = async (staffId) => {
   try {
     const result = await query(
@@ -295,6 +324,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         rd.requestid,
         rd.staffid,
         rd.estimatedtime,
+        sp.name AS servicepackagename,
 
         -- Driver Information
         d.fullname AS drivername,
@@ -306,6 +336,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
 
       FROM requestdetails rd
       JOIN requests r ON rd.requestid = r.id
+      JOIN servicepackages sp ON r.servicepackageid = sp.id
       JOIN accounts c ON r.customerid = c.id
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN accounts d ON rd.staffid = d.id -- Get driver details
@@ -376,6 +407,7 @@ module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
+  createRepairRequest: createRepairRequest,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,
