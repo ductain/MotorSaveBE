@@ -45,6 +45,28 @@ const createFloodRescueRequest = async (req, res) => {
   }
 };
 
+const createRepairRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+
+    const request = await requestService.createRepairRequest(
+      requestId
+    );
+
+    if (!request) {
+      return res
+        .status(404)
+        .json({ message: "Request id not found" });
+    }
+
+    res.status(200).json(request);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const getRequestsByDriver = async (req, res) => {
   try {
     const staffid = req.user.id;
@@ -168,6 +190,7 @@ module.exports = {
   createRescueRequest: createRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
+  createRepairRequest: createRepairRequest,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,
