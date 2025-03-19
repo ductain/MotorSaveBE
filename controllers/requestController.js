@@ -79,6 +79,57 @@ const getRequestsByDriver = async (req, res) => {
   }
 };
 
+const getPendingRepairRequestsByMechanic = async (req, res) => {
+  try {
+    const staffid = req.user.id;
+    const pendingRepairRequests = await requestService.getPendingRepairRequestsByMechanic(staffid);
+    res.status(200).json(pendingRepairRequests);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const acceptRepairRequest = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+    const mechanicid = req.user.id; // Get driver ID from authenticated token
+
+    const updatedRequest = await requestService.acceptRepairRequest(
+      requestDetailId,
+      mechanicid
+    );
+
+    if (!updatedRequest) {
+      return res
+        .status(404)
+        .json({ message: "Repair request not found or already accepted" });
+    }
+
+    res.status(200).json({
+      message: "Repair request accepted successfully!",
+      requestDetail: updatedRequest,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const getRepairRequestsByMechanic = async (req, res) => {
+  try {
+    const staffid = req.user.id;
+    const repairRequests = await requestService.getRepairRequestsByMechanic(staffid);
+    res.status(200).json(repairRequests);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const getRequestsByCustomer = async (req, res) => {
   try {
     const userid = req.user.id;
@@ -208,6 +259,9 @@ module.exports = {
   createEmergencyRescueRequest: createEmergencyRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
   createRepairRequest: createRepairRequest,
+  getPendingRepairRequestsByMechanic,
+  acceptRepairRequest,
+  getRepairRequestsByMechanic,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,

@@ -214,6 +214,110 @@ const createRepairRequest = async (requestId) => {
   }
 };
 
+const getPendingRepairRequestsByMechanic = async (staffId) => {
+  try {
+    const stationResult = await query(
+      `SELECT DISTINCT ON (sis.staffid) s.id AS stationid
+      FROM staffinstation sis
+      LEFT JOIN stations s ON sis.stationid = s.id
+      LEFT JOIN accounts a ON sis.staffid = a.id
+      WHERE sis.staffid = $1`,
+      [staffId]
+    );
+
+    if (stationResult.rows.length > 0) {
+      const stationId = stationResult.rows[0].stationid;
+      const result = await query(
+        `SELECT 
+        r.id AS requestid, 
+        a.fullname AS customername, 
+        a.phone AS customerphone, 
+        rt.name AS requesttype,
+        sp.name AS servicepackagename,
+        rd.id AS requestdetailid,
+        rd.requeststatus,
+        r.createddate,
+        rd.staffid,
+        r.stationid
+        FROM requests r
+        JOIN servicepackages sp ON r.servicepackageid = sp.id
+        JOIN accounts a ON r.customerid = a.id
+        JOIN requestdetails rd ON r.id = rd.requestid
+        JOIN stations s ON r.stationid = s.id
+        JOIN requesttypes rt ON rd.requesttypeid = rt.id
+        WHERE r.stationid = $1
+        AND rd.requeststatus = 'Pending'
+        AND rt.name = 'Sửa xe'
+        AND rd.staffid IS NULL
+        ORDER BY r.createddate DESC;`,
+        [stationId] // Use the retrieved stationid
+      );
+
+      return result.rows;
+    } else {
+      return []; // No station found, return empty array
+    }
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    throw error;
+  }
+};
+
+const acceptRepairRequest = async (requestDetailId, mechanicid) => {
+  try {
+    const updatedDate = new Date();
+    const result = await query(
+      `UPDATE requestdetails 
+       SET requeststatus = 'Accepted', staffid = $1, updateddate = $3
+       WHERE id = $2
+       RETURNING *`,
+      [mechanicid, requestDetailId, updatedDate]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // No request found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error accepting request:", error);
+    throw error;
+  }
+};
+
+const getRepairRequestsByMechanic = async (staffId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        r.id AS requestid, 
+        a.fullname AS customername, 
+        a.phone AS customerphone, 
+        rt.name AS requesttype,
+        sp.name AS servicepackagename,
+        rd.id AS requestdetailid,
+        rd.requeststatus,
+        r.createddate,
+        rd.staffid
+      FROM requests r
+      JOIN servicepackages sp ON r.servicepackageid = sp.id
+      JOIN accounts a ON r.customerid = a.id
+      JOIN requestdetails rd ON r.id = rd.requestid
+      JOIN stations s ON r.stationid = s.id
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      WHERE rd.staffid = $1
+      AND rd.requeststatus <> 'Cancel'
+      AND rt.name = 'Sửa xe'
+      ORDER BY r.createddate DESC`,
+      [staffId]
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    throw error;
+  }
+};
+
 const getRequestsByDriver = async (staffId) => {
   try {
     const result = await query(
@@ -430,7 +534,7 @@ const getRepairRequestDetail = async (requestId) => {
       AND rd.requesttypeid = 2`,
       [requestId]
     );
-    
+
     return result.rows[0];
   } catch (error) {
     console.error("Error fetching repair request details:", error);
@@ -443,6 +547,9 @@ module.exports = {
   createFloodRescueRequest: createFloodRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
   createRepairRequest: createRepairRequest,
+  getPendingRepairRequestsByMechanic,
+  acceptRepairRequest,
+  getRepairRequestsByMechanic,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,

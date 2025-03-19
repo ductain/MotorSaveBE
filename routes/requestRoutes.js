@@ -1,4 +1,4 @@
-const { verifyToken, verifyDriver } = require("../config/verify");
+const { verifyToken, verifyDriver, verifyMechanic } = require("../config/verify");
 const requestController = require("../controllers/requestController");
 
 const router = require("express").Router();
@@ -25,6 +25,20 @@ router.get(
   "/driver",
   verifyDriver,
   requestController.getRequestsByDriver
+);
+
+router.get(
+  "/mechanic/pending",
+  verifyMechanic,
+  requestController.getPendingRepairRequestsByMechanic
+);
+
+router.put("/mechanic/:requestDetailId/accept", verifyMechanic, requestController.acceptRepairRequest);
+
+router.get(
+  "/mechanic",
+  verifyMechanic,
+  requestController.getRepairRequestsByMechanic
 );
 
 router.get(
@@ -367,6 +381,66 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *         description: You need to login
  *       404:
  *         description: Request not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/mechanic/pending:
+ *   get:
+ *     summary: Get all Pending repair requests (Mechanic)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of pending repair requests
+ *       403:
+ *         description: You need to login as Mechanic or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/mechanic/{requestDetailId}/accept:
+ *   put:
+ *     summary: Accept a repair request (Mechanic)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail to accept
+ *     responses:
+ *       200:
+ *         description: Request accepted successfully
+ *       403:
+ *         description: You need to login as Mechanic or Admin
+ *       404:
+ *         description: Request not found or already accepted
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/mechanic:
+ *   get:
+ *     summary: Get all repair requests (Mechanic)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of repair requests
+ *       403:
+ *         description: You are not authenticated
  *       500:
  *         description: Internal Server Error
  */
