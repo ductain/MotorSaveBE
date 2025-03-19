@@ -268,7 +268,7 @@ const acceptRepairRequest = async (requestDetailId, mechanicid) => {
     const updatedDate = new Date();
     const result = await query(
       `UPDATE requestdetails 
-       SET requeststatus = 'Accepted', staffid = $1, updateddate = $3
+       SET requeststatus = 'Inspecting', staffid = $1, updateddate = $3
        WHERE id = $2
        RETURNING *`,
       [mechanicid, requestDetailId, updatedDate]
