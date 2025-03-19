@@ -416,7 +416,7 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the request detail to accept
+ *         description: The ID of the request detail
  *     responses:
  *       200:
  *         description: Request accepted successfully
