@@ -43,6 +43,8 @@ router.put("/:requestDetailId/status", verifyToken, requestController.updateRequ
 
 router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequestWithReason);
 
+router.get("/repair/detail/:requestId", verifyToken, requestController.getRepairRequestDetail);
+
 /**
  * @swagger
  * tags:
@@ -115,6 +117,8 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
  *                 type: string
  *               totalprice:
  *                 type: number
+ *               stationid:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Rescue request created successfully
@@ -340,4 +344,31 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
  *       500:
  *         description: Internal Server Error.
  */
+
+/**
+ * @swagger
+ * /requests/repair/detail/{requestId}:
+ *   get:
+ *     summary: Get repair request detail
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request
+ *     responses:
+ *       200:
+ *         description: Request
+ *       403:
+ *         description: You need to login
+ *       404:
+ *         description: Request not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
 module.exports = router;

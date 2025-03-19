@@ -75,6 +75,7 @@ const createEmergencyRescueRequest = async (data, customerId) => {
     pickuplocation,
     destination,
     totalprice,
+    stationid
   } = data;
 
   try {
@@ -92,9 +93,9 @@ const createEmergencyRescueRequest = async (data, customerId) => {
 
     // Insert into Requests table
     const requestResult = await query(
-      `INSERT INTO requests (servicepackageid, customerid, createddate, updateddate)
-       VALUES ($1, $2, $3, $4) RETURNING id`,
-      [servicePackageId, customerId, createdDate, updatedDate]
+      `INSERT INTO requests (servicepackageid, customerid, stationid, createddate, updateddate)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+      [servicePackageId, customerId, stationid, createdDate, updatedDate]
     );
 
     const requestId = requestResult.rows[0].id;
@@ -403,6 +404,40 @@ const cancelRequestWithReason = async (requestdetailid, note) => {
   return { message: "Request successfully canceled" };
 };
 
+const getRepairRequestDetail = async (requestId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        r.id AS requestid,
+        rt.name AS requesttype,
+        rd.id AS requestdetailid,
+        rd.requeststatus,
+        rd.totalprice,
+        rd.createddate,
+        s.id AS stationid,
+        s.name AS stationname,
+        s.address AS stationaddress,
+        m.id AS mechanicid,
+        m.fullname AS mechanicname,
+        m.phone AS mechanicphone,
+        m.avatar AS mechanicavatar
+      FROM requests r
+      JOIN requestdetails rd ON r.id = rd.requestid
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      LEFT JOIN stations s ON r.stationid = s.id
+      LEFT JOIN accounts m ON rd.staffid = m.id
+      WHERE r.id = $1
+      AND rd.requesttypeid = 2`,
+      [requestId]
+    );
+    
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching repair request details:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -414,4 +449,5 @@ module.exports = {
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
+  getRepairRequestDetail: getRepairRequestDetail,
 };

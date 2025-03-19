@@ -186,6 +186,23 @@ const cancelRequestWithReason = async (req, res) => {
   }
 };
 
+const getRepairRequestDetail = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+
+    const requestDetail = await requestService.getRepairRequestDetail(
+      requestId
+    );
+
+    if (!requestDetail) {
+      return res.status(404).json({ message: "Repair Request not found" });
+    }
+    res.status(200).json(requestDetail);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
@@ -197,4 +214,5 @@ module.exports = {
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
+  getRepairRequestDetail: getRepairRequestDetail,
 };
