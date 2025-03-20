@@ -5,7 +5,7 @@ const getRepairCostPreviews = async (req, res) => {
         const repCosPreviews = await repCosPreService.getRepairCostPreviews();
         res.status(200).json(repCosPreviews);
     } catch (err) {
-        console.error("Error fetching repaircostpreviews:", err);
+        console.error("Error fetching repaircostpreview:", err);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
@@ -19,7 +19,7 @@ const getRepairCostPreviewById = async (req, res) => {
         }
         res.status(200).json(repCosPreview);
     } catch (err) {
-        console.error("Error fetching repaircostpreviews:", err);
+        console.error("Error fetching repaircostpreview:", err);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
@@ -36,7 +36,7 @@ const createRepairCostPreview = async (req, res) => {
             return res.status(402).json({ message: "The min cost must larger than 10000" });
         }
         if (repCosPreData.min >= repCosPreData.max) {
-            return res.status(403).json({ message: "The max cost must be larger than min cost" });
+            return res.status(405).json({ message: "The max cost must be larger than min cost" });
         }
         const result = await repCosPreService.createRepairCostPreview(adminid, repCosPreData);
         res.status(200).json(result);
@@ -59,7 +59,7 @@ const updateRepairCostPreview = async (req, res) => {
             return res.status(402).json({ message: "The min cost must larger than 10000" });
         }
         if (repCosPreData.min >= repCosPreData.max) {
-            return res.status(403).json({ message: "The max cost must be larger than min cost" });
+            return res.status(405).json({ message: "The max cost must be larger than min cost" });
         }
         const updatedRepCosPre = await repCosPreService.updateRepairCostPreview(adminid, repCosPreId, repCosPreData);
         if (!updatedRepCosPre) {

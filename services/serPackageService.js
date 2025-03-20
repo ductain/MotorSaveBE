@@ -12,7 +12,7 @@ const getSerPacById = async (serPacId) => {
 const createSerPackage = async (serPacData) => {
     const { name, description, rate, createdDate, updatedDate } = serPacData;
     await query(
-        `INSERT INTO servicepackages (name, description, rate, createdDate, updatedDate) 
+        `INSERT INTO servicepackages (name, description, rate, createddate, updateddate) 
            VALUES ($1, $2, $3, $4, $5)`,
         [name, description, rate, createdDate, updatedDate]
     );
@@ -23,7 +23,7 @@ const updateSerPackage = async (serPacId, serPacData) => {
     const { name, description, rate, createdDate, updatedDate } = serPacData;
 
     const result = await query(
-        `UPDATE servicepackages SET name = $1, description = $2, rate = $3, createdDate = $4, updatedDate = $5
+        `UPDATE servicepackages SET name = $1, description = $2, rate = $3, createddate = $4, updateddate = $5
        WHERE id = $6 RETURNING *`,
         [name, description, rate, createdDate, updatedDate, serPacId]
     );

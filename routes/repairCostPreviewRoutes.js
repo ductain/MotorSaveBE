@@ -155,6 +155,8 @@ module.exports = router;
  *         description: RepairCostPreview created successfully
  *       401:
  *         description: RepairCostPreview name already exists
+ *       403:
+ *         description: You need to login as Admin
  *       500:
  *         description: Internal Server Error
  */
@@ -206,6 +208,8 @@ module.exports = router;
  *         description: RepairCostPreview updated successfully
  *       401:
  *         description: RepairCostPreview name already exists
+ *       403:
+ *         description: You need to login as Admin
  *       404:
  *         description: RepairCostPreview not found
  *       500:
@@ -231,6 +235,8 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: RepairCostPreview deleted successfully
+ *       403:
+ *         description: You need to login as Admin
  *       404:
  *         description: RepairCostPreview not found
  *       500:
