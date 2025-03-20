@@ -85,7 +85,7 @@ const checkStaff = async (repQuoteId, staffId) => {
     FROM repairquote rq
     LEFT JOIN requestdetails rd ON rq.requestdetailid = rd.id
     WHERE rq.id = $1`,
-    [detail, cost, updateddate, repQuoteId]
+    [repQuoteId]
   );
   if (foundStaffId.rows.length === 0) {
     return false; // repQuoteId not found

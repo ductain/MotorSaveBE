@@ -5,7 +5,7 @@ const router = require("express").Router();
 
 router.get("/", customerVehicleController.getCustomerVehicles);
 router.get("/:id", customerVehicleController.getCustomerVehicleById);
-router.get("/customer", verifyToken, customerVehicleController.getVehiclesByCustomerId);
+router.get("/vehicles/customer", verifyToken, customerVehicleController.getVehiclesByCustomerId);
 router.post("/", verifyToken, customerVehicleController.upsertCustomerVehicle);
 
 /**
@@ -80,7 +80,7 @@ router.post("/", verifyToken, customerVehicleController.upsertCustomerVehicle);
 
 /**
  * @swagger
- * /customerVehicles/customer:
+ * /customerVehicles/vehicles/customer:
  *   get:
  *     summary: Get vehicles of a customer
  *     tags: [CVehicles]

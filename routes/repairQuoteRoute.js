@@ -92,7 +92,7 @@ module.exports = router;
  *     summary: Create a new repair quote
  *     tags: [RepairQuotes]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -137,7 +137,7 @@ module.exports = router;
  *     summary: Update a repair quote
  *     tags: [RepairQuotes]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -182,7 +182,7 @@ module.exports = router;
  *     summary: Delete a repair quote
  *     tags: [RepairQuotes]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
