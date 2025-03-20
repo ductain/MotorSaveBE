@@ -52,14 +52,6 @@ module.exports = router;
  *                     type: number
  *                     format: float
  *                     description: Rate of the service package
- *                   createdDate:
- *                     type: string
- *                     format: date-time
- *                     description: Date when the service package was created
- *                   updatedDate:
- *                     type: string
- *                     format: date-time
- *                     description: Date when the service package was last updated
  *       500:
  *         description: Internal Server Error
  */
@@ -96,12 +88,6 @@ module.exports = router;
  *                 rate:
  *                   type: number
  *                   format: float
- *                 createdDate:
- *                   type: string
- *                   format: date-time
- *                 updatedDate:
- *                   type: string
- *                   format: date-time
  *       404:
  *         description: ServicePackage not found
  *       500:
@@ -124,8 +110,6 @@ module.exports = router;
  *               - name
  *               - description
  *               - rate
- *               - createdDate
- *               - updatedDate
  *             properties:
  *               name:
  *                 type: string
@@ -137,14 +121,6 @@ module.exports = router;
  *                 type: number
  *                 format: float
  *                 description: Rate of the service package
- *               createdDate:
- *                 type: string
- *                 format: date-time
- *                 description: Date when the service package was created
- *               updatedDate:
- *                 type: string
- *                 format: date-time
- *                 description: Date when the service package was last updated
  *     responses:
  *       200:
  *         description: ServicePackage created successfully
@@ -178,8 +154,6 @@ module.exports = router;
  *               - name
  *               - description
  *               - rate
- *               - createdDate
- *               - updatedDate
  *             properties:
  *               name:
  *                 type: string
@@ -191,14 +165,6 @@ module.exports = router;
  *                 type: number
  *                 format: float
  *                 description: Updated rate of the service package
- *               createdDate:
- *                 type: string
- *                 format: date-time
- *                 description: Date when the service package was created
- *               updatedDate:
- *                 type: string
- *                 format: date-time
- *                 description: Date when the service package was last updated
  *     responses:
  *       200:
  *         description: ServicePackage updated successfully

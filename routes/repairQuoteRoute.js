@@ -40,8 +40,6 @@ module.exports = router;
  *           application/json:
  *             schema:
  *               type: array
- *               items:
- *                 $ref: '#/components/schemas/RepairQuote'
  */
 
 /**
