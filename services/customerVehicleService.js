@@ -61,19 +61,36 @@ const getVehiclesByCustomerId = async (customerId) => {
   return results.rows;
 };
 
-const upsertCustomerVehicle = async ({ customerId, licensePlate, brandId }) => {
-  const results = await query(
-    `INSERT INTO cvehicles (licenseplate, customerid, brandid)
-     VALUES ($1, $2, $3)
-     ON CONFLICT (licenseplate) 
-     DO UPDATE SET 
-       customerid = EXCLUDED.customerid,
-       brandid = EXCLUDED.brandid
-     RETURNING *`,
-    [licensePlate, customerId, brandId]
+const checkVehicleExists = async (licensePlate) => {
+  const exists = await query(
+    `SELECT * FROM cvehicles WHERE licenseplate = $1`,
+    [licensePlate]
   );
-  return results.rows[0];
-}
+  return exists.rows.length > 0;
+};
+
+const upsertCustomerVehicle = async ({ customerId, licensePlate, brandId }) => {
+  const exists = await checkVehicleExists(licensePlate);
+
+  let result = {}
+  if (exists) {
+    result = await query(
+      `UPDATE cvehicles 
+       SET customerid = $1, brandid = $2
+       WHERE licenseplate = $3
+       RETURNING *`,
+      [customerId, brandId, licensePlate]
+    );
+  } else {
+    result = await query(
+      `INSERT INTO cvehicles (licenseplate, customerid, brandid)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [licensePlate, customerId, brandId]
+    );
+  }
+  return result.rows[0];
+};
 
 module.exports = {
   getCustomerVehicles,
