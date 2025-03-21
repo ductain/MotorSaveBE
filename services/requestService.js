@@ -486,6 +486,43 @@ const updateRequestStatus = async (requestDetailId, newStatus) => {
   }
 };
 
+const updateTotalPrice = async (requestDetailId, total) => {
+  try {
+    const updatedDate = new Date();
+    const result = await query(
+      `UPDATE requestdetails 
+       SET totalprice = $1, updateddate = $2
+       WHERE id = $3
+       RETURNING *`,
+      [total, updatedDate, requestDetailId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // Request not found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating request status:", error);
+    throw error;
+  }
+};
+
+const calculateTotalPrice = async (requestDetailId) => {
+  try {
+    const results = await query(`
+      SELECT SUM(cost) AS total
+      FROM repairquote
+      WHERE requestdetailid = $1;
+    `, [requestDetailId]);
+    return results.rows[0].total || 0; // Return 0 if no rows are found
+  } catch (error) {
+    console.error('Error calculating total price:', error);
+    throw error;
+  }
+};
+
+
 const cancelRequestWithReason = async (requestdetailid, note) => {
   // Check if request exists
   const existingRequest = await query(
@@ -557,4 +594,6 @@ module.exports = {
   updateRequestStatus: updateRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
+  calculateTotalPrice,
+  updateTotalPrice
 };

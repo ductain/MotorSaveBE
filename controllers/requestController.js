@@ -218,6 +218,36 @@ const updateRequestStatus = async (req, res) => {
   }
 };
 
+const updateRepairRequestStatus = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+    const { newStatus } = req.body;
+    const validStatuses = ["Inspecting", "Waiting", "Cancel", "Accepted", "Repairing", "Done"];
+
+    if (!validStatuses.includes(newStatus)) {
+      return res.status(400).json({ message: "Invalid request status" });
+    }
+
+    if (newStatus === "Waiting") {
+      const total = await requestService.calculateTotalPrice(requestDetailId);
+      await requestService.updateTotalPrice(requestDetailId, total);
+    }
+
+    const updatedRequest = await requestService.updateRequestStatus(requestDetailId, newStatus);
+
+    if (!updatedRequest) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    res.status(200).json({
+      message: "Repair request status updated successfully!",
+      requestDetail: updatedRequest,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const cancelRequestWithReason = async (req, res) => {
   try {
     const { requestDetailId } = req.params;
@@ -267,6 +297,7 @@ module.exports = {
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
+  updateRepairRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
 };

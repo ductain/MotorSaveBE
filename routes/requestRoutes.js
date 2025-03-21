@@ -54,6 +54,7 @@ router.get("/driver/:requestDetailId", verifyToken, requestController.getRequest
 router.post("/repair/:requestId", verifyToken, requestController.createRepairRequest);
 
 router.put("/:requestDetailId/status", verifyToken, requestController.updateRequestStatus);
+router.put("/:requestDetailId/repair/status", verifyToken, requestController.updateRepairRequestStatus);
 
 router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequestWithReason);
 
@@ -310,6 +311,45 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *                 type: string
  *                 enum: [Pickup, Processing, Done, Cancel]
  *                 example: Processing
+ *     responses:
+ *       200:
+ *         description: Request status updated successfully.
+ *       400:
+ *         description: Invalid request status.
+ *       404:
+ *         description: Request not found.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
+/**
+ * @swagger
+ * /requests/{requestDetailId}/repair/status:
+ *   put:
+ *     summary: Update repair request status
+ *     description: Update the status of a repair request (Inspecting, Waiting, Accepted, Repairing, Done, or Cancel).
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newStatus:
+ *                 type: string
+ *                 enum: [Inspecting, Waiting, Accepted, Repairing, Done, Cancel]
+ *                 example: Waiting
  *     responses:
  *       200:
  *         description: Request status updated successfully.
