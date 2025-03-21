@@ -284,6 +284,23 @@ const getRepairRequestDetail = async (req, res) => {
   }
 };
 
+const getRepairRequestDetailForMechanic = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+
+    const requestDetail = await requestService.getRepairRequestDetailForMechanic(
+      requestId
+);
+
+    if (!requestDetail) {
+      return res.status(404).json({ message: "Repair Request not found" });
+    }
+    res.status(200).json(requestDetail);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
@@ -300,4 +317,5 @@ module.exports = {
   updateRepairRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
+  getRepairRequestDetailForMechanic
 };

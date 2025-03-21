@@ -40,6 +40,7 @@ router.get(
   verifyMechanic,
   requestController.getRepairRequestsByMechanic
 );
+router.get("/mechanic/repair/detail/:requestId", verifyMechanic, requestController.getRepairRequestDetailForMechanic);
 
 router.get(
   "/customer",
@@ -404,6 +405,32 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  * /requests/repair/detail/{requestId}:
  *   get:
  *     summary: Get repair request detail
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request
+ *     responses:
+ *       200:
+ *         description: Request
+ *       403:
+ *         description: You need to login
+ *       404:
+ *         description: Request not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/mechanic/repair/detail/{requestId}:
+ *   get:
+ *     summary: Get repair request detail for mechanic
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []

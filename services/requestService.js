@@ -579,6 +579,39 @@ const getRepairRequestDetail = async (requestId) => {
   }
 };
 
+const getRepairRequestDetailForMechanic = async (requestId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        r.id AS requestid,
+        rt.name AS requesttype,
+        rd.id AS requestdetailid,
+        rd.requeststatus,
+        rd.totalprice,
+        s.id AS stationid,
+        s.name AS stationname,
+        s.address AS stationaddress,
+        a.id AS customerid,
+        a.fullname AS customername,
+        a.phone AS customerphone,
+        a.avatar AS customeravatar
+      FROM requests r
+      JOIN requestdetails rd ON r.id = rd.requestid
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      LEFT JOIN stations s ON r.stationid = s.id
+      LEFT JOIN accounts a ON r.customerid = a.id
+      WHERE r.id = $1
+      AND rd.requesttypeid = 2`,
+      [requestId]
+    );
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching repair request details:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -594,6 +627,7 @@ module.exports = {
   updateRequestStatus: updateRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
+  getRepairRequestDetailForMechanic,
   calculateTotalPrice,
   updateTotalPrice
 };
