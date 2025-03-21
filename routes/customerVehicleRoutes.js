@@ -67,6 +67,7 @@ router.post("/", verifyToken, customerVehicleController.upsertCustomerVehicle);
  *         name: id
  *         schema:
  *           type: string
+ *           format: uuid
  *         required: true
  *         description: ID of the customer vehicle
  *     responses:
