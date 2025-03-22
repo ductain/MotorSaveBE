@@ -581,6 +581,8 @@ const getRepairRequestDetail = async (requestId) => {
         s.id AS stationid,
         s.name AS stationname,
         s.address AS stationaddress,
+        s.long,
+        s.lat,
         m.id AS mechanicid,
         m.fullname AS mechanicname,
         m.phone AS mechanicphone,
@@ -662,7 +664,7 @@ const createReturnRequest = async (data, requestId) => {
     const requestDetailResult = await query(
       `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
         pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Pending', 4) RETURNING id`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Locked', 4) RETURNING id`,
       [
         requestId,
         pickuplong,
