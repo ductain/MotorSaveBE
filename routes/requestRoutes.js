@@ -21,6 +21,12 @@ router.post(
   requestController.createFloodRescueRequest
 );
 
+router.post(
+  "/returnVehicle/:requestId",
+  verifyToken,
+  requestController.createReturnRequest
+);
+
 router.get(
   "/driver",
   verifyDriver,
@@ -34,6 +40,8 @@ router.get(
 );
 
 router.put("/mechanic/:requestDetailId/accept", verifyMechanic, requestController.acceptRepairRequest);
+
+router.put("/repairQuote/:requestDetailId/accept", verifyToken, requestController.acceptRepairQuote);
 
 router.get(
   "/mechanic",
@@ -168,6 +176,49 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *     responses:
  *       201:
  *         description: Rescue request created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/returnVehicle/{requestId}:
+ *   post:
+ *     summary: Create a new return vehicle request
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pickuplong:
+ *                 type: number
+ *               pickuplat:
+ *                 type: number
+ *               deslng:
+ *                 type: number
+ *               deslat:
+ *                 type: number
+ *               pickuplocation:
+ *                 type: string
+ *               destination:
+ *                 type: string
+ *               totalprice:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Return request created successfully
  *       500:
  *         description: Internal Server Error
  */
@@ -489,6 +540,32 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *         description: Request accepted successfully
  *       403:
  *         description: You need to login as Mechanic or Admin
+ *       404:
+ *         description: Request not found or already accepted
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/repairQuote/{requestDetailId}/accept:
+ *   put:
+ *     summary: Accept a repair quote (Customer)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail
+ *     responses:
+ *       200:
+ *         description: Request accepted successfully
+ *       403:
+ *         description: You need to login
  *       404:
  *         description: Request not found or already accepted
  *       500:
