@@ -75,7 +75,8 @@ const createEmergencyRescueRequest = async (data, customerId) => {
     pickuplocation,
     destination,
     totalprice,
-    stationid
+    stationid,
+    vehicleid,
   } = data;
 
   try {
@@ -93,9 +94,9 @@ const createEmergencyRescueRequest = async (data, customerId) => {
 
     // Insert into Requests table
     const requestResult = await query(
-      `INSERT INTO requests (servicepackageid, customerid, stationid, createddate, updateddate)
-       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [servicePackageId, customerId, stationid, createdDate, updatedDate]
+      `INSERT INTO requests (servicepackageid, customerid, stationid, vehicleid, createddate, updateddate)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [servicePackageId, customerId, stationid, vehicleid, createdDate, updatedDate]
     );
 
     const requestId = requestResult.rows[0].id;
