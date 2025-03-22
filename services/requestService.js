@@ -586,12 +586,17 @@ const getRepairRequestDetail = async (requestId) => {
         m.id AS mechanicid,
         m.fullname AS mechanicname,
         m.phone AS mechanicphone,
-        m.avatar AS mechanicavatar
+        m.avatar AS mechanicavatar,
+        cv.id AS vehicleid,
+        cv.licenseplate,
+        cv.photo AS vehiclephoto,
+        cv.condition AS vehiclecondition
       FROM requests r
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN stations s ON r.stationid = s.id
       LEFT JOIN accounts m ON rd.staffid = m.id
+      LEFT JOIN cvehicles cv ON r.vehicleid = cv.id
       WHERE r.id = $1
       AND rd.requesttypeid = 2`,
       [requestId]
@@ -616,15 +621,20 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
         s.id AS stationid,
         s.name AS stationname,
         s.address AS stationaddress,
-        a.id AS customerid,
-        a.fullname AS customername,
-        a.phone AS customerphone,
-        a.avatar AS customeravatar
+        c.id AS customerid,
+        c.fullname AS customername,
+        c.phone AS customerphone,
+        c.avatar AS customeravatar,
+        cv.id AS vehicleid,
+        cv.licenseplate,
+        cv.photo AS vehiclephoto,
+        cv.condition AS vehiclecondition
       FROM requests r
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN stations s ON r.stationid = s.id
-      LEFT JOIN accounts a ON r.customerid = a.id
+      LEFT JOIN accounts c ON r.customerid = c.id
+      LEFT JOIN cvehicles cv ON r.vehicleid = cv.id
       WHERE r.id = $1
       AND rd.requesttypeid = 2`,
       [requestId]

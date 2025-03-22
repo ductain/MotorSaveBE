@@ -18,7 +18,7 @@ const distanceRoute = require("./routes/distanceRoutes");
 const requestRoute = require("./routes/requestRoutes");
 const transactionRoute = require("./routes/transactionRoutes");
 const repairCostPreviewsRoute = require("./routes/repairCostPreviewRoutes");
-const repairQuoteRoute = require("./routes/repairQuoteRoute");
+const repairQuoteRoute = require("./routes/repairQuoteRoutes");
 
 const CSS_URL =
   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.9/swagger-ui.min.css";
