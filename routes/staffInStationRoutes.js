@@ -1,16 +1,20 @@
+const { verifyToken } = require("../config/verify");
+
 const {
     getAll,
     getStaffsInAStation,
     addStaffIntoStation,
     updateStationOfAStaff,
+    getStationOfAStaff,
 } = require("../controllers/staffInStationController");
 
 const router = require("express").Router();
 
 router.get("/", getAll);
-router.get("/:staffId", getStaffsInAStation);
+router.get("/:stationId", getStaffsInAStation);
+router.get("/station/staff", verifyToken, getStationOfAStaff);
 router.post("/", addStaffIntoStation);
-router.put("/:staffId", updateStationOfAStaff);
+router.put("/:staffId/station", updateStationOfAStaff);
 
 module.exports = router;
 
@@ -47,17 +51,17 @@ module.exports = router;
 
 /**
  * @swagger
- * /staffinstations/{staffId}:
+ * /staffinstations/{stationId}:
  *   get:
- *     summary: Get staff in a specific station
+ *     summary: Get staffs in a specific station
  *     tags: [StaffInStation]
  *     parameters:
  *       - in: path
- *         name: staffId
+ *         name: stationId
  *         schema:
  *           type: string
  *         required: true
- *         description: ID of the staff
+ *         description: ID of the station
  *     responses:
  *       200:
  *         description: Staff in the station
@@ -72,6 +76,21 @@ module.exports = router;
  *                     type: string
  *                   stationId:
  *                     type: string
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /staffinstations/station/staff:
+ *   get:
+ *     summary: Get the station of the staff
+ *     tags: [StaffInStation]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Staff in the station
  *       500:
  *         description: Internal Server Error
  */
@@ -106,7 +125,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /staffinstations/{staffId}:
+ * /staffinstations/{staffId}/station:
  *   put:
  *     summary: Update the station of a staff member
  *     tags: [StaffInStation]

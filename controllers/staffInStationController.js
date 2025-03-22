@@ -12,11 +12,22 @@ const getAll = async (req, res) => {
 
 const getStaffsInAStation = async (req, res) => {
   try {
-    const stationId = req.params.staffId;
+    const stationId = req.params.stationId;
     const staffs = await staffInStationService.getStaffsInAStation(stationId);
     res.status(200).json(staffs);
   } catch (err) {
     console.error("Error fetching staffs in a staion:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const getStationOfAStaff = async (req, res) => {
+  try {
+    const staffId = req.user.id;
+    const station = await staffInStationService.getStationOfAStaff(staffId);
+    res.status(200).json(station);
+  } catch (err) {
+    console.error("Error fetching station of this staff:", err);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -54,6 +65,7 @@ const updateStationOfAStaff = async (req, res) => {
 module.exports = {
   getAll,
   getStaffsInAStation,
+  getStationOfAStaff,
   addStaffIntoStation,
   updateStationOfAStaff
 };

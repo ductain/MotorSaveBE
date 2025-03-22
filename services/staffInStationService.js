@@ -7,10 +7,33 @@ const getAll = async () => {
 
 const getStaffsInAStation = async (stationId) => {
     const results = await query(
-        `SELECT * FROM staffinstation 
-        LEFT JOIN accounts ON (staffinstation.staffid = accounts.id)
-        LEFT JOIN roles ON (accounts.roleid = roles.id) WHERE stationid = $1`, [stationId]);
+        `SELECT
+        a.id AS staffid,
+        sis.stationId AS stationid,
+        a.username,
+        a.email,
+        a.fullname,
+        a.gender,
+        a.phone,
+        r.name AS rolename
+        FROM staffinstation sis
+        LEFT JOIN accounts a ON (sis.staffid = a.id)
+        LEFT JOIN roles r ON (a.roleid = r.id) WHERE sis.stationid = $1`, [stationId]);
     return results.rows;
+};
+
+const getStationOfAStaff = async (staffId) => {
+    const results = await query(
+        `SELECT
+        s.id AS stationid,
+        s.name AS stationname,
+        s.address AS stationaddress,
+        s.long AS stationlong,
+        s.lat AS stationlat
+        FROM staffinstation sis
+        LEFT JOIN stations s ON (sis.stationid = s.id)
+        WHERE sis.staffid = $1`, [staffId]);
+    return results.rows[0];
 };
 
 const checkIfStaffIsInAnyStation = async (staffId) => {
@@ -43,6 +66,7 @@ const updateStationOfAStaff = async (staffId, stationId) => {
 module.exports = {
     getAll,
     getStaffsInAStation,
+    getStationOfAStaff,
     checkIfStaffIsInAnyStation,
     addStaffIntoStation,
     updateStationOfAStaff
