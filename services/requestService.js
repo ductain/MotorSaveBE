@@ -286,6 +286,28 @@ const acceptRepairRequest = async (requestDetailId, mechanicid) => {
   }
 };
 
+const acceptRepairQuote = async (requestDetailId) => {
+  try {
+    const updatedDate = new Date();
+    const result = await query(
+      `UPDATE requestdetails 
+       SET requeststatus = 'Accepted', updateddate = $1
+       WHERE id = $2
+       RETURNING *`,
+      [updatedDate, requestDetailId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // No request found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error accepting request:", error);
+    throw error;
+  }
+};
+
 const getRepairRequestsByMechanic = async (staffId) => {
   try {
     const result = await query(
@@ -613,6 +635,61 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
   }
 };
 
+const createReturnRequest = async (data, requestId) => {
+  const {
+    pickuplong,
+    pickuplat,
+    deslng,
+    deslat,
+    pickuplocation,
+    destination,
+    totalprice,
+  } = data;
+
+  try {
+    // Fetch the servicePackageId for "Cứu hộ thường"
+    const requestResult = await query(
+      `SELECT * FROM requests WHERE id = $1`, [requestId]
+    );
+
+    if (requestResult.rows.length === 0) {
+      throw new Error("Request id not found");
+    }
+
+    const createdDate = new Date();
+    const updatedDate = createdDate;
+    // Insert into RequestDetails table
+    const requestDetailResult = await query(
+      `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
+        pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Pending', 4) RETURNING id`,
+      [
+        requestId,
+        pickuplong,
+        pickuplat,
+        deslng,
+        deslat,
+        pickuplocation,
+        destination,
+        totalprice,
+        createdDate,
+        updatedDate,
+      ]
+    );
+
+    const requestDetailId = requestDetailResult.rows[0].id;
+
+    return {
+      message: "Return request created successfully!",
+      requestdetailid: requestDetailId,
+      totalprice: totalprice,
+    };
+  } catch (error) {
+    console.error("Error creating rescue request:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -620,6 +697,7 @@ module.exports = {
   createRepairRequest: createRepairRequest,
   getPendingRepairRequestsByMechanic,
   acceptRepairRequest,
+  acceptRepairQuote: acceptRepairQuote,
   getRepairRequestsByMechanic,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
@@ -630,5 +708,6 @@ module.exports = {
   getRepairRequestDetail: getRepairRequestDetail,
   getRepairRequestDetailForMechanic,
   calculateTotalPrice,
-  updateTotalPrice
+  updateTotalPrice,
+  createReturnRequest: createReturnRequest,
 };

@@ -118,6 +118,31 @@ const acceptRepairRequest = async (req, res) => {
   }
 };
 
+const acceptRepairQuote = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+
+    const updatedRequest = await requestService.acceptRepairQuote(
+      requestDetailId,
+    );
+
+    if (!updatedRequest) {
+      return res
+        .status(404)
+        .json({ message: "Repair request not found or already accepted" });
+    }
+
+    res.status(200).json({
+      message: "Repair quote accepted successfully!",
+      requestDetail: updatedRequest,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const getRepairRequestsByMechanic = async (req, res) => {
   try {
     const staffid = req.user.id;
@@ -301,6 +326,21 @@ const getRepairRequestDetailForMechanic = async (req, res) => {
   }
 };
 
+const createReturnRequest = async (req, res) => {
+  try {
+    const {requestId} = req.params;
+    const result = await requestService.createReturnRequest(
+      req.body,
+      requestId
+    );
+    res.status(201).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
@@ -308,6 +348,7 @@ module.exports = {
   createRepairRequest: createRepairRequest,
   getPendingRepairRequestsByMechanic,
   acceptRepairRequest,
+  acceptRepairQuote: acceptRepairQuote,
   getRepairRequestsByMechanic,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
@@ -317,5 +358,6 @@ module.exports = {
   updateRepairRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
-  getRepairRequestDetailForMechanic
+  getRepairRequestDetailForMechanic,
+  createReturnRequest: createReturnRequest,
 };
