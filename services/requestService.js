@@ -738,6 +738,28 @@ const createReturnRequest = async (data, requestId) => {
   }
 };
 
+const getReturnRequestIdBasedOnCurrentRepairRequest = async (requestDetailId) => {
+  try {
+    const result = await query(
+      `SELECT rd.id FROM requestdetails rd
+        LEFT JOIN requesttypes rt ON rd.requesttypeid = rt.id
+        WHERE rd.requestid = (
+        SELECT requestid FROM requestdetails rd WHERE rd.id = $1)
+        AND rt.id = 4`,
+      [requestDetailId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // No request found
+    }
+
+    return result.rows[0].id; // Return only the id of the first row
+  } catch (error) {
+    console.error("Error fetching request details:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -759,4 +781,5 @@ module.exports = {
   calculateTotalPrice,
   updateTotalPrice,
   createReturnRequest: createReturnRequest,
+  getReturnRequestIdBasedOnCurrentRepairRequest
 };

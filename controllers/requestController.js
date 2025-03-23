@@ -297,7 +297,10 @@ const updateRepairRequestStatus = async (req, res) => {
       const total = await requestService.calculateTotalPrice(requestDetailId);
       await requestService.updateTotalPrice(requestDetailId, total);
     }
-
+    if (newStatus === "Done") {
+      const returnRequestId = await requestService.getReturnRequestIdBasedOnCurrentRepairRequest(requestDetailId);
+      await requestService.updateRequestStatus(returnRequestId, 'Pending');
+    }
     const updatedRequest = await requestService.updateRequestStatus(requestDetailId, newStatus);
 
     if (!updatedRequest) {
@@ -355,7 +358,7 @@ const getRepairRequestDetailForMechanic = async (req, res) => {
 
     const requestDetail = await requestService.getRepairRequestDetailForMechanic(
       requestId
-);
+    );
 
     if (!requestDetail) {
       return res.status(404).json({ message: "Repair Request not found" });
@@ -368,7 +371,7 @@ const getRepairRequestDetailForMechanic = async (req, res) => {
 
 const createReturnRequest = async (req, res) => {
   try {
-    const {requestId} = req.params;
+    const { requestId } = req.params;
     const result = await requestService.createReturnRequest(
       req.body,
       requestId
