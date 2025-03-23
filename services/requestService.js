@@ -1,4 +1,5 @@
 const query = require("../config/dbConfig");
+const { getStationOfAStaff } = require("./staffInStationService");
 
 const createRescueRequest = async (data, customerId) => {
   const {
@@ -217,17 +218,10 @@ const createRepairRequest = async (requestId) => {
 
 const getPendingRepairRequestsByMechanic = async (staffId) => {
   try {
-    const stationResult = await query(
-      `SELECT DISTINCT ON (sis.staffid) s.id AS stationid
-      FROM staffinstation sis
-      LEFT JOIN stations s ON sis.stationid = s.id
-      LEFT JOIN accounts a ON sis.staffid = a.id
-      WHERE sis.staffid = $1`,
-      [staffId]
-    );
+    const stationResult = await getStationOfAStaff(staffId);
 
-    if (stationResult.rows.length > 0) {
-      const stationId = stationResult.rows[0].stationid;
+    if (stationResult) {
+      const stationId = stationResult.stationid;
       const result = await query(
         `SELECT 
         r.id AS requestid, 
@@ -248,7 +242,49 @@ const getPendingRepairRequestsByMechanic = async (staffId) => {
         JOIN requesttypes rt ON rd.requesttypeid = rt.id
         WHERE r.stationid = $1
         AND rd.requeststatus = 'Pending'
-        AND rt.name = 'Sửa xe'
+        AND rt.id = 2
+        AND rd.staffid IS NULL
+        ORDER BY r.createddate DESC;`,
+        [stationId] // Use the retrieved stationid
+      );
+
+      return result.rows;
+    } else {
+      return []; // No station found, return empty array
+    }
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    throw error;
+  }
+};
+
+const getPendingReturnRequestsByDriver = async (staffId) => {
+  try {
+    const stationResult = await getStationOfAStaff(staffId);
+
+    if (stationResult) {
+      const stationId = stationResult.stationid;
+      const result = await query(
+        `SELECT 
+        r.id AS requestid, 
+        a.fullname AS customername, 
+        a.phone AS customerphone, 
+        rt.name AS requesttype,
+        sp.name AS servicepackagename,
+        rd.id AS requestdetailid,
+        rd.requeststatus,
+        r.createddate,
+        rd.staffid,
+        r.stationid
+        FROM requests r
+        JOIN servicepackages sp ON r.servicepackageid = sp.id
+        JOIN accounts a ON r.customerid = a.id
+        JOIN requestdetails rd ON r.id = rd.requestid
+        JOIN stations s ON r.stationid = s.id
+        JOIN requesttypes rt ON rd.requesttypeid = rt.id
+        WHERE r.stationid = $1
+        AND rd.requeststatus = 'Pending'
+        AND rt.id = 4
         AND rd.staffid IS NULL
         ORDER BY r.createddate DESC;`,
         [stationId] // Use the retrieved stationid
@@ -708,6 +744,7 @@ module.exports = {
   createEmergencyRescueRequest: createEmergencyRescueRequest,
   createRepairRequest: createRepairRequest,
   getPendingRepairRequestsByMechanic,
+  getPendingReturnRequestsByDriver,
   acceptRepairRequest,
   acceptRepairQuote: acceptRepairQuote,
   getRepairRequestsByMechanic,

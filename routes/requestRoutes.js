@@ -39,6 +39,12 @@ router.get(
   requestController.getPendingRepairRequestsByMechanic
 );
 
+router.get(
+  "/driver/return/pending",
+  verifyDriver,
+  requestController.getPendingReturnRequestsByDriver
+);
+
 router.put("/mechanic/:requestDetailId/accept", verifyMechanic, requestController.acceptRepairRequest);
 
 router.put("/repairQuote/:requestDetailId/accept", verifyToken, requestController.acceptRepairQuote);
@@ -63,6 +69,7 @@ router.get("/driver/:requestDetailId", verifyToken, requestController.getRequest
 router.post("/repair/:requestId", verifyToken, requestController.createRepairRequest);
 
 router.put("/:requestDetailId/status", verifyToken, requestController.updateRequestStatus);
+router.put("/:requestDetailId/return/status", verifyToken, requestController.updateReturnRequestStatus);
 router.put("/:requestDetailId/repair/status", verifyToken, requestController.updateRepairRequestStatus);
 
 router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequestWithReason);
@@ -261,7 +268,7 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  * @swagger
  * /requests/{requestDetailId}/accept:
  *   put:
- *     summary: Accept a rescue request (Driver)
+ *     summary: Accept a rescue/return request (Driver)
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []
@@ -415,6 +422,45 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
 
 /**
  * @swagger
+ * /requests/{requestDetailId}/return/status:
+ *   put:
+ *     summary: Update return request status
+ *     description: Update the status of a return request (Pending, Processing, Done, or Cancel).
+ *     tags:
+ *       - Requests
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newStatus:
+ *                 type: string
+ *                 enum: [Pending, Processing, Done, Cancel]
+ *                 example: Pending
+ *     responses:
+ *       200:
+ *         description: Request status updated successfully.
+ *       400:
+ *         description: Invalid request status.
+ *       404:
+ *         description: Request not found.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
+/**
+ * @swagger
  * /requests/{requestDetailId}/cancel:
  *   put:
  *     summary: Cancel request
@@ -516,6 +562,23 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *         description: List of pending repair requests
  *       403:
  *         description: You need to login as Mechanic or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/driver/return/pending:
+ *   get:
+ *     summary: Get all Pending return requests (Driver)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of pending return requests
+ *       403:
+ *         description: You need to login as Driver or Admin
  *       500:
  *         description: Internal Server Error
  */

@@ -91,6 +91,18 @@ const getPendingRepairRequestsByMechanic = async (req, res) => {
   }
 };
 
+const getPendingReturnRequestsByDriver = async (req, res) => {
+  try {
+    const staffid = req.user.id;
+    const pendingReturnRequests = await requestService.getPendingReturnRequestsByDriver(staffid);
+    res.status(200).json(pendingReturnRequests);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const acceptRepairRequest = async (req, res) => {
   try {
     const { requestDetailId } = req.params;
@@ -243,6 +255,34 @@ const updateRequestStatus = async (req, res) => {
   }
 };
 
+const updateReturnRequestStatus = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+    const { newStatus } = req.body;
+    const validStatuses = ["Pending", "Processing", "Done", "Cancel"];
+
+    if (!validStatuses.includes(newStatus)) {
+      return res.status(400).json({ message: "Invalid request status" });
+    }
+
+    const updatedRequest = await requestService.updateRequestStatus(
+      requestDetailId,
+      newStatus
+    );
+
+    if (!updatedRequest) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    res.status(200).json({
+      message: "Return request status updated successfully!",
+      requestDetail: updatedRequest,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const updateRepairRequestStatus = async (req, res) => {
   try {
     const { requestDetailId } = req.params;
@@ -347,6 +387,7 @@ module.exports = {
   createFloodRescueRequest: createFloodRescueRequest,
   createRepairRequest: createRepairRequest,
   getPendingRepairRequestsByMechanic,
+  getPendingReturnRequestsByDriver,
   acceptRepairRequest,
   acceptRepairQuote: acceptRepairQuote,
   getRepairRequestsByMechanic,
@@ -356,6 +397,7 @@ module.exports = {
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
   updateRepairRequestStatus,
+  updateReturnRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
   getRepairRequestDetailForMechanic,
