@@ -795,6 +795,61 @@ const getLatestRequestDetail = async (requestId) => {
   }
 };
 
+const getReturnRequestDetail = async (requestId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        -- Customer Information
+        c.fullname AS customername, 
+        c.phone AS customerphone, 
+        rt.name AS requesttype,
+        
+        -- Request Details
+        rd.id AS requestdetailid,
+        rd.pickuplong,
+        rd.pickuplat,
+        rd.deslng,
+        rd.deslat,
+        rd.note,
+        rd.pickuplocation,
+        rd.destination,
+        rd.totalprice,
+        r.createddate,
+        rd.requeststatus,
+        rd.requestid,
+        rd.staffid,
+        rd.estimatedtime,
+        sp.name AS servicepackagename,
+
+        -- Driver Information
+        d.fullname AS drivername,
+        d.phone AS driverphone,
+        d.avatar AS driveravatar,
+        v.licenseplate,
+        br.name AS brandname,
+        vt.name AS vehicletype,
+        v.vehiclestatus
+      FROM requestdetails rd
+      JOIN requests r ON rd.requestid = r.id
+      JOIN servicepackages sp ON r.servicepackageid = sp.id
+      JOIN accounts c ON r.customerid = c.id
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      LEFT JOIN accounts d ON rd.staffid = d.id -- Get driver details
+      LEFT JOIN dvehicles v ON d.id = v.driverid -- Get vehicle details
+      LEFT JOIN brands br ON v.brandid = br.id
+      LEFT JOIN vehicletypes vt ON v.vehicletypeid = vt.id
+      WHERE r.id = $1
+      AND rd.requesttypeid = 4`,
+      [requestId]
+    );
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching repair request details:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -818,4 +873,5 @@ module.exports = {
   createReturnRequest: createReturnRequest,
   getReturnRequestIdBasedOnCurrentRepairRequest,
   getLatestRequestDetail: getLatestRequestDetail,
+  getReturnRequestDetail: getReturnRequestDetail,
 };
