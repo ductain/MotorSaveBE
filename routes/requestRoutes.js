@@ -82,6 +82,12 @@ router.get(
   requestController.getLatestRequestDetail
 );
 
+router.get(
+  "/returnVehicle/:requestId",
+  verifyToken,
+  requestController.getReturnRequestDetail
+);
+
 /**
  * @swagger
  * tags:
@@ -678,6 +684,32 @@ router.get(
  *         description: latest request detail
  *       403:
  *         description: You are not authenticated
+ *       404:
+ *         description: Request not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/returnVehicle/{requestId}:
+ *   get:
+ *     summary: Get return vehicle request detail by customer
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request
+ *     responses:
+ *       200:
+ *         description: Request
+ *       403:
+ *         description: You need to login
  *       404:
  *         description: Request not found
  *       500:

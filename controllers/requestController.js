@@ -401,6 +401,23 @@ const getLatestRequestDetail = async (req, res) => {
   }
 };
 
+const getReturnRequestDetail = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+
+    const requestDetail = await requestService.getReturnRequestDetail(
+      requestId
+    );
+
+    if (!requestDetail) {
+      return res.status(404).json({ message: "Return vehicle request not found" });
+    }
+    res.status(200).json(requestDetail);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 module.exports = {
   createRescueRequest: createRescueRequest,
@@ -424,4 +441,5 @@ module.exports = {
   getRepairRequestDetailForMechanic,
   createReturnRequest: createReturnRequest,
   getLatestRequestDetail: getLatestRequestDetail,
+  getReturnRequestDetail: getReturnRequestDetail,
 };
