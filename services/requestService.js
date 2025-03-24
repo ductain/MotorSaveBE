@@ -398,6 +398,7 @@ const getRequestsByDriver = async (staffId) => {
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       WHERE rd.staffid = $1
       AND rd.requeststatus <> 'Cancel'
+      AND r.createddate > CURRENT_DATE - INTERVAL '3 days'
       ORDER BY r.createddate DESC`,
       [staffId]
     );
@@ -431,6 +432,7 @@ const getRequestsByCustomer = async (customerId) => {
       LEFT JOIN accounts a ON rd.staffid = a.id
       WHERE r.customerid = $1
       AND rd.requeststatus <> 'Cancel'
+      AND r.createddate > CURRENT_DATE - INTERVAL '7 days'
       ORDER BY r.createddate DESC`,
       [customerId]
     );
