@@ -762,6 +762,38 @@ const getReturnRequestIdBasedOnCurrentRepairRequest = async (requestDetailId) =>
   }
 };
 
+const getLatestRequestDetail = async (requestId) => {
+  try {
+    const result = await query(
+      `SELECT 
+        rd.id AS requestdetailid,
+        rd.requeststatus,
+        rd.createddate,
+        rd.updateddate,
+        rd.requestid,
+        sp.name AS servicepackagename,
+        rt.name AS requesttype
+      FROM requestdetails rd
+      JOIN requests r ON rd.requestid = r.id
+      JOIN servicepackages sp ON r.servicepackageid = sp.id
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      WHERE rd.requestid = $1
+      ORDER BY rd.createddate DESC
+      LIMIT 1`,
+      [requestId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // No request detail found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching latest request detail:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -783,5 +815,6 @@ module.exports = {
   calculateTotalPrice,
   updateTotalPrice,
   createReturnRequest: createReturnRequest,
-  getReturnRequestIdBasedOnCurrentRepairRequest
+  getReturnRequestIdBasedOnCurrentRepairRequest,
+  getLatestRequestDetail: getLatestRequestDetail,
 };

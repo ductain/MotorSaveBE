@@ -384,6 +384,24 @@ const createReturnRequest = async (req, res) => {
   }
 };
 
+const getLatestRequestDetail = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+
+    const requestDetail = await requestService.getLatestRequestDetail(
+      requestId
+    );
+
+    if (!requestDetail) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+    res.status(200).json(requestDetail);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
@@ -405,4 +423,5 @@ module.exports = {
   getRepairRequestDetail: getRepairRequestDetail,
   getRepairRequestDetailForMechanic,
   createReturnRequest: createReturnRequest,
+  getLatestRequestDetail: getLatestRequestDetail,
 };

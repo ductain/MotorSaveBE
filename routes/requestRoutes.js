@@ -76,6 +76,12 @@ router.put("/:requestDetailId/cancel", verifyToken, requestController.cancelRequ
 
 router.get("/repair/detail/:requestId", verifyToken, requestController.getRepairRequestDetail);
 
+router.get(
+  "/latestRequestDetail/:requestId",
+  verifyToken,
+  requestController.getLatestRequestDetail
+);
+
 /**
  * @swagger
  * tags:
@@ -648,6 +654,32 @@ router.get("/repair/detail/:requestId", verifyToken, requestController.getRepair
  *         description: List of repair requests
  *       403:
  *         description: You are not authenticated
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/latestRequestDetail/{requestId}:
+ *   get:
+ *     summary: Get latest request detail by request id
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request
+ *     responses:
+ *       200:
+ *         description: latest request detail
+ *       403:
+ *         description: You are not authenticated
+ *       404:
+ *         description: Request not found
  *       500:
  *         description: Internal Server Error
  */
