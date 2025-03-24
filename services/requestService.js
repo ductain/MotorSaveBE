@@ -366,6 +366,7 @@ const getRepairRequestsByMechanic = async (staffId) => {
       WHERE rd.staffid = $1
       AND rd.requeststatus <> 'Cancel'
       AND rt.name = 'Sửa xe'
+      AND r.createddate > CURRENT_DATE - INTERVAL '3 days'
       ORDER BY r.createddate DESC`,
       [staffId]
     );
