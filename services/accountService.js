@@ -58,6 +58,59 @@ const register = async (userData) => {
   };
 };
 
+const registerStaffAccount = async (userData) => {
+  const { username, password, fullName, phone, roleId } = userData;
+
+  // Check if username or phone already exists
+  const checkQuery = `
+      SELECT * FROM accounts 
+      WHERE username = $1 OR phone = $2
+    `;
+  const existingUser = await query(checkQuery, [username, phone]);
+  if (existingUser.rows.length > 0) {
+    const error = new Error("Username đã tồn tại.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // Validate password length
+  if (password.length < 6) {
+    const error = new Error("Password phải có ít nhất 6 ký tự.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Encrypt the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Set default values, role is preset by the
+  const statusId = 1;
+  const createdDate = new Date();
+  const updatedDate = createdDate;
+
+  // Insert the new user into the database
+  const insertQuery = `
+      INSERT INTO accounts 
+      (username, password, fullname, phone, createddate, updateddate, roleid, statusid)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `;
+  await query(insertQuery, [
+    username,
+    hashedPassword,
+    fullName,
+    phone,
+    createdDate,
+    updatedDate,
+    roleId,
+    statusId,
+  ]);
+
+  // Return success message and user ID
+  return {
+    message: "Đăng ký tài khoản nhân viên thành công!",
+  };
+};
+
 const login = async (identifier, password) => {
   // Query the database for the user by username or phone
   const userQuery = `SELECT * FROM accounts WHERE username = $1 OR phone = $1`;
@@ -202,9 +255,36 @@ const updateAccountProfile = async (accountId, fullname, email, gender, dob, add
   return { message: "Profile updated successfully" };
 };
 
+const getAllStaffs = async () => {
+  const results = await query(`
+    SELECT
+  a.id AS staffid,
+  a.username,
+  a.fullname,
+  a.email,
+  a.phone,
+  r.id AS roleid,
+  r.name AS rolename,
+  sis.id AS stationid,
+  s.name AS stationname,
+  a.statusid,
+  ds.name AS statusname,
+  a.createddate,
+  a.updateddate
+FROM accounts a
+LEFT JOIN roles r ON r.id = a.roleid
+LEFT JOIN staffinstation sis ON sis.staffid = a.id
+LEFT JOIN stations s ON s.id = sis.stationid
+LEFT JOIN dbstatus ds ON ds.id = a.statusid
+WHERE a.roleid = 3 OR a.roleid= 4`);
+  return results.rows;
+};
+
 module.exports = {
   register: register,
+  registerStaffAccount,
   login: login,
   getProfileById: getProfileById,
   updateAccountProfile: updateAccountProfile,
+  getAllStaffs
 };

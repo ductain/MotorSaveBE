@@ -1,4 +1,4 @@
-const { verifyToken } = require("../config/verify");
+const { verifyToken, verifyAdmin } = require("../config/verify");
 const accountController = require("../controllers/accountController");
 
 const router = require("express").Router();
@@ -7,6 +7,9 @@ router.post("/register", accountController.register);
 router.post("/login", accountController.login);
 router.get("/profile", verifyToken, accountController.getProfileById);
 router.put("/profile", verifyToken, accountController.updateAccountProfile);
+
+router.get("/staffs", verifyAdmin, accountController.getStaffList);
+router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
 
 /**
  * @swagger
@@ -175,6 +178,55 @@ router.put("/profile", verifyToken, accountController.updateAccountProfile);
  *                   example: "Internal Server Error"
  */
 
+/**
+ * @swagger
+ * /auth/staffs:
+ *   get:
+ *     summary: Returns the staff list
+ *     tags: [Auth]
+ *     security:
+ *          - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The list of all staffs
+ *       500:
+ *          description: Internal Server Error
+ */
 
-
+/**
+ * @swagger
+ * /auth/staffs:
+ *   post:
+ *     summary: register
+ *     tags: [Auth]
+ *     security:
+ *          - bearerAuth: []
+ *     requestBody:
+ *      required: true
+ *      description: Input username, password, fullName, phone and roleId
+ *      content:
+ *          application/json:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      username:
+ *                          type: string
+ *                      password:
+ *                          type: string
+ *                      fullName:
+ *                          type: string
+ *                      phone:
+ *                          type: string
+ *                      roleId:
+ *                          type: number
+ *     responses:
+ *       201:
+ *         description: Đăng ký thành công
+ *       404:
+ *         description: Username hoặc phone đã tồn tại.
+ *       400:
+ *         description: Password phải có ít nhất 6 ký tự.
+ *       500:
+ *         description: Internal Server Error
+ */
 module.exports = router;

@@ -37,6 +37,44 @@ const register = async (req, res) => {
   }
 };
 
+const registerStaffAccount = async (req, res) => {
+  try {
+    const { username, password, fullName, phone, roleId } = req.body;
+
+    // Validate required fields
+    if (!username || !password || !fullName || !phone) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phone)) {
+      return res
+        .status(400)
+        .json({ message: "Số điện thoại phải là 10 chữ số" });
+    }
+
+    // Call the service to handle registration
+    const result = await accountService.registerStaffAccount({
+      username,
+      password,
+      fullName,
+      phone,
+      roleId
+    });
+
+    // Respond with success
+    res.status(201).json(result);
+  } catch (err) {
+    // Handle errors returned by the service
+    if (err.statusCode) {
+      return res.status(err.statusCode).json({ message: err.message });
+    }
+
+    console.error("Error during registration staff account:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -132,9 +170,21 @@ const updateAccountProfile = async (req, res) => {
   }
 };
 
+const getStaffList = async (req, res) => {
+  try {
+    const staffs = await accountService.getAllStaffs();
+    res.status(200).json(staffs);
+  } catch (err) {
+    console.error("Error fetching staff list:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   register: register,
+  registerStaffAccount,
   login: login,
   getProfileById: getProfileById,
   updateAccountProfile: updateAccountProfile,
+  getStaffList
 };
