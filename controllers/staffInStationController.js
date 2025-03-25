@@ -1,8 +1,17 @@
 const staffInStationService = require("../services/staffInStationService");
 
-const getAll = async (req, res) => {
+const getAllStaffsInStations = async (req, res) => {
   try {
-    const staffs = await staffInStationService.getAll();
+    const staffs = await staffInStationService.getAllStaffsInStations();
+    res.status(200).json(staffs);
+  } catch (err) {
+    console.error("Error fetching all staffInStation:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+const getStaffsNotInAnyStation = async (req, res) => {
+  try {
+    const staffs = await staffInStationService.getStaffsNotInAnyStation();
     res.status(200).json(staffs);
   } catch (err) {
     console.error("Error fetching all staffInStation:", err);
@@ -21,10 +30,24 @@ const getStaffsInAStation = async (req, res) => {
   }
 };
 
+//The below used for Staff to view their own station
 const getStationOfAStaff = async (req, res) => {
   try {
     const staffId = req.user.id;
     const station = await staffInStationService.getStationOfAStaff(staffId);
+    res.status(200).json(station);
+  } catch (err) {
+    console.error("Error fetching station of this staff:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//The below used for Admin
+const getStationByStaffId = async (req, res) => {
+  try {
+    const staffId = req.params.staffId;
+    const station = await staffInStationService.getStationOfAStaff(staffId);
+    if (!station) res.status(404).json({ message: "Staff is currently not in this station" });
     res.status(200).json(station);
   } catch (err) {
     console.error("Error fetching station of this staff:", err);
@@ -63,9 +86,11 @@ const updateStationOfAStaff = async (req, res) => {
 };
 
 module.exports = {
-  getAll,
+  getAllStaffsInStations,
+  getStaffsNotInAnyStation,
   getStaffsInAStation,
   getStationOfAStaff,
+  getStationByStaffId,
   addStaffIntoStation,
   updateStationOfAStaff
 };

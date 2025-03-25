@@ -1,9 +1,45 @@
 const query = require("../config/dbConfig");
 
-const getAll = async () => {
-    const results = await query(`SELECT * FROM staffinstation`);
+const getAllStaffsInStations = async () => {
+    const results = await query(`
+        SELECT
+        a.id AS staffid,
+        a.username,
+        a.fullname,
+        a.phone,
+        r.name AS rolename,
+        ds.name AS status,
+        s.id AS stationid,
+        s.name AS stationname
+        FROM staffinstation sis
+        LEFT JOIN accounts a ON a.id = sis.staffid
+        LEFT JOIN roles r ON r.id = a.roleid
+        LEFT JOIN stations s ON s.id = sis.stationid
+        LEFT JOIN dbstatus ds ON ds.id = a.statusid`);
     return results.rows;
 };
+
+const getStaffsNotInAnyStation = async () => {
+    const results = await query(
+        `SELECT 
+        a.id AS staffid,
+        a.username,
+        a.email,
+        a.fullname,
+        a.gender,
+        a.phone,
+        r.name AS rolename,
+        ds.name AS status
+        FROM accounts a
+        LEFT JOIN roles r ON (a.roleid = r.id)
+        LEFT JOIN staffinstation sis ON (a.id = sis.staffid)
+        LEFT JOIN dbstatus ds ON ds.id = a.statusid
+        WHERE sis.staffid IS NULL
+        AND a.roleid = 3 OR a.roleid = 4`
+    );
+    return results.rows;
+};
+
 
 const getStaffsInAStation = async (stationId) => {
     const results = await query(
@@ -64,7 +100,8 @@ const updateStationOfAStaff = async (staffId, stationId) => {
     return result.rows[0];
 };
 module.exports = {
-    getAll,
+    getAllStaffsInStations,
+    getStaffsNotInAnyStation,
     getStaffsInAStation,
     getStationOfAStaff,
     checkIfStaffIsInAnyStation,
