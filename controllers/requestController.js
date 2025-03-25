@@ -298,7 +298,7 @@ const updateRepairRequestStatus = async (req, res) => {
       await requestService.updateTotalPrice(requestDetailId, total);
     }
     if (newStatus === "Done") {
-      const returnRequestId = await requestService.getReturnRequestIdBasedOnCurrentRepairRequest(requestDetailId);
+      const returnRequestId = await requestService.getReturnReqByRepairId(requestDetailId);
       await requestService.updateRequestStatus(returnRequestId, 'Pending');
     }
     const updatedRequest = await requestService.updateRequestStatus(requestDetailId, newStatus);

@@ -741,7 +741,7 @@ const createReturnRequest = async (data, requestId) => {
   }
 };
 
-const getReturnRequestIdBasedOnCurrentRepairRequest = async (requestDetailId) => {
+const getReturnReqByRepairId = async (requestDetailId) => {
   try {
     const result = await query(
       `SELECT rd.id FROM requestdetails rd
@@ -871,7 +871,7 @@ module.exports = {
   calculateTotalPrice,
   updateTotalPrice,
   createReturnRequest: createReturnRequest,
-  getReturnRequestIdBasedOnCurrentRepairRequest,
+  getReturnReqByRepairId,
   getLatestRequestDetail: getLatestRequestDetail,
   getReturnRequestDetail: getReturnRequestDetail,
 };
