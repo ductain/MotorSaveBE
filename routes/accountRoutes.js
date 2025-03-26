@@ -197,7 +197,7 @@ router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
  * @swagger
  * /auth/staffs:
  *   post:
- *     summary: register
+ *     summary: Register Staff Account (by Admin)
  *     tags: [Auth]
  *     security:
  *          - bearerAuth: []
