@@ -7,12 +7,12 @@ const {
     getStationOfAStaff,
     getStationByStaffId,
     getAllStaffsInStations,
-    getStaffsNotInAnyStation,
+    getUnAssignedStaffs,
 } = require("../controllers/staffInStationController");
 const router = require("express").Router();
 
 router.get("/", verifyAdmin, getAllStaffsInStations);
-router.get("/staff-not-in-station", verifyAdmin, getStaffsNotInAnyStation);
+router.get("/unAssignedStaffs", verifyAdmin, getUnAssignedStaffs);
 router.get("/:stationId", verifyAdmin, getStaffsInAStation);
 router.get("/station/staff", verifyToken, getStationOfAStaff);
 router.get("/station/staff/:staffId", verifyAdmin, getStationByStaffId);
@@ -68,7 +68,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /staffinstations/staff-not-in-station:
+ * /staffinstations/unAssignedStaffs:
  *   get:
  *     summary: Get all staff NOT in any stations
  *     tags: [StaffInStation]

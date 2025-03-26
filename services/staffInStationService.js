@@ -19,23 +19,21 @@ const getAllStaffsInStations = async () => {
     return results.rows;
 };
 
-const getStaffsNotInAnyStation = async () => {
+const getUnAssignedStaffs = async () => {
     const results = await query(
         `SELECT 
         a.id AS staffid,
         a.username,
-        a.email,
         a.fullname,
-        a.gender,
         a.phone,
         r.name AS rolename,
         ds.name AS status
         FROM accounts a
-        LEFT JOIN roles r ON (a.roleid = r.id)
-        LEFT JOIN staffinstation sis ON (a.id = sis.staffid)
+        LEFT JOIN staffinstation sis ON a.id = sis.staffid
+        LEFT JOIN roles r ON r.id = a.roleid
         LEFT JOIN dbstatus ds ON ds.id = a.statusid
         WHERE sis.staffid IS NULL
-        AND a.roleid = 3 OR a.roleid = 4`
+        AND (a.roleid = 3 OR a.roleid=4);`
     );
     return results.rows;
 };
@@ -101,7 +99,7 @@ const updateStationOfAStaff = async (staffId, stationId) => {
 };
 module.exports = {
     getAllStaffsInStations,
-    getStaffsNotInAnyStation,
+    getUnAssignedStaffs,
     getStaffsInAStation,
     getStationOfAStaff,
     checkIfStaffIsInAnyStation,

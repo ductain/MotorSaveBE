@@ -9,9 +9,9 @@ const getAllStaffsInStations = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-const getStaffsNotInAnyStation = async (req, res) => {
+const getUnAssignedStaffs = async (req, res) => {
   try {
-    const staffs = await staffInStationService.getStaffsNotInAnyStation();
+    const staffs = await staffInStationService.getUnAssignedStaffs();
     res.status(200).json(staffs);
   } catch (err) {
     console.error("Error fetching all staffInStation:", err);
@@ -87,7 +87,7 @@ const updateStationOfAStaff = async (req, res) => {
 
 module.exports = {
   getAllStaffsInStations,
-  getStaffsNotInAnyStation,
+  getUnAssignedStaffs,
   getStaffsInAStation,
   getStationOfAStaff,
   getStationByStaffId,
