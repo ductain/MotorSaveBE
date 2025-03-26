@@ -42,7 +42,7 @@ const registerStaffAccount = async (req, res) => {
     const { username, password, fullName, phone, roleId } = req.body;
 
     // Validate required fields
-    if (!username || !password || !fullName || !phone) {
+    if (!username || !password || !fullName || !phone || !roleId) {
       return res.status(400).json({ message: "All fields are required." });
     }
 

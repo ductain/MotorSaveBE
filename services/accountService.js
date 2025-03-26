@@ -68,7 +68,7 @@ const registerStaffAccount = async (userData) => {
     `;
   const existingUser = await query(checkQuery, [username, phone]);
   if (existingUser.rows.length > 0) {
-    const error = new Error("Username đã tồn tại.");
+    const error = new Error("Username hoặc phone đã tồn tại.");
     error.statusCode = 404;
     throw error;
   }
