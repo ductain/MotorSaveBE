@@ -76,8 +76,8 @@ const checkIfStaffIsInAnyStation = async (staffId) => {
         WHERE staffid = $1`,
         [staffId]
     );
-    return existedData != null ? true : false;
-}
+    return existedData.length > 0;
+};
 
 const addStaffIntoStation = async (staffId, stationId) => {
     await query(
