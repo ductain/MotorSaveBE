@@ -73,7 +73,7 @@ const addStaffIntoStation = async (req, res) => {
 const updateStationOfAStaff = async (req, res) => {
   try {
     const staffId = req.params.staffId
-    const stationId = req.body;
+    const { stationId } = req.body;
     const updatedStaff = await staffInStationService.updateStationOfAStaff(staffId, stationId);
     if (!updatedStaff) {
       return res.status(404).json({ message: "Staff not found" });
