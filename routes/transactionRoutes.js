@@ -1,9 +1,11 @@
-const { verifyToken } = require("../config/verify");
+const { verifyToken, verifyAdmin } = require("../config/verify");
 const transactionController = require("../controllers/transactionController");
 
 const router = require("express").Router();
 
 router.post("/", verifyToken, transactionController.createTransaction);
+router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
+router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
 
 /**
  * @swagger
@@ -40,6 +42,47 @@ router.post("/", verifyToken, transactionController.createTransaction);
  *     responses:
  *       201:
  *         description: Transaction created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/totalRevenue:
+ *   get:
+ *     summary: Get total revenue (Admin)
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: total revenue
+ *       403:
+ *         description: You need to login as Driver or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/totalRevenue/{year}:
+ *   get:
+ *     summary: Get total revenue by month (Admin)
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: year
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The year
+ *     responses:
+ *       200:
+ *         description: total revenue in month
+ *       403:
+ *         description: You need to login as Driver or Admin
  *       500:
  *         description: Internal Server Error
  */

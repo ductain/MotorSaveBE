@@ -180,11 +180,22 @@ const getStaffList = async (req, res) => {
   }
 };
 
+const getTotalAccounts = async (req, res) => {
+  try {
+    const totalAccounts = await accountService.getTotalAccounts();
+    return res.status(200).json({ totalAccounts });
+  } catch (error) {
+    console.error("Error fetching total accounts:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   register: register,
   registerStaffAccount,
   login: login,
   getProfileById: getProfileById,
   updateAccountProfile: updateAccountProfile,
-  getStaffList
+  getStaffList,
+  getTotalAccounts: getTotalAccounts,
 };

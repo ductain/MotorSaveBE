@@ -1,11 +1,12 @@
 const feedbackController = require("../controllers/feedbackController");
-const { verifyToken } = require("../config/verify");
+const { verifyToken, verifyAdmin } = require("../config/verify");
 
 const router = require("express").Router();
 
 router.get("/", feedbackController.getFeedbacks);
 router.get("/:id", feedbackController.getFeedbackById);
 router.post("/create/:requestdetailid", verifyToken, feedbackController.createFeedback)
+router.get("/total/count", verifyAdmin, feedbackController.getTotalFeedbacks);
 
 /**
  * @swagger
@@ -90,6 +91,21 @@ router.post("/create/:requestdetailid", verifyToken, feedbackController.createFe
  *         description: Request detail not found
  *       500:
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /feedbacks/total/count:
+ *   get:
+ *     summary: Get total number of feedbacks
+ *     tags: [Feedbacks]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all feedbacks
+ *       500:
+ *         description: Internal Server Error
  */
 
 module.exports = router;

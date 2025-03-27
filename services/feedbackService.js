@@ -68,8 +68,19 @@ const createFeedback = async (requestDetailId, rating, comment) => {
     throw error;
   }
 };
+
+const getTotalFeedbacks = async () => {
+  try {
+    const result = await query("SELECT COUNT(*) AS total FROM feedbacks");
+    return result.rows[0].total;
+  } catch (error) {
+    console.error("Error getting total accounts:", error);
+    throw error;
+  }
+};
 module.exports = {
   getFeedbacks: getFeedbacks,
   getFeedbackById: getFeedbackById,
   createFeedback: createFeedback,
+  getTotalFeedbacks: getTotalFeedbacks,
 };

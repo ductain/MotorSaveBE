@@ -850,6 +850,36 @@ const getReturnRequestDetail = async (requestId) => {
   }
 };
 
+const getTotalRequests = async () => {
+  try {
+    const result = await query("SELECT COUNT(*) AS total FROM requests");
+    return result.rows[0].total;
+  } catch (error) {
+    console.error("Error getting total requests:", error);
+    throw error;
+  }
+};
+
+const getTotalRequestsByMonth = async (year) => {
+  try {
+    const result = await query(
+      `SELECT 
+        EXTRACT(MONTH FROM createddate) AS month,
+        COUNT(*) AS totalRequests
+      FROM requests
+      WHERE EXTRACT(YEAR FROM createddate) = $1
+      GROUP BY month
+      ORDER BY month`,
+      [year]
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error getting total requests by month:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -874,4 +904,6 @@ module.exports = {
   getReturnReqByRepairId,
   getLatestRequestDetail: getLatestRequestDetail,
   getReturnRequestDetail: getReturnRequestDetail,
+  getTotalRequests: getTotalRequests,
+  getTotalRequestsByMonth: getTotalRequestsByMonth,
 };

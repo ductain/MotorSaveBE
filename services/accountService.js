@@ -280,11 +280,22 @@ WHERE a.roleid = 3 OR a.roleid= 4`);
   return results.rows;
 };
 
+const getTotalAccounts = async () => {
+  try {
+    const result = await query("SELECT COUNT(*) AS total FROM accounts");
+    return result.rows[0].total;
+  } catch (error) {
+    console.error("Error getting total accounts:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   register: register,
   registerStaffAccount,
   login: login,
   getProfileById: getProfileById,
   updateAccountProfile: updateAccountProfile,
-  getAllStaffs
+  getAllStaffs,
+  getTotalAccounts: getTotalAccounts,
 };

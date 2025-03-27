@@ -48,8 +48,19 @@ const createFeedback = async (req, res) => {
   }
 };
 
+const getTotalFeedbacks = async (req, res) => {
+  try {
+    const totalFeedbacks = await feedbackService.getTotalFeedbacks()
+    return res.status(200).json({ totalFeedbacks });
+  } catch (error) {
+    console.error("Error fetching total feedbacks:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getFeedbacks: getFeedbacks,
   getFeedbackById: getFeedbackById,
   createFeedback: createFeedback,
+  getTotalFeedbacks: getTotalFeedbacks,
 };
