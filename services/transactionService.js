@@ -50,6 +50,44 @@ const createTransaction = async (data) => {
   }
 };
 
+const getTotalRevenue = async () => {
+  try {
+    const result = await query(
+      `SELECT COALESCE(SUM(totalamount), 0) AS totalRevenue 
+       FROM payments 
+       WHERE paymentstatus = 'Success' AND requestdetailid IS NOT NULL`
+    );
+    return result.rows[0].totalrevenue;
+  } catch (error) {
+    console.error("Error getting total revenue:", error);
+    throw error;
+  }
+};
+
+const getTotalRevenueByMonth = async (year) => {
+  try {
+    const result = await query(
+      `SELECT 
+        EXTRACT(MONTH FROM rd.createddate) AS month,
+        COALESCE(SUM(p.totalamount), 0) AS totalRevenue
+      FROM payments p
+      JOIN requestdetails rd ON p.requestdetailid = rd.id
+      WHERE p.paymentstatus = 'Success' 
+        AND EXTRACT(YEAR FROM rd.createddate) = $1
+      GROUP BY month
+      ORDER BY month`,
+      [year]
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error getting total revenue by month:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createTransaction: createTransaction,
+  getTotalRevenue: getTotalRevenue,
+  getTotalRevenueByMonth: getTotalRevenueByMonth,
 };

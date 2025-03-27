@@ -1,4 +1,4 @@
-const { verifyToken, verifyDriver, verifyMechanic } = require("../config/verify");
+const { verifyToken, verifyDriver, verifyMechanic, verifyAdmin } = require("../config/verify");
 const requestController = require("../controllers/requestController");
 
 const router = require("express").Router();
@@ -86,6 +86,18 @@ router.get(
   "/returnVehicle/:requestId",
   verifyToken,
   requestController.getReturnRequestDetail
+);
+
+router.get(
+  "/count",
+  verifyAdmin,
+  requestController.getTotalRequests
+);
+
+router.get(
+  "/count/:year",
+  verifyAdmin,
+  requestController.getTotalRequestsByMonth
 );
 
 /**
@@ -716,4 +728,44 @@ router.get(
  *         description: Internal Server Error
  */
 
+/**
+ * @swagger
+ * /requests/count:
+ *   get:
+ *     summary: Get total number of request (Admin)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: number of requests
+ *       403:
+ *         description: You need to login as Driver or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/count/{year}:
+ *   get:
+ *     summary: Get total number of request by month (Admin)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: year
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The year
+ *     responses:
+ *       200:
+ *         description: number of requests by month
+ *       403:
+ *         description: You need to login as Driver or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
 module.exports = router;

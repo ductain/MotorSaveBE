@@ -11,6 +11,8 @@ router.put("/profile", verifyToken, accountController.updateAccountProfile);
 router.get("/staffs", verifyAdmin, accountController.getStaffList);
 router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
 
+router.get("/count", verifyAdmin, accountController.getTotalAccounts);
+
 /**
  * @swagger
  * tags:
@@ -228,5 +230,20 @@ router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
  *         description: Password phải có ít nhất 6 ký tự.
  *       500:
  *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /auth/count:
+ *   get:
+ *     summary: Returns the number of accounts
+ *     tags: [Auth]
+ *     security:
+ *          - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The user profile
+ *       500:
+ *          description: Internal Server Error
  */
 module.exports = router;
