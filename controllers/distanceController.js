@@ -16,6 +16,34 @@ const calculateMoney = async (req, res) => {
   }
 };
 
+const getDistanceRate = async (req, res) => {
+  try {
+    const distanceRates = await distanceService.getDistanceRates();
+    res.status(200).json(distanceRates);
+  } catch (err) {
+    console.error("Error fetching distancerate:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const updateDistanceRate = async (req, res) => {
+  try {
+    const adminId = req.user.id;
+    const disRateId = req.params.id;
+    const disRateData = req.body;
+    const updatedDisRate = await distanceService.updateDistanceRate(disRateId, disRateData, adminId);
+    if (!updatedDisRate) {
+      return res.status(404).json({ message: "DistanceRate not found" });
+    }
+    res.status(200).json({ updatedDisRate, message: "Distance Rate updated!" });
+  } catch (err) {
+    console.error("Error updating distancerate:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   calculateMoney,
+  getDistanceRate,
+  updateDistanceRate
 };

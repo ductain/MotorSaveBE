@@ -7,15 +7,15 @@ const calculateMoney = async (distance) => {
 
   // Identify d1, d2, m1, m2, m3 dynamically
   const sortedRates = rates.sort((a, b) => a.distance - b.distance); // Sort by distance
-  
+
   const d1 = sortedRates.find(r => !r.isbigger).distance; // First threshold distance
   const d2 = sortedRates.find(r => r.isbigger).distance;  // Second threshold distance
-  
+
   const m1 = sortedRates[0].moneyperkm;
   const m2 = sortedRates[1].moneyperkm;
   const m3 = sortedRates[2].moneyperkm;
 
-  const s = distance/1000;
+  const s = distance / 1000;
 
   let totalMoney = 0;
 
@@ -26,11 +26,29 @@ const calculateMoney = async (distance) => {
   } else {
     totalMoney = m1 + ((d2 - d1) * m2) + (s - d2) * m3;
   }
-  
+
   totalMoney = Math.round(totalMoney / 1000) * 1000
   return totalMoney;
 };
 
+const getDistanceRates = async () => {
+  const results = await query("SELECT * FROM distancerate");
+  return results.rows;
+};
+
+const updateDistanceRate = async (disRateId, disRateData, adminId) => {
+  const { moneyperkm } = disRateData;
+  const result = await query(
+    `UPDATE distancerate SET moneyperkm = $1, managedby = $2
+     WHERE id = $3 RETURNING *`,
+    [moneyperkm, adminId, disRateId]
+  );
+
+  return result.rows[0];
+};
+
 module.exports = {
   calculateMoney,
+  getDistanceRates,
+  updateDistanceRate
 };
