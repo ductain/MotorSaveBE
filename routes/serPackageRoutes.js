@@ -1,17 +1,18 @@
 const {
-    getSerPackages,
-    getSerPacById,
-    createSerPackage,
-    updateSerPackage,
-    deleteSerPackage } = require("../controllers/serPackageController");
+  getSerPackages,
+  getSerPacById,
+  createSerPackage,
+  updateSerPackage,
+  deleteSerPackage } = require("../controllers/serPackageController");
+const { verifyAdmin } = require("../config/verify");
 
 const router = require("express").Router();
 
 router.get("/", getSerPackages);
 router.get("/:id", getSerPacById);
-router.post("/", createSerPackage);
-router.put("/:id", updateSerPackage);
-router.delete("/:id", deleteSerPackage);
+router.post("/", verifyAdmin, createSerPackage);
+router.put("/:id", verifyAdmin, updateSerPackage);
+router.delete("/:id", verifyAdmin, deleteSerPackage);
 
 module.exports = router;
 
@@ -100,6 +101,8 @@ module.exports = router;
  *   post:
  *     summary: Create a new service package
  *     tags: [ServicePackages]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -136,6 +139,8 @@ module.exports = router;
  *   put:
  *     summary: Update an existing service package
  *     tags: [ServicePackages]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,6 +187,8 @@ module.exports = router;
  *   delete:
  *     summary: Delete a service package
  *     tags: [ServicePackages]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
