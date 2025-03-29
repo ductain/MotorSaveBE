@@ -11,27 +11,39 @@ const getStationById = async (stationId) => {
 };
 
 const createStation = async (stationData) => {
-  const { name, address, longtitude, latitude, createdDate, updatedDate } = stationData;
+  const { name, address, long, lat } = stationData;
+  const createdDate = new Date();
+  const updatedDate = createdDate;
   await query(
-    `INSERT INTO stations (name, address, longtitude, latitude, createdDate, updatedDate) 
+    `INSERT INTO stations (name, address, long, lat, createddate, updateddate) 
          VALUES ($1, $2, $3, $4, $5, $6)`,
-    [name, address, longtitude, latitude, createdDate, updatedDate]
+    [name, address, long, lat, createdDate, updatedDate]
   );
-  return { message: "Create successfully!" };
+  return { message: "Create station successfully!" };
 };
 
 const updateStation = async (stationId, stationData) => {
-  const { name, address, longtitude, latitude, createdDate, updatedDate } = stationData;
-
+  const { name, address, long, lat } = stationData;
+  const updatedDate = new Date();
   const result = await query(
-    `UPDATE stations SET name = $1, address = $2, longtitude = $3, latitude = $4, createdDate = $5, updatedDate = $6
-     WHERE id = $7 RETURNING *`,
-    [name, address, longtitude, latitude, createdDate, updatedDate, stationId]
+    `UPDATE stations SET name = $1, address = $2, long = $3, lat = $4, updatedDate = $5
+     WHERE id = $6 RETURNING *`,
+    [name, address, long, lat, updatedDate, stationId]
   );
 
   return result.rows[0];
 };
 
+const isStationNameTaken = async (name, excludeId = null) => {
+  const queryText = excludeId
+      ? `SELECT * FROM stations WHERE name = $1 AND id != $2`
+      : `SELECT * FROM stations WHERE name = $1`;
+
+  const values = excludeId ? [name, excludeId] : [name];
+  const result = await query(queryText, values);
+
+  return result.rows.length > 0;
+};
 
 const deleteStation = async (stationId) => {
   const { rowCount } = await query(`DELETE FROM stations WHERE id = $1`, [stationId]);
@@ -39,9 +51,10 @@ const deleteStation = async (stationId) => {
 };
 
 module.exports = {
-  getStations: getStations,
-  getStationById: getStationById,
-  createStation: createStation,
-  updateStation: updateStation,
-  deleteStation: deleteStation
+  getStations,
+  getStationById,
+  createStation,
+  updateStation,
+  isStationNameTaken,
+  deleteStation
 };

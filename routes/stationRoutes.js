@@ -5,14 +5,15 @@ const {
   updateStation,
   deleteStation,
 } = require("../controllers/stationController");
+const { verifyAdmin } = require("../config/verify");
 
 const router = require("express").Router();
 
 router.get("/", getStations);
 router.get("/:id", getStationById);
-router.post("/", createStation);
-router.put("/:id", updateStation);
-router.delete("/:id", deleteStation);
+router.post("/", verifyAdmin, createStation);
+router.put("/:id", verifyAdmin, updateStation);
+router.delete("/:id", verifyAdmin, deleteStation);
 
 module.exports = router;
 
@@ -85,6 +86,8 @@ module.exports = router;
  *   post:
  *     summary: Create a new station
  *     tags: [Stations]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -100,24 +103,14 @@ module.exports = router;
  *                 type: string
  *                 description: Address of the station
  *                 example: 123 Main Street
- *               longtitude:
+ *               long:
  *                 type: number
  *                 description: Longitude of the station
  *                 example: -73.935242
- *               latitude:
+ *               lat:
  *                 type: number
  *                 description: Latitude of the station
  *                 example: 40.73061
- *               createdDate:
- *                 type: string
- *                 format: date-time
- *                 description: Creation date of the station
- *                 example: 2025-01-01T12:00:00Z
- *               updatedDate:
- *                 type: string
- *                 format: date-time
- *                 description: Last updated date of the station
- *                 example: 2025-01-10T12:00:00Z
  *     responses:
  *       200:
  *         description: Station created successfully
@@ -131,6 +124,8 @@ module.exports = router;
  *   put:
  *     summary: Update an existing station
  *     tags: [Stations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -153,24 +148,14 @@ module.exports = router;
  *                 type: string
  *                 description: Updated address of the station
  *                 example: 456 Elm Street
- *               longtitude:
+ *               long:
  *                 type: number
  *                 description: Updated longitude of the station
  *                 example: -73.935242
- *               latitude:
+ *               lat:
  *                 type: number
  *                 description: Updated latitude of the station
  *                 example: 40.73061
- *               createdDate:
- *                 type: string
- *                 format: date-time
- *                 description: Updated creation date of the station
- *                 example: 2025-01-01T12:00:00Z
- *               updatedDate:
- *                 type: string
- *                 format: date-time
- *                 description: Last updated date of the station
- *                 example: 2025-01-12T12:00:00Z
  *     responses:
  *       200:
  *         description: Station updated successfully
@@ -186,6 +171,8 @@ module.exports = router;
  *   delete:
  *     summary: Delete a station
  *     tags: [Stations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
