@@ -4,6 +4,7 @@ const transactionController = require("../controllers/transactionController");
 const router = require("express").Router();
 
 router.post("/", verifyToken, transactionController.createTransaction);
+router.post("/payment", verifyToken, transactionController.createPayment);
 router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
 router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
 
@@ -42,6 +43,36 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  *     responses:
  *       201:
  *         description: Transaction created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payment:
+ *   post:
+ *     summary: Create a new payment
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               requestdetailid:
+ *                 type: string
+ *               totalamount:
+ *                 type: number
+ *               paymentmethod:
+ *                 type: string
+ *               paymentstatus:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Payment created successfully
  *       500:
  *         description: Internal Server Error
  */
