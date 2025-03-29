@@ -492,6 +492,8 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         rd.staffid,
         rd.estimatedtime,
         sp.name AS servicepackagename,
+        p.paymentmethod,
+        p.paymentstatus,
 
         -- Driver Information
         d.fullname AS drivername,
@@ -510,7 +512,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
       LEFT JOIN dvehicles v ON d.id = v.driverid -- Get vehicle details
       LEFT JOIN brands br ON v.brandid = br.id
       LEFT JOIN vehicletypes vt ON v.vehicletypeid = vt.id
-
+      LEFT JOIN payments p ON rd.id = p.requestdetailid
       WHERE rd.id = $1`,
       [requestDetailId]
     );
