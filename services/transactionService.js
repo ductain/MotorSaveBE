@@ -86,8 +86,33 @@ const getTotalRevenueByMonth = async (year) => {
   }
 };
 
+const createPayment = async (data) => {
+  const {
+    requestdetailid,
+    totalamount,
+    paymentmethod,
+    paymentstatus,
+  } = data;
+
+  try {
+    const paymentResult = await query(
+      `INSERT INTO payments (totalamount, paymentmethod, paymentstatus, requestdetailid)
+         VALUES ($1, $2, $3, $4) RETURNING id`,
+      [totalamount, paymentmethod, paymentstatus, requestdetailid]
+    );
+
+    return {
+      message: "Payment created successfully!",
+    };
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
   getTotalRevenueByMonth: getTotalRevenueByMonth,
+  createPayment: createPayment,
 };
