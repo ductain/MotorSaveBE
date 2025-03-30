@@ -152,6 +152,30 @@ const getUnpaidPaymentsByRequestId = async (requestId) => {
     `
     , [requestId]);
   return results.rows;
+}
+const updatePaymentInfo = async (requestDetailId, data) => {
+  const {
+    paymentmethod,
+    paymentstatus,
+  } = data;
+  try {
+    const foundPayment = await query(
+      `SELECT * FROM payments
+      WHERE requestdetailid = $1`
+      , [requestDetailId]
+    )
+    if (foundPayment.rows.length > 0) {
+      const result = await query(
+        `UPDATE payments SET paymentstatus = $1, paymentmethod = $2
+        WHERE requestdetailid = $3 RETURNING *`,
+        [paymentstatus, paymentmethod, requestDetailId]
+      );
+      return result.rows[0];
+    }
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    throw error;
+  }
 };
 
 module.exports = {
@@ -160,5 +184,6 @@ module.exports = {
   getTotalRevenueByMonth: getTotalRevenueByMonth,
   createPayment: createPayment,
   updatePaymentStatus,
-  getUnpaidPaymentsByRequestId
+  getUnpaidPaymentsByRequestId,
+  updatePaymentInfo,
 };

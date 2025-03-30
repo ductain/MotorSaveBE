@@ -62,6 +62,7 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 const getUnpaiPaymentsByRequestId = async (req, res) => {
   try {
     const requestId = req.params.id;
@@ -76,6 +77,22 @@ const getUnpaiPaymentsByRequestId = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+=======
+const updatePaymentInfo = async (req, res) => {
+  try {
+    const {requestdetailid} = req.params
+    const result = await transactionService.updatePaymentInfo(requestdetailid, req.body);
+    if(result) res.status(200).json(result);
+    else res.status(404).json('Payment not found');
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+
+>>>>>>> main
 
 module.exports = {
   createTransaction: createTransaction,
@@ -83,5 +100,9 @@ module.exports = {
   getTotalRevenueByMonth: getTotalRevenueByMonth,
   createPayment: createPayment,
   updatePaymentStatus,
+<<<<<<< HEAD
   getUnpaiPaymentsByRequestId
+=======
+  updatePaymentInfo,
+>>>>>>> main
 };

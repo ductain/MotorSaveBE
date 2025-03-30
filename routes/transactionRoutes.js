@@ -6,6 +6,7 @@ const router = require("express").Router();
 router.post("/", verifyToken, transactionController.createTransaction);
 router.post("/payment", verifyToken, transactionController.createPayment);
 router.put("/payment/update", verifyToken, transactionController.updatePaymentStatus);
+router.put("/payment/info/:requestdetailid", verifyToken, transactionController.updatePaymentInfo);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
 router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
@@ -104,6 +105,46 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  *                 type: string
  *                 enum: [Success, Failed]
  *                 example: Success
+ *     responses:
+ *       200:
+ *         description: Payment updated successfully
+ *       404:
+ *         description: Payment not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payment/info/{requestdetailid}:
+ *   put:
+ *     summary: Update an existing payment infomation
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestdetailid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The request detail id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - paymentmethod
+ *               - paymentstatus
+ *             properties:
+ *               paymentmethod:
+ *                 type: string
+ *                 description: the payment method
+ *               paymentstatus:
+ *                 type: string
+ *                 description: the payment status
  *     responses:
  *       200:
  *         description: Payment updated successfully
