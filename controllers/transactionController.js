@@ -62,7 +62,6 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
 const getUnpaiPaymentsByRequestId = async (req, res) => {
   try {
     const requestId = req.params.id;
@@ -77,7 +76,6 @@ const getUnpaiPaymentsByRequestId = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-=======
 const updatePaymentInfo = async (req, res) => {
   try {
     const {requestdetailid} = req.params
@@ -91,18 +89,12 @@ const updatePaymentInfo = async (req, res) => {
   }
 };
 
-
->>>>>>> main
-
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
   getTotalRevenueByMonth: getTotalRevenueByMonth,
   createPayment: createPayment,
   updatePaymentStatus,
-<<<<<<< HEAD
-  getUnpaiPaymentsByRequestId
-=======
+  getUnpaiPaymentsByRequestId,
   updatePaymentInfo,
->>>>>>> main
 };
