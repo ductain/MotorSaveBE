@@ -24,13 +24,13 @@ const getTotalRevenue = async (req, res) => {
 const getTotalRevenueByMonth = async (req, res) => {
   try {
     const { year } = req.params;
-    
+
     if (!year || isNaN(year)) {
       return res.status(400).json({ message: "Invalid year parameter" });
     }
 
     const totalRevenueByMonth = await transactionService.getTotalRevenueByMonth(year);
-    
+
     return res.status(200).json({ totalRevenueByMonth });
   } catch (error) {
     console.error("Error fetching total revenue by month:", error);
@@ -51,9 +51,9 @@ const createPayment = async (req, res) => {
 
 const updatePaymentStatus = async (req, res) => {
   try {
-    const {requestDetailId, newStatus} = req.body;
+    const { requestDetailId, newStatus } = req.body;
     const result = await transactionService.updatePaymentStatus(requestDetailId, newStatus);
-    if(result) res.status(200).json(result);
+    if (result) res.status(200).json(result);
     else res.status(404).json('Payment not found');
   } catch (error) {
     res
@@ -62,11 +62,26 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
+const getUnpaiPaymentsByRequestId = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const foundPayments = await transactionService.getUnpaidPaymentsByRequestId(requestId);
+    if (foundPayments.length > 0) {
+      res.status(200).json(foundPayments);
+    } else {
+      return res.status(404).json({ message: "No unpaid payment found" });
+    }
+  } catch (err) {
+    console.error("Error fetching payments:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
   getTotalRevenueByMonth: getTotalRevenueByMonth,
   createPayment: createPayment,
-  updatePaymentStatus
+  updatePaymentStatus,
+  getUnpaiPaymentsByRequestId
 };

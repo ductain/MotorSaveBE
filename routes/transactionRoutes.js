@@ -6,6 +6,7 @@ const router = require("express").Router();
 router.post("/", verifyToken, transactionController.createTransaction);
 router.post("/payment", verifyToken, transactionController.createPayment);
 router.put("/payment/update", verifyToken, transactionController.updatePaymentStatus);
+router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
 router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
 
@@ -108,6 +109,31 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  *         description: Payment updated successfully
  *       404:
  *         description: Payment not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payment/unpaid/request/{id}:
+ *   get:
+ *     summary: Get unpaid Payments by requestId
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the request
+ *     responses:
+ *       200:
+ *         description: List of unpaid payments
+ *       404:
+ *         description: No unpaid payment found
  *       500:
  *         description: Internal Server Error
  */

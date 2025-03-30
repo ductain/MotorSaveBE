@@ -132,10 +132,33 @@ const updatePaymentStatus = async (requestDetailId, newStatus) => {
   }
 };
 
+const getUnpaidPaymentsByRequestId = async (requestId) => {
+  const results = await query(
+    `
+    SELECT 
+      p.id AS paymentid,
+      p.paymentmethod,
+      p.paymentstatus,
+      p.totalamount,
+      rd.id AS requestdetailid,
+      rt.name,
+      r.id AS requestid
+    FROM payments p
+    LEFT JOIN requestdetails rd ON rd.id = p.requestdetailid
+    LEFT JOIN requesttypes rt ON rt.id = rd.requesttypeid
+    LEFT JOIN requests r ON r.id = rd.requestid
+    WHERE r.id = $1
+    AND p.paymentstatus = 'Unpaid'
+    `
+    , [requestId]);
+  return results.rows;
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
   getTotalRevenueByMonth: getTotalRevenueByMonth,
   createPayment: createPayment,
-  updatePaymentStatus
+  updatePaymentStatus,
+  getUnpaidPaymentsByRequestId
 };
