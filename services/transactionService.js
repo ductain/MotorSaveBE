@@ -110,9 +110,32 @@ const createPayment = async (data) => {
   }
 };
 
+const updatePaymentStatus = async (requestDetailId, newStatus) => {
+  try {
+    const foundPayment = await query(
+      `SELECT * FROM payments
+      WHERE requestdetailid = $1`
+      , [requestDetailId]
+    )
+    console.log(foundPayment)
+    if (foundPayment.rows.length > 0) {
+      const result = await query(
+        `UPDATE payments SET paymentstatus = $1
+        WHERE requestdetailid = $2 RETURNING *`,
+        [newStatus, requestDetailId]
+      );
+      return result.rows[0];
+    }
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
   getTotalRevenueByMonth: getTotalRevenueByMonth,
   createPayment: createPayment,
+  updatePaymentStatus
 };

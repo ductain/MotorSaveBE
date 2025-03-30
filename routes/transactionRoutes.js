@@ -5,6 +5,7 @@ const router = require("express").Router();
 
 router.post("/", verifyToken, transactionController.createTransaction);
 router.post("/payment", verifyToken, transactionController.createPayment);
+router.put("/payment/update", verifyToken, transactionController.updatePaymentStatus);
 router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
 router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
 
@@ -73,6 +74,40 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  *     responses:
  *       201:
  *         description: Payment created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payment/update:
+ *   put:
+ *     summary: Update an existing payment
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - requestDetailId
+ *               - newStatus
+ *             properties:
+ *               requestDetailId:
+ *                 type: string
+ *                 description: the requestdetailid of the payment
+ *               newStatus:
+ *                 type: string
+ *                 enum: [Success, Failed]
+ *                 example: Success
+ *     responses:
+ *       200:
+ *         description: Payment updated successfully
+ *       404:
+ *         description: Payment not found
  *       500:
  *         description: Internal Server Error
  */
