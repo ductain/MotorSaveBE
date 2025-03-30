@@ -513,7 +513,8 @@ const getRequestDetailByDriver = async (requestDetailId) => {
       LEFT JOIN brands br ON v.brandid = br.id
       LEFT JOIN vehicletypes vt ON v.vehicletypeid = vt.id
       LEFT JOIN payments p ON rd.id = p.requestdetailid
-      WHERE rd.id = $1`,
+      WHERE rd.id = $1
+      AND p.paymentstatus <> 'Cancel'`,
       [requestDetailId]
     );
 
