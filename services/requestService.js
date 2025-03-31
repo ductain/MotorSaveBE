@@ -686,7 +686,7 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
       LEFT JOIN payments p ON rd.id = p.requestdetailid
       WHERE r.id = $1
       AND rd.requesttypeid = 2
-      AND p.paymentstatus <> 'Cancel'`,
+      AND (p.paymentstatus IS NULL OR p.paymentstatus = '' OR p.paymentstatus <> 'Cancel')`,
       [requestId]
     );
 
