@@ -158,7 +158,7 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  * @swagger
  * /transactions/payment/unpaid/request/{id}:
  *   get:
- *     summary: Get unpaid Payments by requestId
+ *     summary: Get list of unpaid Payments by requestId
  *     tags: [Transactions]
  *     security:
  *       - bearerAuth: []
