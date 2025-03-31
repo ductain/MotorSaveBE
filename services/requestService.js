@@ -632,15 +632,19 @@ const getRepairRequestDetail = async (requestId) => {
         cv.id AS vehicleid,
         cv.licenseplate,
         cv.photo AS vehiclephoto,
-        cv.condition AS vehiclecondition
+        cv.condition AS vehiclecondition,
+        p.paymentmethod,
+        p.paymentstatus
       FROM requests r
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN stations s ON r.stationid = s.id
       LEFT JOIN accounts m ON rd.staffid = m.id
       LEFT JOIN cvehicles cv ON r.vehicleid = cv.id
+      LEFT JOIN payments p ON rd.id = p.requestdetailid
       WHERE r.id = $1
-      AND rd.requesttypeid = 2`,
+      AND rd.requesttypeid = 2
+      AND p.paymentstatus <> 'Cancel'`,
       [requestId]
     );
 
@@ -670,15 +674,19 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
         cv.id AS vehicleid,
         cv.licenseplate,
         cv.photo AS vehiclephoto,
-        cv.condition AS vehiclecondition
+        cv.condition AS vehiclecondition,
+        p.paymentmethod,
+        p.paymentstatus
       FROM requests r
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN stations s ON r.stationid = s.id
       LEFT JOIN accounts c ON r.customerid = c.id
       LEFT JOIN cvehicles cv ON r.vehicleid = cv.id
+      LEFT JOIN payments p ON rd.id = p.requestdetailid
       WHERE r.id = $1
-      AND rd.requesttypeid = 2`,
+      AND rd.requesttypeid = 2
+      AND p.paymentstatus <> 'Cancel'`,
       [requestId]
     );
 

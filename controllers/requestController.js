@@ -431,13 +431,13 @@ const getTotalRequests = async (req, res) => {
 const getTotalRequestsByMonth = async (req, res) => {
   try {
     const { year } = req.params;
-    
+
     if (!year || isNaN(year)) {
       return res.status(400).json({ message: "Invalid year parameter" });
     }
 
     const totalRequestsByMonth = await requestService.getTotalRequestsByMonth(year);
-    
+
     return res.status(200).json({ totalRequestsByMonth });
   } catch (error) {
     console.error("Error fetching total requests by month:", error);
@@ -465,7 +465,7 @@ module.exports = {
   updateRepairRequestStatus,
   updateReturnRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
-  getRepairRequestDetail: getRepairRequestDetail,
+  getRepairRequestDetail,
   getRepairRequestDetailForMechanic,
   createReturnRequest: createReturnRequest,
   getLatestRequestDetail: getLatestRequestDetail,
