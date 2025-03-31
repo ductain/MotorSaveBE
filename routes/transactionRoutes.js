@@ -173,8 +173,6 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  *     responses:
  *       200:
  *         description: List of unpaid payments
- *       404:
- *         description: No unpaid payment found
  *       500:
  *         description: Internal Server Error
  */

@@ -66,11 +66,7 @@ const getUnpaiPaymentsByRequestId = async (req, res) => {
   try {
     const requestId = req.params.id;
     const foundPayments = await transactionService.getUnpaidPaymentsByRequestId(requestId);
-    if (foundPayments.length > 0) {
-      res.status(200).json(foundPayments);
-    } else {
-      return res.status(404).json({ message: "No unpaid payment found" });
-    }
+    res.status(200).json(foundPayments);
   } catch (err) {
     console.error("Error fetching payments:", err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -78,9 +74,9 @@ const getUnpaiPaymentsByRequestId = async (req, res) => {
 };
 const updatePaymentInfo = async (req, res) => {
   try {
-    const {requestdetailid} = req.params
+    const { requestdetailid } = req.params
     const result = await transactionService.updatePaymentInfo(requestdetailid, req.body);
-    if(result) res.status(200).json(result);
+    if (result) res.status(200).json(result);
     else res.status(404).json('Payment not found');
   } catch (error) {
     res
