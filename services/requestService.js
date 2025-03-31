@@ -514,7 +514,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
       LEFT JOIN vehicletypes vt ON v.vehicletypeid = vt.id
       LEFT JOIN payments p ON rd.id = p.requestdetailid
       WHERE rd.id = $1
-      AND p.paymentstatus <> 'Cancel'`,
+      AND (p.paymentstatus IS NULL OR p.paymentstatus = '' OR p.paymentstatus <> 'Cancel')`,
       [requestDetailId]
     );
 
@@ -904,7 +904,7 @@ module.exports = {
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
   acceptRequest: acceptRequest,
-  getRequestDetailByDriver: getRequestDetailByDriver,
+  getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
   cancelRequestWithReason: cancelRequestWithReason,
   getRepairRequestDetail: getRepairRequestDetail,
