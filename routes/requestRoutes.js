@@ -306,6 +306,8 @@ router.get(
  *     responses:
  *       200:
  *         description: Request accepted successfully
+ *       400:
+ *         description: You have more than one undone request, cannot accept another.
  *       403:
  *         description: You need to login as Driver or Admin
  *       404:

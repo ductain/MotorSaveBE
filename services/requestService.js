@@ -467,6 +467,28 @@ const acceptRequest = async (requestDetailId, driverId) => {
   }
 };
 
+const getUndoneRequests = async (driverId) => {
+  try {
+    const result = await query(
+      `SELECT COUNT(id) AS count 
+        FROM (
+          SELECT * FROM requestdetails
+          WHERE staffid = $1
+          ORDER BY updateddate DESC
+          LIMIT 5
+        ) AS subquery
+        WHERE requeststatus <> 'Done'
+        AND requeststatus <> 'Cancel'`,
+      [driverId]
+    );
+
+    return result.rows[0]?.count || 0; // Ensure it returns a number
+  } catch (error) {
+    console.error("Error fetching undone requests:", error);
+    throw error;
+  }
+};
+
 const getRequestDetailByDriver = async (requestDetailId) => {
   try {
     const result = await query(
@@ -917,4 +939,5 @@ module.exports = {
   getReturnRequestDetail: getReturnRequestDetail,
   getTotalRequests: getTotalRequests,
   getTotalRequestsByMonth: getTotalRequestsByMonth,
+  getUndoneRequests
 };

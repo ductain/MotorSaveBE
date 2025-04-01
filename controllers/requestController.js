@@ -184,15 +184,20 @@ const acceptRequest = async (req, res) => {
     const { requestDetailId } = req.params;
     const driverId = req.user.id; // Get driver ID from authenticated token
 
-    const updatedRequest = await requestService.acceptRequest(
-      requestDetailId,
-      driverId
-    );
+    // Check undone requests count
+    const undoneRequestCount = await requestService.getUndoneRequests(driverId);
+
+    if (undoneRequestCount > 1) {
+      return res.status(400).json({
+        message: "You have more than one undone request, cannot accept another."
+      });
+    }
+
+    // Proceed with accepting request
+    const updatedRequest = await requestService.acceptRequest(requestDetailId, driverId);
 
     if (!updatedRequest) {
-      return res
-        .status(404)
-        .json({ message: "Request not found or already accepted" });
+      return res.status(404).json({ message: "Request not found or already accepted." });
     }
 
     res.status(200).json({
@@ -200,11 +205,10 @@ const acceptRequest = async (req, res) => {
       requestDetail: updatedRequest,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
+
 
 const getRequestDetailByDriver = async (req, res) => {
   try {
