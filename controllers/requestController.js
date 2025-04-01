@@ -106,11 +106,20 @@ const getPendingReturnRequestsByDriver = async (req, res) => {
 const acceptRepairRequest = async (req, res) => {
   try {
     const { requestDetailId } = req.params;
-    const mechanicid = req.user.id; // Get driver ID from authenticated token
+    const mechanicId = req.user.id; // Get driver ID from authenticated token
+
+    // Check undone requests count
+    const undoneRequestCount = await requestService.getUndoneRequests(mechanicId);
+
+    if (undoneRequestCount > 1) {
+      return res.status(400).json({
+        message: "You have more than one undone request, cannot accept another."
+      });
+    }
 
     const updatedRequest = await requestService.acceptRepairRequest(
       requestDetailId,
-      mechanicid
+      mechanicId
     );
 
     if (!updatedRequest) {
