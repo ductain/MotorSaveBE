@@ -274,6 +274,7 @@ const getPendingReturnRequestsByDriver = async (staffId) => {
         rd.id AS requestdetailid,
         rd.requeststatus,
         r.createddate,
+        rd.destination,
         rd.staffid,
         r.stationid
         FROM requests r
