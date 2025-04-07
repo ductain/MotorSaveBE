@@ -178,6 +178,32 @@ const updatePaymentInfo = async (requestDetailId, data) => {
   }
 };
 
+const getSuccessPayments = async () => {
+  const results = await query(`
+    SELECT 
+      p.id AS paymentid,
+      rd.requestid,
+      rd.id AS requestdetailid,
+      rd.requeststatus,
+      rd.updateddate,
+      p.requestdetailid,
+      p.paymentmethod,
+      p.paymentstatus,
+      p.totalamount,
+      t.id AS transactionid,
+      rt.name AS requesttype,
+      t.transactiondate
+    FROM payments p
+    LEFT JOIN requestdetails rd ON rd.id = p.requestdetailid
+    LEFT JOIN transactions t ON t.paymentid = p.id
+    LEFT JOIN requesttypes rt ON rt.id = rd.requesttypeid
+    WHERE p.requestdetailid IS NOT NULL
+    AND p.paymentstatus = 'Success'
+    AND rd.requeststatus <> 'Cancel'
+    ORDER BY rd.updateddate DESC`);
+  return results.rows;
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
@@ -186,4 +212,5 @@ module.exports = {
   updatePaymentStatus,
   getUnpaidPaymentsByRequestId,
   updatePaymentInfo,
+  getSuccessPayments
 };

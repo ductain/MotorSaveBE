@@ -7,6 +7,7 @@ router.post("/", verifyToken, transactionController.createTransaction);
 router.post("/payment", verifyToken, transactionController.createPayment);
 router.put("/payment/update", verifyToken, transactionController.updatePaymentStatus);
 router.put("/payment/info/:requestdetailid", verifyToken, transactionController.updatePaymentInfo);
+router.get("/payments", verifyAdmin, transactionController.getSuccessPayments);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
 router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
@@ -150,6 +151,21 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  *         description: Payment updated successfully
  *       404:
  *         description: Payment not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payments:
+ *   get:
+ *     summary: Get all success payments
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all success payments
  *       500:
  *         description: Internal Server Error
  */

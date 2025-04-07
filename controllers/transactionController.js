@@ -85,6 +85,16 @@ const updatePaymentInfo = async (req, res) => {
   }
 };
 
+const getSuccessPayments = async (req, res) => {
+  try {
+    const payments = await transactionService.getSuccessPayments();
+    res.status(200).json(payments);
+  } catch (err) {
+    console.error("Error fetching payments:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
@@ -93,4 +103,5 @@ module.exports = {
   updatePaymentStatus,
   getUnpaiPaymentsByRequestId,
   updatePaymentInfo,
+  getSuccessPayments
 };
