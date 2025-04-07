@@ -367,8 +367,8 @@ const getRepairRequestsByMechanic = async (staffId) => {
       WHERE rd.staffid = $1
       AND rd.requeststatus <> 'Cancel'
       AND rt.name = 'Sửa xe'
-      AND r.createddate > CURRENT_DATE - INTERVAL '3 days'
-      ORDER BY r.createddate DESC`,
+      ORDER BY r.createddate DESC
+      LIMIT 15`,
       [staffId]
     );
 
@@ -400,8 +400,8 @@ const getRequestsByDriver = async (staffId) => {
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       WHERE rd.staffid = $1
       AND rd.requeststatus <> 'Cancel'
-      AND r.createddate > CURRENT_DATE - INTERVAL '3 days'
-      ORDER BY r.createddate DESC`,
+      ORDER BY r.createddate DESC
+      LIMIT 15`,
       [staffId]
     );
 
@@ -434,8 +434,8 @@ const getRequestsByCustomer = async (customerId) => {
       LEFT JOIN accounts a ON rd.staffid = a.id
       WHERE r.customerid = $1
       AND rd.requeststatus <> 'Cancel'
-      AND r.createddate > CURRENT_DATE - INTERVAL '7 days'
-      ORDER BY r.createddate DESC`,
+      ORDER BY r.createddate DESC
+      LIMIT 15`,
       [customerId]
     );
 
