@@ -441,19 +441,19 @@ const getTotalRequests = async (req, res) => {
   }
 };
 
-const getTotalRequestsByMonth = async (req, res) => {
+const getTotalRequestsByDate = async (req, res) => {
   try {
-    const { year } = req.params;
+    const { year, month } = req.query;
 
-    if (!year || isNaN(year)) {
-      return res.status(400).json({ message: "Invalid year parameter" });
+    if (!year || isNaN(year) || !month || isNaN(month)) {
+      return res.status(400).json({ message: "Invalid year or month parameter" });
     }
 
-    const totalRequestsByMonth = await requestService.getTotalRequestsByMonth(year);
+    const totalRequestsByDate = await requestService.getTotalRequestsByDate(Number(year), Number(month));
 
-    return res.status(200).json({ totalRequestsByMonth });
+    return res.status(200).json({ totalRequestsByDate });
   } catch (error) {
-    console.error("Error fetching total requests by month:", error);
+    console.error("Error fetching total requests by date:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -484,5 +484,5 @@ module.exports = {
   getLatestRequestDetail: getLatestRequestDetail,
   getReturnRequestDetail: getReturnRequestDetail,
   getTotalRequests: getTotalRequests,
-  getTotalRequestsByMonth: getTotalRequestsByMonth,
+  getTotalRequestsByDate: getTotalRequestsByDate,
 };

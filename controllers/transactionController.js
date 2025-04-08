@@ -21,19 +21,19 @@ const getTotalRevenue = async (req, res) => {
   }
 };
 
-const getTotalRevenueByMonth = async (req, res) => {
+const getTotalRevenueByDate = async (req, res) => {
   try {
-    const { year } = req.params;
+    const { year, month } = req.query;
 
-    if (!year || isNaN(year)) {
-      return res.status(400).json({ message: "Invalid year parameter" });
+    if (!year || isNaN(year) || !month || isNaN(month)) {
+      return res.status(400).json({ message: "Invalid year or month parameter" });
     }
 
-    const totalRevenueByMonth = await transactionService.getTotalRevenueByMonth(year);
+    const totalRevenueByDate = await transactionService.getTotalRevenueByDate(Number(year), Number(month));
 
-    return res.status(200).json({ totalRevenueByMonth });
+    return res.status(200).json({ totalRevenueByDate });
   } catch (error) {
-    console.error("Error fetching total revenue by month:", error);
+    console.error("Error fetching total revenue by date:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -85,9 +85,9 @@ const updatePaymentInfo = async (req, res) => {
   }
 };
 
-const getSuccessPayments = async (req, res) => {
+const getPayments = async (req, res) => {
   try {
-    const payments = await transactionService.getSuccessPayments();
+    const payments = await transactionService.getPayments();
     res.status(200).json(payments);
   } catch (err) {
     console.error("Error fetching payments:", err);
@@ -98,10 +98,10 @@ const getSuccessPayments = async (req, res) => {
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
-  getTotalRevenueByMonth: getTotalRevenueByMonth,
+  getTotalRevenueByDate: getTotalRevenueByDate,
   createPayment: createPayment,
   updatePaymentStatus,
   getUnpaiPaymentsByRequestId,
   updatePaymentInfo,
-  getSuccessPayments
+  getPayments
 };
