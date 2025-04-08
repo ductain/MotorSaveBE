@@ -64,24 +64,25 @@ const getTotalRevenue = async () => {
   }
 };
 
-const getTotalRevenueByMonth = async (year) => {
+const getTotalRevenueByDate = async (year, month) => {
   try {
     const result = await query(
       `SELECT 
-        EXTRACT(MONTH FROM rd.createddate) AS month,
+        DATE(rd.createddate) AS date,
         COALESCE(SUM(p.totalamount), 0) AS totalRevenue
       FROM payments p
       JOIN requestdetails rd ON p.requestdetailid = rd.id
       WHERE p.paymentstatus = 'Success' 
         AND EXTRACT(YEAR FROM rd.createddate) = $1
-      GROUP BY month
-      ORDER BY month`,
-      [year]
+        AND EXTRACT(MONTH FROM rd.createddate) = $2
+      GROUP BY date
+      ORDER BY date`,
+      [year, month]
     );
 
     return result.rows;
   } catch (error) {
-    console.error("Error getting total revenue by month:", error);
+    console.error("Error getting total revenue by date:", error);
     throw error;
   }
 };
@@ -178,7 +179,7 @@ const updatePaymentInfo = async (requestDetailId, data) => {
   }
 };
 
-const getSuccessPayments = async () => {
+const getPayments = async () => {
   const results = await query(`
     SELECT 
       p.id AS paymentid,
@@ -192,13 +193,16 @@ const getSuccessPayments = async () => {
       p.totalamount,
       t.id AS transactionid,
       rt.name AS requesttype,
+      a.fullname AS customername, 
+      a.phone AS customerphone, 
       t.transactiondate
     FROM payments p
     LEFT JOIN requestdetails rd ON rd.id = p.requestdetailid
+    JOIN requests r ON r.id = rd.requestid
+    JOIN accounts a ON r.customerid = a.id
     LEFT JOIN transactions t ON t.paymentid = p.id
     LEFT JOIN requesttypes rt ON rt.id = rd.requesttypeid
     WHERE p.requestdetailid IS NOT NULL
-    AND p.paymentstatus = 'Success'
     AND rd.requeststatus <> 'Cancel'
     ORDER BY rd.updateddate DESC`);
   return results.rows;
@@ -207,10 +211,10 @@ const getSuccessPayments = async () => {
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
-  getTotalRevenueByMonth: getTotalRevenueByMonth,
+  getTotalRevenueByDate: getTotalRevenueByDate,
   createPayment: createPayment,
   updatePaymentStatus,
   getUnpaidPaymentsByRequestId,
   updatePaymentInfo,
-  getSuccessPayments
+  getPayments,
 };
