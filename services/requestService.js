@@ -390,6 +390,7 @@ const getRequestsByDriver = async (staffId) => {
         sp.name AS servicepackagename,
         rd.id AS requestdetailid,
         rd.pickuplocation, 
+        rd.destination, 
         rd.requeststatus,
         r.createddate,
         rd.staffid
