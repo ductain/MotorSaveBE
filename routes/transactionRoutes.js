@@ -7,10 +7,10 @@ router.post("/", verifyToken, transactionController.createTransaction);
 router.post("/payment", verifyToken, transactionController.createPayment);
 router.put("/payment/update", verifyToken, transactionController.updatePaymentStatus);
 router.put("/payment/info/:requestdetailid", verifyToken, transactionController.updatePaymentInfo);
-router.get("/payments", verifyAdmin, transactionController.getSuccessPayments);
+router.get("/payments", verifyAdmin, transactionController.getPayments);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
-router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRevenueByMonth);
+router.get("/totalRevenue/total-by-date", verifyAdmin, transactionController.getTotalRevenueByDate);
 
 /**
  * @swagger
@@ -159,13 +159,13 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
  * @swagger
  * /transactions/payments:
  *   get:
- *     summary: Get all success payments
+ *     summary: Get all payments
  *     tags: [Transactions]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of all success payments
+ *         description: List of all payments
  *       500:
  *         description: Internal Server Error
  */
@@ -212,22 +212,30 @@ router.get("/totalRevenue/:year", verifyAdmin, transactionController.getTotalRev
 
 /**
  * @swagger
- * /transactions/totalRevenue/{year}:
+ * /transactions/totalRevenue/total-by-date:
  *   get:
- *     summary: Get total revenue by month (Admin)
+ *     summary: Get total revenue by date (Admin)
  *     tags: [Transactions]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: year
  *         required: true
  *         schema:
- *           type: string
- *         description: The year
+ *           type: integer
+ *         description: The year (e.g., 2025)
+ *       - in: query
+ *         name: month
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 12
+ *         description: The month (1-12)
  *     responses:
  *       200:
- *         description: total revenue in month
+ *         description: total revenue in date
  *       403:
  *         description: You need to login as Driver or Admin
  *       500:

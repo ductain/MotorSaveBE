@@ -95,9 +95,9 @@ router.get(
 );
 
 router.get(
-  "/count/:year",
+  "/count/total-by-date",
   verifyAdmin,
-  requestController.getTotalRequestsByMonth
+  requestController.getTotalRequestsByDate
 );
 
 /**
@@ -751,22 +751,30 @@ router.get(
 
 /**
  * @swagger
- * /requests/count/{year}:
+ * /requests/count/total-by-date:
  *   get:
- *     summary: Get total number of request by month (Admin)
+ *     summary: Get total number of request by date (Admin)
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: year
  *         required: true
  *         schema:
- *           type: string
- *         description: The year
+ *           type: integer
+ *         description: The year (e.g., 2025)
+ *       - in: query
+ *         name: month
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 12
+ *         description: The month (1-12)
  *     responses:
  *       200:
- *         description: number of requests by month
+ *         description: number of requests by date
  *       403:
  *         description: You need to login as Driver or Admin
  *       500:
