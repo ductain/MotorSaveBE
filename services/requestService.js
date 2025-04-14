@@ -472,7 +472,7 @@ const acceptRequest = async (requestDetailId, driverId) => {
 const getUndoneRequests = async (driverId) => {
   try {
     const result = await query(
-      `SELECT COUNT(id) AS count 
+      `SELECT id AS requestdetailid 
         FROM (
           SELECT * FROM requestdetails
           WHERE staffid = $1
@@ -484,7 +484,7 @@ const getUndoneRequests = async (driverId) => {
       [driverId]
     );
 
-    return result.rows[0]?.count || 0; // Ensure it returns a number
+    return result.rows;
   } catch (error) {
     console.error("Error fetching undone requests:", error);
     throw error;

@@ -103,15 +103,27 @@ const getPendingReturnRequestsByDriver = async (req, res) => {
   }
 };
 
+const getUndoneRequestDetailIdsByDriver = async (req, res) => {
+  try {
+    const staffid = req.user.id;
+    const undoneRequests = await requestService.getUndoneRequests(staffid);
+    res.status(200).json(undoneRequests);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+}
+
 const acceptRepairRequest = async (req, res) => {
   try {
     const { requestDetailId } = req.params;
     const mechanicId = req.user.id; // Get driver ID from authenticated token
 
     // Check undone requests count
-    const undoneRequestCount = await requestService.getUndoneRequests(mechanicId);
+    const undoneRequests = await requestService.getUndoneRequests(mechanicId);
 
-    if (undoneRequestCount > 1) {
+    if (undoneRequests.length > 1) {
       return res.status(400).json({
         message: "You have more than one undone request, cannot accept another."
       });
@@ -472,6 +484,7 @@ module.exports = {
   getRepairRequestsByMechanic,
   getRequestsByDriver: getRequestsByDriver,
   getRequestsByCustomer: getRequestsByCustomer,
+  getUndoneRequestDetailIdsByDriver,
   acceptRequest: acceptRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,

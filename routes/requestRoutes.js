@@ -34,6 +34,12 @@ router.get(
 );
 
 router.get(
+  "/driver/undone",
+  verifyDriver,
+  requestController.getUndoneRequestDetailIdsByDriver
+);
+
+router.get(
   "/mechanic/pending",
   verifyMechanic,
   requestController.getPendingRepairRequestsByMechanic
@@ -259,6 +265,23 @@ router.get(
  * /requests/driver:
  *   get:
  *     summary: Get all requests (Driver)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of requests
+ *       403:
+ *         description: You need to login as Driver or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/driver/undone:
+ *   get:
+ *     summary: Get undone request details (Driver)
  *     tags: [Requests]
  *     security:
  *       - bearerAuth: []
