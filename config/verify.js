@@ -49,9 +49,20 @@ const verifyAdmin = (req, res, next) => {
   });
 };
 
+const verifyManager = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.role === "Manager") {
+      next();
+    } else {
+      return res.status(403).json({ message: "You need to login as Manager" });
+    }
+  });
+};
+
 module.exports = {
   verifyToken: verifyToken,
   verifyDriver: verifyDriver,
   verifyMechanic: verifyMechanic,
   verifyAdmin: verifyAdmin,
+  verifyManager: verifyManager,
 };

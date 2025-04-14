@@ -1,4 +1,4 @@
-const { verifyToken, verifyAdmin } = require("../config/verify");
+const { verifyToken, verifyAdmin, verifyManager } = require("../config/verify");
 
 const {
     getStaffsInAStation,
@@ -11,13 +11,13 @@ const {
 } = require("../controllers/staffInStationController");
 const router = require("express").Router();
 
-router.get("/", verifyAdmin, getAllStaffsInStations);
-router.get("/unAssignedStaffs", verifyAdmin, getUnAssignedStaffs);
-router.get("/:stationId", verifyAdmin, getStaffsInAStation);
+router.get("/", verifyManager, getAllStaffsInStations);
+router.get("/unAssignedStaffs", verifyManager, getUnAssignedStaffs);
+router.get("/:stationId", verifyManager, getStaffsInAStation);
 router.get("/station/staff", verifyToken, getStationOfAStaff);
-router.get("/station/staff/:staffId", verifyAdmin, getStationByStaffId);
-router.post("/", verifyAdmin, addStaffIntoStation);
-router.put("/:staffId/station", verifyAdmin, updateStationOfAStaff);
+router.get("/station/staff/:staffId", verifyManager, getStationByStaffId);
+router.post("/", verifyManager, addStaffIntoStation);
+router.put("/:staffId/station", verifyManager, updateStationOfAStaff);
 
 module.exports = router;
 

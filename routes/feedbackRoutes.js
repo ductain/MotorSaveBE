@@ -6,7 +6,7 @@ const router = require("express").Router();
 router.get("/", feedbackController.getFeedbacks);
 router.get("/:id", feedbackController.getFeedbackById);
 router.post("/create/:requestdetailid", verifyToken, feedbackController.createFeedback)
-router.get("/total/count", verifyAdmin, feedbackController.getTotalFeedbacks);
+router.get("/total/count", verifyToken, feedbackController.getTotalFeedbacks);
 
 /**
  * @swagger
