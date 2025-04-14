@@ -9,8 +9,8 @@ router.put("/payment/update", verifyToken, transactionController.updatePaymentSt
 router.put("/payment/info/:requestdetailid", verifyToken, transactionController.updatePaymentInfo);
 router.get("/payments", verifyAdmin, transactionController.getPayments);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
-router.get("/totalRevenue", verifyAdmin, transactionController.getTotalRevenue);
-router.get("/totalRevenue/total-by-date", verifyAdmin, transactionController.getTotalRevenueByDate);
+router.get("/totalRevenue", verifyToken, transactionController.getTotalRevenue);
+router.get("/totalRevenue/total-by-date", verifyToken, transactionController.getTotalRevenueByDate);
 
 /**
  * @swagger

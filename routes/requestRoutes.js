@@ -96,13 +96,13 @@ router.get(
 
 router.get(
   "/count",
-  verifyAdmin,
+  verifyToken,
   requestController.getTotalRequests
 );
 
 router.get(
   "/count/total-by-date",
-  verifyAdmin,
+  verifyToken,
   requestController.getTotalRequestsByDate
 );
 
