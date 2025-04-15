@@ -476,7 +476,7 @@ const getUndoneRequests = async (driverId) => {
         FROM (
           SELECT * FROM requestdetails
           WHERE staffid = $1
-          ORDER BY updateddate DESC
+          ORDER BY createddate DESC
           LIMIT 5
         ) AS subquery
         WHERE requeststatus <> 'Done'
