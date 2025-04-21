@@ -5,6 +5,7 @@ const getCustomerVehicles = async () => {
     `SELECT
       cv.id AS vehicleid,
       b.name AS brandname,
+      vm.name AS modelname,
       cv.licenseplate AS licenseplate,
       cv.customerid AS customerid,
       a.fullname AS customername,
@@ -12,7 +13,8 @@ const getCustomerVehicles = async () => {
       s.name AS stationname,
       s.address AS stationaddress
       FROM cvehicles cv
-      LEFT JOIN brands b ON cv.brandid = b.id
+      LEFT JOIN vehiclemodels vm ON cv.modelid = vm.id
+      LEFT JOIN brands b ON vm.brandid = b.id
       LEFT JOIN accounts a ON cv.customerid = a.id
       LEFT JOIN stations s ON cv.stationid = s.id`
   );
@@ -24,6 +26,7 @@ const getCustomerVehiclesById = async (vehicleId) => {
     `SELECT
       cv.id AS vehicleid,
       b.name AS brandname,
+      vm.name AS modelname,
       cv.licenseplate AS licenseplate,
       cv.customerid AS customerid,
       a.fullname AS customername,
@@ -31,7 +34,8 @@ const getCustomerVehiclesById = async (vehicleId) => {
       s.name AS stationname,
       s.address AS stationaddress
       FROM cvehicles cv
-      LEFT JOIN brands b ON cv.brandid = b.id
+      LEFT JOIN vehiclemodels vm ON cv.modelid = vm.id
+      LEFT JOIN brands b ON vm.brandid = b.id
       LEFT JOIN accounts a ON cv.customerid = a.id
       LEFT JOIN stations s ON cv.stationid = s.id
       WHERE cv.id = $1`
@@ -45,6 +49,7 @@ const getVehiclesByCustomerId = async (customerId) => {
     `SELECT
       cv.id AS vehicleid,
       b.name AS brandname,
+      vm.name AS modelname,
       cv.licenseplate AS licenseplate,
       cv.customerid AS customerid,
       a.fullname AS customername,
@@ -52,7 +57,8 @@ const getVehiclesByCustomerId = async (customerId) => {
       s.name AS stationname,
       s.address AS stationaddress
       FROM cvehicles cv
-      LEFT JOIN brands b ON cv.brandid = b.id
+      LEFT JOIN vehiclemodels vm ON cv.modelid = vm.id
+      LEFT JOIN brands b ON vm.brandid = b.id
       LEFT JOIN accounts a ON cv.customerid = a.id
       LEFT JOIN stations s ON cv.stationid = s.id
       WHERE cv.customerid = $1`
@@ -69,24 +75,24 @@ const checkVehicleExists = async (licensePlate) => {
   return exists.rows.length > 0;
 };
 
-const upsertCustomerVehicle = async ({ customerId, licensePlate, brandId }) => {
+const upsertCustomerVehicle = async ({ customerId, licensePlate, modelId }) => {
   const exists = await checkVehicleExists(licensePlate);
 
   let result = {}
   if (exists) {
     result = await query(
       `UPDATE cvehicles 
-       SET customerid = $1, brandid = $2
+       SET customerid = $1, modelid = $2
        WHERE licenseplate = $3
        RETURNING *`,
-      [customerId, brandId, licensePlate]
+      [customerId, modelId, licensePlate]
     );
   } else {
     result = await query(
-      `INSERT INTO cvehicles (licenseplate, customerid, brandid)
+      `INSERT INTO cvehicles (licenseplate, customerid, modelid)
        VALUES ($1, $2, $3)
        RETURNING *`,
-      [licensePlate, customerId, brandId]
+      [licensePlate, customerId, modelId]
     );
   }
   return result.rows[0];

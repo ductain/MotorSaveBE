@@ -44,7 +44,7 @@ router.post("/", verifyToken, customerVehicleController.upsertCustomerVehicle);
  *               licensePlate:
  *                 type: string
  *                 example: "67AA-148.36"
- *               brandId:
+ *               modelId:
  *                 type: integer
  *                 example: 1
  *     responses:

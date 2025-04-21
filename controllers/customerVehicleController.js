@@ -47,17 +47,17 @@ const getVehiclesByCustomerId = async (req, res) => {
 
 const upsertCustomerVehicle = async (req, res) => {
   try {
-    const { licensePlate, brandId } = req.body;
+    const { licensePlate, modelId } = req.body;
     const customerId = req.user.id; // Assuming req.user contains authenticated user info
 
-    if (!licensePlate || !brandId) {
-      return res.status(400).json({ message: "Missing required fields: licensePlate, brandId" });
+    if (!licensePlate || !modelId) {
+      return res.status(400).json({ message: "Missing required fields: licensePlate, modelId" });
     }
 
     const vehicle = await customerVehicleService.upsertCustomerVehicle({
       customerId,
       licensePlate,
-      brandId,
+      modelId,
     });
 
     if (!vehicle) {
