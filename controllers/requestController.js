@@ -470,6 +470,17 @@ const getTotalRequestsByDate = async (req, res) => {
   }
 };
 
+const getAllRequests = async (req, res) => {
+  try {
+    const requests = await requestService.getAllRequests();
+    res.status(200).json(requests);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 
 
 module.exports = {
@@ -498,4 +509,5 @@ module.exports = {
   getReturnRequestDetail: getReturnRequestDetail,
   getTotalRequests: getTotalRequests,
   getTotalRequestsByDate: getTotalRequestsByDate,
+  getAllRequests,
 };
