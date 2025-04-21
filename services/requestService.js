@@ -917,6 +917,36 @@ const getTotalRequestsByDate = async (year, month) => {
   }
 };
 
+const getAllRequests = async () => {
+  try {
+    const result = await query(
+      `SELECT 
+        r.id AS requestid, 
+        a.fullname AS customername, 
+        a.phone AS customerphone, 
+        rt.name AS requesttype,
+        sp.name AS servicepackagename,
+        rd.id AS requestdetailid,
+        rd.pickuplocation, 
+        rd.destination, 
+        rd.requeststatus,
+        r.createddate,
+        rd.staffid
+      FROM requests r
+      JOIN servicepackages sp ON r.servicepackageid = sp.id
+      JOIN accounts a ON r.customerid = a.id
+      JOIN requestdetails rd ON r.id = rd.requestid
+      JOIN requesttypes rt ON rd.requesttypeid = rt.id
+      ORDER BY r.createddate DESC`
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
@@ -943,5 +973,6 @@ module.exports = {
   getReturnRequestDetail: getReturnRequestDetail,
   getTotalRequests: getTotalRequests,
   getTotalRequestsByDate: getTotalRequestsByDate,
-  getUndoneRequests
+  getUndoneRequests,
+  getAllRequests
 };

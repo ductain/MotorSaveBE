@@ -1,7 +1,13 @@
-const { verifyToken, verifyDriver, verifyMechanic, verifyAdmin } = require("../config/verify");
+const { verifyToken, verifyDriver, verifyMechanic, verifyAdmin, verifyManager } = require("../config/verify");
 const requestController = require("../controllers/requestController");
 
 const router = require("express").Router();
+
+router.get(
+  "/",
+  verifyManager,
+  requestController.getAllRequests
+);
 
 router.post(
   "/normalRescue",
@@ -111,6 +117,23 @@ router.get(
  * tags:
  *   name: Requests
  *   description: The request managing API
+ */
+
+/**
+ * @swagger
+ * /requests:
+ *   get:
+ *     summary: Get all requests
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of requests
+ *       403:
+ *         description: You need to login
+ *       500:
+ *         description: Internal Server Error
  */
 
 /**
