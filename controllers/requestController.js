@@ -218,7 +218,7 @@ const acceptRequest = async (req, res) => {
     const updatedRequest = await requestService.acceptRequest(requestDetailId, driverId);
 
     if (!updatedRequest) {
-      return res.status(404).json({ message: "Request not found or already accepted." });
+      return res.status(404).json({ message: "Request not found or already accepted by others." });
     }
 
     res.status(200).json({
