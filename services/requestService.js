@@ -454,6 +454,7 @@ const acceptRequest = async (requestDetailId, driverId) => {
       `UPDATE requestdetails 
        SET requeststatus = 'Accepted', staffid = $1, updateddate = $3
        WHERE id = $2
+       AND requeststatus = 'Pending'
        RETURNING *`,
       [driverId, requestDetailId, updatedDate]
     );
