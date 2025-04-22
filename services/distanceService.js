@@ -1,38 +1,59 @@
 const query = require("../config/dbConfig");
 
-const calculateMoney = async (distance) => {
-  // Fetch rates from the database
-  const result = await query("SELECT * FROM distancerate");
-  const rates = result.rows;
+const calculateMoney = async (metres) => {
+  // 1. Load & sort your bands by distance (asc), putting the "over" band last
+  const { rows } = await query(`
+    SELECT distance, moneyperkm, isbigger
+    FROM distancerate
+    ORDER BY distance ASC, isbigger ASC
+  `);
 
-  // Identify d1, d2, m1, m2, m3 dynamically
-  const sortedRates = rates.sort((a, b) => a.distance - b.distance); // Sort by distance
+  // distances of the non‑“over” bands: [1, 5, 10]
+  const thresholds = rows.filter(r => !r.isbigger).map(r => r.distance);
+  // all the per‑km prices (including the “over” band)
+  const rates      = rows.map(r => r.moneyperkm);
 
-  const d1 = sortedRates.find(r => !r.isbigger).distance; // First threshold distance
-  const d2 = sortedRates.find(r => r.isbigger).distance;  // Second threshold distance
+  // unpack them
+  const [d1, d2, d3] = thresholds;      // d1=1, d2=5, d3=10
+  const [m1, m2, m3, m4] = rates;        // m1=55000, m2=50000, m3=45000, m4=40000
 
-  const m1 = sortedRates[0].moneyperkm;
-  const m2 = sortedRates[1].moneyperkm;
-  const m3 = sortedRates[2].moneyperkm;
+  // convert to km
+  const s = metres / 1000;
 
-  const s = distance / 1000;
-
-  let totalMoney = 0;
+  let total;
 
   if (s <= d1) {
-    totalMoney = m1;
-  } else if (s > d1 && s <= d2) {
-    totalMoney = m1 + (s - d1) * m2;
-  } else {
-    totalMoney = m1 + ((d2 - d1) * m2) + (s - d2) * m3;
+    // ── s ≤ 1 km: flat first‑km fee
+    total = m1;
+  }
+  else if (s <= d2) {
+    // ── 1 < s ≤ d2: first‑km flat + (s−d1) at m2
+    total = m1 + (s - d1) * m2;
+  }
+  else if (s <= d3) {
+    // ── d2 < s ≤ d3: add the full chunk from d1→d2 at m2, then (s−d2) at m3
+    total = m1
+          + (d2 - d1) * m2
+          + (s  - d2) * m3;
+  }
+  else {
+    // ── s > d3: add full chunks for [d1→d2] & [d2→d3], then (s−d3) at m4
+    total = m1
+          + (d2 - d1) * m2
+          + (d3 - d2) * m3
+          + (s  - d3) * m4;
   }
 
-  totalMoney = Math.round(totalMoney / 1000) * 1000
-  return totalMoney;
+  // final: round to the nearest 1 000
+  return Math.round(total / 1000) * 1000;
 };
 
+
 const getDistanceRates = async () => {
-  const results = await query("SELECT * FROM distancerate");
+  const results = await query(`
+    SELECT distance, moneyperkm, isbigger
+    FROM distancerate
+    ORDER BY distance ASC, isbigger ASC`);
   return results.rows;
 };
 
