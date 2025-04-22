@@ -51,7 +51,7 @@ const calculateMoney = async (metres) => {
 
 const getDistanceRates = async () => {
   const results = await query(`
-    SELECT distance, moneyperkm, isbigger
+    SELECT name, distance, moneyperkm, isbigger
     FROM distancerate
     ORDER BY distance ASC, isbigger ASC`);
   return results.rows;
