@@ -601,7 +601,7 @@ const updateTotalPrice = async (requestDetailId, total) => {
 const calculateTotalPrice = async (requestDetailId) => {
   try {
     const results = await query(`
-      SELECT SUM(cost) AS total
+      SELECT SUM(total) AS total
       FROM repairquote
       WHERE requestdetailid = $1;
     `, [requestDetailId]);
