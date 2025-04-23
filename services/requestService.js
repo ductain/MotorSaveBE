@@ -697,6 +697,8 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
         c.phone AS customerphone,
         c.avatar AS customeravatar,
         cv.id AS vehicleid,
+        cv.brandid,
+        b.name,
         cv.licenseplate,
         cv.photo AS vehiclephoto,
         cv.condition AS vehiclecondition,
@@ -708,6 +710,7 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
       LEFT JOIN stations s ON r.stationid = s.id
       LEFT JOIN accounts c ON r.customerid = c.id
       LEFT JOIN cvehicles cv ON r.vehicleid = cv.id
+      LEFT JOIN brands b ON b.id = cv.brandid
       LEFT JOIN payments p ON rd.id = p.requestdetailid
       WHERE r.id = $1
       AND rd.requesttypeid = 2
