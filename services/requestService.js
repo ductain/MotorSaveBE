@@ -698,7 +698,7 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
         c.avatar AS customeravatar,
         cv.id AS vehicleid,
         cv.brandid,
-        b.name,
+        b.name AS brandname,
         cv.licenseplate,
         cv.photo AS vehiclephoto,
         cv.condition AS vehiclecondition,
