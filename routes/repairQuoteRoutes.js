@@ -119,6 +119,15 @@ module.exports = router;
  *                 type: string
  *                 format: uuid
  *                 example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+ *               accessoryid:
+ *                 type: nubmer
+ *                 example: 1
+ *               wage:
+ *                 type: number
+ *                 example: 50000
+ *               total:
+ *                 type: number
+ *                 example: 80000
  *     responses:
  *       201:
  *         description: Repair quote successfully created

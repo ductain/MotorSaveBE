@@ -4,14 +4,23 @@ const getRepairQuotes = async () => {
   const results = await query(
     `SELECT
       rq.id,
-      rcp.name AS repairname,
-      rq.detail,
-      rq.cost,
       rq.requestdetailid,
+      rp.name AS repairpackagename,
+      rcp.name AS repairname,
+      pc.name AS partcategoryname,
+      rq.detail,
+      a.name AS accessoryname,
+      rq.cost,
+      rcp.rate AS wagerate,
+      rq.wage,
+      rq.total,
       rq.createddate,
       rq.updateddate
       FROM repairquote rq
       LEFT JOIN repaircostpreview rcp ON rcp.id = rq.repaircostpreviewid
+      LEFT JOIN repairpackages rp ON rp.id  = rcp.repairpackageid
+      LEFT JOIN partcategories pc ON pc.id = rcp.partcategoryid
+      LEFT JOIN accessories a ON a.id = rq.accessoryid
     `);
   return results.rows;
 };
@@ -20,14 +29,23 @@ const getRepairQuotesByRequestDetailId = async (requestDetailId) => {
   const results = await query(
     `SELECT
       rq.id,
-      rcp.name AS repairname,
-      rq.detail,
-      rq.cost,
       rq.requestdetailid,
+      rp.name AS repairpackagename,
+      rcp.name AS repairname,
+      pc.name AS partcategoryname,
+      rq.detail,
+      a.name AS accessoryname,
+      rq.cost,
+      rcp.rate AS wagerate,
+      rq.wage,
+      rq.total,
       rq.createddate,
       rq.updateddate
       FROM repairquote rq
       LEFT JOIN repaircostpreview rcp ON rcp.id = rq.repaircostpreviewid
+      LEFT JOIN repairpackages rp ON rp.id  = rcp.repairpackageid
+      LEFT JOIN partcategories pc ON pc.id = rcp.partcategoryid
+      LEFT JOIN accessories a ON a.id = rq.accessoryid
       WHERE rq.requestdetailid = $1`,
     [requestDetailId]);
   return results.rows;
@@ -37,27 +55,36 @@ const getRepairQuoteById = async (repQuoteId) => {
   const results = await query(
     `SELECT
       rq.id,
-      rcp.name AS repairname,
-      rq.detail,
-      rq.cost,
       rq.requestdetailid,
+      rp.name AS repairpackagename,
+      rcp.name AS repairname,
+      pc.name AS partcategoryname,
+      rq.detail,
+      a.name AS accessoryname,
+      rq.cost,
+      rcp.rate AS wagerate,
+      rq.wage,
+      rq.total,
       rq.createddate,
       rq.updateddate
       FROM repairquote rq
       LEFT JOIN repaircostpreview rcp ON rcp.id = rq.repaircostpreviewid
+      LEFT JOIN repairpackages rp ON rp.id  = rcp.repairpackageid
+      LEFT JOIN partcategories pc ON pc.id = rcp.partcategoryid
+      LEFT JOIN accessories a ON a.id = rq.accessoryid
       WHERE rq.id = $1`
     , [repQuoteId]);
   return results.rows[0];
 };
 
 const createRepairQuote = async (repQuoteData) => {
-  const { detail, cost, requestdetailid, repaircostpreviewid } = repQuoteData;
+  const { detail, cost, requestdetailid, repaircostpreviewid, accessoryid, wage, total } = repQuoteData;
   const createdDate = new Date();
   const updatedDate = createdDate;
   await query(
-    `INSERT INTO repairquote (detail, cost, requestdetailid, createddate, updateddate, repaircostpreviewid) 
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-    [detail, cost, requestdetailid, createdDate, updatedDate, repaircostpreviewid]
+    `INSERT INTO repairquote (detail, cost, requestdetailid, createddate, updateddate, repaircostpreviewid, accessoryid, wage, total) 
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [detail, cost, requestdetailid, createdDate, updatedDate, repaircostpreviewid, , accessoryid, wage, total]
   );
   return { message: "New repair quote created!" };
 };
