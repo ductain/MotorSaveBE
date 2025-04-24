@@ -84,7 +84,7 @@ const createRepairQuote = async (repQuoteData) => {
   await query(
     `INSERT INTO repairquote (detail, cost, requestdetailid, createddate, updateddate, repaircostpreviewid, accessoryid, wage, total) 
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-    [detail, cost, requestdetailid, createdDate, updatedDate, repaircostpreviewid, , accessoryid, wage, total]
+    [detail, cost, requestdetailid, createdDate, updatedDate, repaircostpreviewid, accessoryid, wage, total]
   );
   return { message: "New repair quote created!" };
 };
