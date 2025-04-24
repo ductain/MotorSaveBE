@@ -81,11 +81,11 @@ const getAcsrByParCatIdAndBrandId = async (parCatId, brandId) => {
 };
 
 const createAccessory = async (accessoryData) => {
-  const { brandId, name, cost } = accessoryData;
+  const { partcategoryid, brandId, name, cost } = accessoryData;
   await query(
-    `INSERT INTO accessories (brandid,name,cost) 
-      VALUES ($1, $2, $3)`,
-    [brandId, name, cost]
+    `INSERT INTO accessories (partcategoryid, brandid, name, cost) 
+      VALUES ($1, $2, $3, $4)`,
+    [partcategoryid, brandId, name, cost]
   );
   return { message: "New accessory created!" };
 };
