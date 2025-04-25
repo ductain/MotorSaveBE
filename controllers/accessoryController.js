@@ -76,11 +76,11 @@ const updateAccessory = async (req, res) => {
   try {
     const accessoryId = req.params.id;
     const accessoryData = req.body;
-    const isTaken = await accessoryService.isAccessoryNameTaken(accessoryData.name, accessoryId);
-    if (isTaken) {
-      return res.status(401).json({ message: "Accessory name already exists! Choose another one." });
-    }
-    const updatedAccessory = await accessoryService.updateAccessory(modelId, modelData);
+    // const isTaken = await accessoryService.isAccessoryNameTaken(accessoryData.name, accessoryId);
+    // if (isTaken) {
+    //   return res.status(401).json({ message: "Accessory name already exists! Choose another one." });
+    // }
+    const updatedAccessory = await accessoryService.updateAccessory(accessoryId, accessoryData);
     if (!updatedAccessory) {
       return res.status(404).json({ message: "Accessory not found" });
     }
