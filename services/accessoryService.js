@@ -91,12 +91,12 @@ const createAccessory = async (accessoryData) => {
 };
 
 const updateAccessory = async (accessoryId, accessoryData) => {
-  const { name, cost } = accessoryData;
+  const { accessoryname, cost } = accessoryData;
 
   const result = await query(
     `UPDATE accessories SET name = $1, cost = $2
        WHERE id = $3 RETURNING *`,
-    [name, cost, accessoryId]
+    [accessoryname, cost, accessoryId]
   );
 
   return result.rows[0];
