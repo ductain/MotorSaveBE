@@ -30,6 +30,19 @@ const createEmergencyRescueRequest = async (req, res) => {
   }
 };
 
+const createEmergencyRescueRequestForGuest = async (req, res) => {
+  try {
+    const result = await requestService.createEmergencyRescueRequestForGuest(
+      req.body,
+    );
+    res.status(201).json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 const createFloodRescueRequest = async (req, res) => {
   try {
     const customerId = req.user.id; // Assuming user ID comes from JWT
@@ -486,6 +499,7 @@ const getAllRequests = async (req, res) => {
 module.exports = {
   createRescueRequest: createRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
+  createEmergencyRescueRequestForGuest,
   createFloodRescueRequest: createFloodRescueRequest,
   createRepairRequest: createRepairRequest,
   getPendingRepairRequestsByMechanic,

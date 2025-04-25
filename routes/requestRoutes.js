@@ -22,6 +22,12 @@ router.post(
 );
 
 router.post(
+  "/driver/emergencyRescue",
+  verifyDriver,
+  requestController.createEmergencyRescueRequestForGuest
+);
+
+router.post(
   "/floodRescue",
   verifyToken,
   requestController.createFloodRescueRequest
@@ -187,6 +193,48 @@ router.get(
  *           schema:
  *             type: object
  *             properties:
+ *               pickuplong:
+ *                 type: number
+ *               pickuplat:
+ *                 type: number
+ *               deslng:
+ *                 type: number
+ *               deslat:
+ *                 type: number
+ *               pickuplocation:
+ *                 type: string
+ *               destination:
+ *                 type: string
+ *               totalprice:
+ *                 type: number
+ *               stationid:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Rescue request created successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/driver/emergencyRescue:
+ *   post:
+ *     summary: (Driver) Create a new emergency rescue request for unregistered user 
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               receivername:
+ *                 type: string
+ *               receiverphone:
+ *                type: string
  *               pickuplong:
  *                 type: number
  *               pickuplat:

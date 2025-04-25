@@ -86,7 +86,7 @@ const createEmergencyRescueRequest = async (data, customerId) => {
     );
 
     if (servicePackageResult.rows.length === 0) {
-      throw new Error("Service package 'Cứu hộ thường' not found");
+      throw new Error("Service package 'Cứu hộ đến trạm' not found");
     }
 
     const servicePackageId = servicePackageResult.rows[0].id;
@@ -107,6 +107,74 @@ const createEmergencyRescueRequest = async (data, customerId) => {
       `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
         pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Pending', 1) RETURNING id`,
+      [
+        requestId,
+        pickuplong,
+        pickuplat,
+        deslng,
+        deslat,
+        pickuplocation,
+        destination,
+        totalprice,
+        createdDate,
+        updatedDate,
+      ]
+    );
+
+    const requestDetailId = requestDetailResult.rows[0].id;
+
+    return {
+      message: "Rescue request created successfully!",
+      requestdetailid: requestDetailId,
+      totalprice: totalprice,
+    };
+  } catch (error) {
+    console.error("Error creating rescue request:", error);
+    throw error;
+  }
+};
+
+const createEmergencyRescueRequestForGuest = async (data) => {
+  const {
+    receivername,
+    receiverphone,
+    pickuplong,
+    pickuplat,
+    deslng,
+    deslat,
+    pickuplocation,
+    destination,
+    totalprice,
+    stationid,
+  } = data;
+
+  try {
+    const servicePackageResult = await query(
+      `SELECT id FROM servicepackages WHERE name = 'Cứu hộ đến trạm'`
+    );
+
+    if (servicePackageResult.rows.length === 0) {
+      throw new Error("Service package 'Cứu hộ đến trạm' not found");
+    }
+
+    const servicePackageId = servicePackageResult.rows[0].id;
+    const createdDate = new Date();
+    const updatedDate = createdDate;
+
+    // Insert into Requests table
+    const requestResult = await query(
+      `INSERT INTO requests (servicepackageid, receivername, receiverphone, stationid, createddate, updateddate)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [servicePackageId, receivername, receiverphone, stationid, createdDate, updatedDate]
+    );
+
+    const requestId = requestResult.rows[0].id;
+
+    // Insert into RequestDetails table
+    const requestDetailResult = await query(
+      `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
+        pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Accepted', 1) RETURNING id`,
       [
         requestId,
         pickuplong,
@@ -954,6 +1022,7 @@ module.exports = {
   createRescueRequest: createRescueRequest,
   createFloodRescueRequest: createFloodRescueRequest,
   createEmergencyRescueRequest: createEmergencyRescueRequest,
+  createEmergencyRescueRequestForGuest,
   createRepairRequest: createRepairRequest,
   getPendingRepairRequestsByMechanic,
   getPendingReturnRequestsByDriver,
