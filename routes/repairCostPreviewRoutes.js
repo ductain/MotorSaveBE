@@ -50,6 +50,12 @@ module.exports = router;
  *                   description:
  *                     type: string
  *                     description: Description of the repair cost preivew
+ *                   repairpackagename:
+ *                     type: string
+ *                     description: Name of the repair package
+ *                   partcategoryname:
+ *                     type: string
+ *                     description: Name of the repair package
  *                   min:
  *                     type: number
  *                     format: integer
@@ -58,10 +64,14 @@ module.exports = router;
  *                     type: number
  *                     format: integer
  *                     description: Maximum cost of the repair cost preivew
- *                   managedby:
- *                     type: string
- *                     format: string
- *                     description: the id of the admin
+ *                   wage:
+ *                     type: number
+ *                     format: integer
+ *                     description: Default wage of the repair cost preivew
+ *                   rate:
+ *                     type: number
+ *                     format: integer
+ *                     description: Wage rate based on part category
  *       500:
  *         description: Internal Server Error
  */
