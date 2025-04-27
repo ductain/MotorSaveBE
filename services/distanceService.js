@@ -1,5 +1,11 @@
 const query = require("../config/dbConfig");
 
+const FLAGFALL = 50000;            // VNĐ cờ mở cửa
+const FIRST_FREE = 1000;            // Mét đầu miễn phí
+const RATE1 = 19200 / 1000;        // VNĐ/m cho dưới 30km
+const RATE2 = 17000 / 1000;        // VNĐ/m cho từ 30km trở lên
+const WAIT_RATE = 60000 / 3600;    // VNĐ/s chờ
+
 const calculateMoney = async (metres, serPacRate) => {
   // 1. Load & sort your bands by distance (asc), putting the "over" band last
   const { rows } = await query(`
@@ -66,8 +72,23 @@ const updateDistanceRate = async (disRateId, disRateData, adminId) => {
   return result.rows[0];
 };
 
+const calculateFloodFare = (distance, waiting) => {
+  let fare = FLAGFALL;
+  const chargeDist = Math.max(0, distance - FIRST_FREE);
+
+  if (chargeDist <= 30000) {
+    fare += chargeDist * RATE1;
+  } else {
+    fare += 30000 * RATE1 + (chargeDist - 30000) * RATE2;
+  }
+
+  fare += waiting * WAIT_RATE;
+  return Math.round(fare / 1000) * 1000;
+};
+
 module.exports = {
   calculateMoney,
   getDistanceRates,
-  updateDistanceRate
+  updateDistanceRate,
+  calculateFloodFare,
 };
