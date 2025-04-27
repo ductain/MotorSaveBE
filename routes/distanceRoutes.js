@@ -6,6 +6,7 @@ const { verifyAdmin } = require("../config/verify");
 router.get("/calculate", distanceController.calculateMoney);
 router.get("/", distanceController.getDistanceRate);
 router.put("/:id", verifyAdmin, distanceController.updateDistanceRate);
+router.get("/calculate/flood-request", distanceController.calculateFloodFare);
 
 /**
  * @swagger
@@ -33,6 +34,30 @@ router.put("/:id", verifyAdmin, distanceController.updateDistanceRate);
  *           type: number
  *         required: true
  *         description: Rate of the service package
+ *     responses:
+ *       201:
+ *         description: totalMoney
+ *       400:
+ *         description: Invalid distance input
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /distance/calculate/flood-request:
+ *   get:
+ *     summary: calculate money of flood request
+ *     tags: [DistanceRate]
+ *     parameters:
+ *       - in: query
+ *         name: distance
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: waiting
+ *         schema:
+ *           type: number
  *     responses:
  *       201:
  *         description: totalMoney
