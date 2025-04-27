@@ -3,12 +3,14 @@ const {
   getSerPacById,
   createSerPackage,
   updateSerPackage,
-  deleteSerPackage } = require("../controllers/serPackageController");
+  deleteSerPackage, 
+  getSerPacByName} = require("../controllers/serPackageController");
 const { verifyAdmin } = require("../config/verify");
 
 const router = require("express").Router();
 
 router.get("/", getSerPackages);
+router.get("/findByName", getSerPacByName);
 router.get("/:id", getSerPacById);
 router.post("/", verifyAdmin, createSerPackage);
 router.put("/:id", verifyAdmin, updateSerPackage);
@@ -94,6 +96,44 @@ module.exports = router;
  *       500:
  *         description: Internal Server Error
  */
+
+/**
+ * @swagger
+ * /servicepackages/findByName:
+ *   get:
+ *     summary: Get a specific service package by name
+ *     tags: [ServicePackages]
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the service package (supports Vietnamese characters)
+ *     responses:
+ *       200:
+ *         description: Details of the specified service package
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 name:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 rate:
+ *                   type: number
+ *                   format: float
+ *       404:
+ *         description: ServicePackage not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
 
 /**
  * @swagger

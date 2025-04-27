@@ -24,6 +24,21 @@ const getSerPacById = async (req, res) => {
   }
 };
 
+const getSerPacByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+    
+    const serPackage = await serPackageService.getSerPacByName(name);
+    if (!serPackage) {
+      return res.status(404).json({ message: "Service Package not found" });
+    }
+    res.status(200).json(serPackage);
+  } catch (err) {
+    console.error("Error fetching servicepackage:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const createSerPackage = async (req, res) => {
   try {
     const serPacData = req.body;
@@ -76,6 +91,7 @@ const deleteSerPackage = async (req, res) => {
 module.exports = {
     getSerPackages,
     getSerPacById,
+    getSerPacByName,
     createSerPackage,
     updateSerPackage,
     deleteSerPackage

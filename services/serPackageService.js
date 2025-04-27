@@ -9,6 +9,11 @@ const getSerPacById = async (serPacId) => {
     return results.rows[0];
 };
 
+const getSerPacByName = async (serPacName) => {
+    const results = await query(`SELECT * FROM servicepackages WHERE name LIKE $1`, [serPacName]);
+    return results.rows[0];
+};
+
 const createSerPackage = async (serPacData) => {
     const { name, description, rate } = serPacData;
     const createdDate = new Date();
@@ -52,6 +57,7 @@ const isSerPacNameTaken = async (name, excludeId = null) => {
 module.exports = {
     getSerPackgages,
     getSerPacById,
+    getSerPacByName,
     createSerPackage,
     updateSerPackage,
     deleteSerPackage,
