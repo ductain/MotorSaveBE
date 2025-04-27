@@ -25,6 +25,14 @@ router.put("/:id", verifyAdmin, distanceController.updateDistanceRate);
  *         name: distance
  *         schema:
  *           type: number
+ *         required: true
+ *         description: Distance to calculate
+ *       - in: query
+ *         name: serpacrate
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Rate of the service package
  *     responses:
  *       201:
  *         description: totalMoney
