@@ -286,10 +286,7 @@ module.exports = router;
  *           schema:
  *             type: object
  *             properties:
- *               brandId:
- *                 type: number
- *                 description: Brand's Id
- *               name:
+ *               accessoryname:
  *                 type: string
  *                 description: Accessory's name
  *               cost:
