@@ -55,7 +55,10 @@ module.exports = router;
  *                     description: Name of the repair package
  *                   partcategoryname:
  *                     type: string
- *                     description: Name of the repair package
+ *                     description: Name of the part category
+ *                   partcategoryid:
+ *                     type: number
+ *                     description: Id of the part category
  *                   min:
  *                     type: number
  *                     format: integer

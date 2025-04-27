@@ -8,6 +8,7 @@ const getRepairCostPreviews = async () => {
         rcp.description,
         rp.name AS repairpackagename,
         pc.name AS partcategoryname,
+        rcp.partcategoryid,
         rcp.min,
         rcp.max,
         rcp.wage,
