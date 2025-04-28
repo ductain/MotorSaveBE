@@ -80,6 +80,7 @@ router.get(
   requestController.getRequestsByCustomer
 );
 
+router.put("/emergency/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
 
 router.get("/driver/:requestDetailId", verifyToken, requestController.getRequestDetailByDriver);
@@ -406,6 +407,36 @@ router.get(
  *         description: You need to login as Driver or Admin
  *       404:
  *         description: Request not found or already accepted
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /requests/emergency/{requestDetailId}/accept:
+ *   put:
+ *     summary: Accept an emergency rescue request (Driver)
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: requestDetailId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the request detail to accept
+ *     responses:
+ *       200:
+ *         description: Request accepted successfully
+ *       400:
+ *         description: You have more than one undone request, cannot accept another.
+ *       403:
+ *         description: You need to login as Driver or Admin
+ *       404:
+ *         description: Request not found or already accepted
+ *       409:
+ *         description: Multiple active requests detected. Cannot accept a new emergency request.
  *       500:
  *         description: Internal Server Error
  */

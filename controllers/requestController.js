@@ -219,9 +219,9 @@ const acceptRequest = async (req, res) => {
     const driverId = req.user.id; // Get driver ID from authenticated token
 
     // Check undone requests count
-    const undoneRequestCount = await requestService.getUndoneRequests(driverId);
+    const undoneRequests = await requestService.getUndoneRequests(driverId);
 
-    if (undoneRequestCount > 1) {
+    if (undoneRequests > 1) {
       return res.status(400).json({
         message: "You have more than one undone request, cannot accept another."
       });
@@ -240,6 +240,47 @@ const acceptRequest = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const acceptEmergencyRequest = async (req, res) => {
+  try {
+    const { requestDetailId } = req.params;
+    const driverId = req.user.id;
+
+    const undoneRequests = await requestService.getUndoneRequests(driverId);
+
+    if (undoneRequests.length === 0) {
+      const updatedRequest = await requestService.acceptRequest(requestDetailId, driverId);
+      if (!updatedRequest) {
+        return res.status(404).json({ message: "Request not found or already accepted by others." });
+      }
+      return res.status(200).json({
+        message: "You have been assigned for the emergency request!",
+        requestDetail: updatedRequest,
+      });
+    }
+
+    if (undoneRequests.length === 1) {
+      const requestStatus = undoneRequests[0].requeststatus;
+      if (requestStatus === 'Processing') {
+        const updatedRequest = await requestService.acceptRequest(requestDetailId, driverId);
+        if (!updatedRequest) {
+          return res.status(404).json({ message: "Request not found or has been accepted by others" });
+        }
+        return res.status(200).json({
+          message: "You have been assigned for the emergency request!",
+          requestDetail: updatedRequest,
+        });
+      }
+    }
+
+    // More than one undone request: respond clearly
+    return res.status(409).json({ message: "Multiple active requests detected. Cannot accept a new emergency request." });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -511,6 +552,7 @@ module.exports = {
   getRequestsByCustomer: getRequestsByCustomer,
   getUndoneRequestDetailIdsByDriver,
   acceptRequest: acceptRequest,
+  acceptEmergencyRequest,
   getRequestDetailByDriver: getRequestDetailByDriver,
   updateRequestStatus: updateRequestStatus,
   updateRepairRequestStatus,

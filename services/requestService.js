@@ -541,15 +541,26 @@ const acceptRequest = async (requestDetailId, driverId) => {
 const getUndoneRequests = async (driverId) => {
   try {
     const result = await query(
-      `SELECT id AS requestdetailid 
+      `SELECT 
+        subquery.requestdetailid,
+        subquery.requeststatus,
+        subquery.createddate,
+        subquery.servicepackagename
         FROM (
-          SELECT * FROM requestdetails
-          WHERE staffid = $1
-          ORDER BY createddate DESC
-          LIMIT 5
+        SELECT 
+            rd.id AS requestdetailid,
+            rd.requeststatus,
+            rd.createddate,
+            s.name AS servicepackagename
+            FROM requestdetails rd
+            JOIN requests r ON r.id = rd.requestid
+            JOIN servicepackages s ON s.id = r.servicepackageid
+            WHERE staffid = $1
+            ORDER BY rd.createddate DESC
+            LIMIT 5
         ) AS subquery
-        WHERE requeststatus <> 'Done'
-        AND requeststatus <> 'Cancel'`,
+    WHERE subquery.requeststatus <> 'Done'
+    AND subquery.requeststatus <> 'Cancel'`,
       [driverId]
     );
 
