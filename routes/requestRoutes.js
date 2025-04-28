@@ -80,7 +80,7 @@ router.get(
   requestController.getRequestsByCustomer
 );
 
-router.put("/emergency/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
+router.put("/emergency/:requestDetailId/accept", verifyDriver, requestController.acceptEmergencyRequest);
 router.put("/:requestDetailId/accept", verifyDriver, requestController.acceptRequest);
 
 router.get("/driver/:requestDetailId", verifyToken, requestController.getRequestDetailByDriver);
