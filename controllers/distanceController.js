@@ -2,7 +2,7 @@ const distanceService = require("../services/distanceService");
 
 const calculateMoney = async (req, res) => {
   try {
-    const { distance, serpacrate } = req.query;
+    const { distance, serpacrate, waiting } = req.query;
 
     if (!serpacrate) {
       return res.status(404).json({ message: "Service package rate not identified" });
@@ -11,7 +11,7 @@ const calculateMoney = async (req, res) => {
       return res.status(400).json({ message: "Invalid distance input" });
     }
 
-    const totalMoney = await distanceService.calculateMoney(distance,serpacrate);
+    const totalMoney = await distanceService.calculateMoney(distance,serpacrate, waiting);
     res.status(201).json({ totalMoney });
   } catch (err) {
     console.error("Error calculating money:", err);
