@@ -34,6 +34,12 @@ router.get("/calculate/flood-request", distanceController.calculateFloodFare);
  *           type: number
  *         required: true
  *         description: Rate of the service package
+ *       - in: query
+ *         name: waiting
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Waiting time of driver
  *     responses:
  *       201:
  *         description: totalMoney
