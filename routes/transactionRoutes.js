@@ -1,4 +1,4 @@
-const { verifyToken, verifyAdmin } = require("../config/verify");
+const { verifyToken, verifyAdmin, verifyDriver } = require("../config/verify");
 const transactionController = require("../controllers/transactionController");
 
 const router = require("express").Router();
@@ -6,6 +6,7 @@ const router = require("express").Router();
 router.post("/", verifyToken, transactionController.createTransaction);
 router.post("/payment", verifyToken, transactionController.createPayment);
 router.put("/payment/update", verifyToken, transactionController.updatePaymentStatus);
+router.put("/payment/update/total", verifyDriver, transactionController.updatePaymentTotal);
 router.put("/payment/info/:requestdetailid", verifyToken, transactionController.updatePaymentInfo);
 router.get("/payments", verifyAdmin, transactionController.getPayments);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
@@ -106,6 +107,39 @@ router.get("/totalRevenue/total-by-date", verifyToken, transactionController.get
  *                 type: string
  *                 enum: [Success, Failed]
  *                 example: Success
+ *     responses:
+ *       200:
+ *         description: Payment updated successfully
+ *       404:
+ *         description: Payment not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payment/update/total:
+ *   put:
+ *     summary: Update an existing payment's total amount
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - requestDetailId
+ *               - newTotal
+ *             properties:
+ *               requestDetailId:
+ *                 type: string
+ *                 description: the requestdetailid of the payment
+ *               newTotal:
+ *                 type: number
+ *                 example: 50000
  *     responses:
  *       200:
  *         description: Payment updated successfully

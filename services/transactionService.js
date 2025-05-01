@@ -133,6 +133,28 @@ const updatePaymentStatus = async (requestDetailId, newStatus) => {
   }
 };
 
+const updatePaymentTotal = async (requestDetailId, newTotal) => {
+  try {
+    const foundPayment = await query(
+      `SELECT * FROM payments
+      WHERE requestdetailid = $1`
+      , [requestDetailId]
+    )
+    console.log(foundPayment)
+    if (foundPayment.rows.length > 0) {
+      const result = await query(
+        `UPDATE payments SET totalamount = $1
+        WHERE requestdetailid = $2 RETURNING *`,
+        [newTotal, requestDetailId]
+      );
+      return result.rows[0];
+    }
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    throw error;
+  }
+};
+
 const getUnpaidPaymentsByRequestId = async (requestId) => {
   const results = await query(
     `
@@ -214,6 +236,7 @@ module.exports = {
   getTotalRevenueByDate: getTotalRevenueByDate,
   createPayment: createPayment,
   updatePaymentStatus,
+  updatePaymentTotal,
   getUnpaidPaymentsByRequestId,
   updatePaymentInfo,
   getPayments,
