@@ -455,6 +455,9 @@ const getRequestsByDriver = async (staffId) => {
         r.id AS requestid, 
         a.fullname AS customername, 
         a.phone AS customerphone, 
+        r.receivername,
+        r.receiverphone,
+        r.receiverlicenseplate,
         rt.name AS requesttype,
         sp.name AS servicepackagename,
         rd.id AS requestdetailid,
@@ -465,7 +468,7 @@ const getRequestsByDriver = async (staffId) => {
         rd.staffid
       FROM requests r
       JOIN servicepackages sp ON r.servicepackageid = sp.id
-      JOIN accounts a ON r.customerid = a.id
+      LEFT JOIN accounts a ON r.customerid = a.id
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       WHERE rd.staffid = $1
@@ -580,6 +583,9 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         c.fullname AS customername, 
         c.phone AS customerphone, 
         rt.name AS requesttype,
+        r.receivername,
+        r.receiverphone,
+        r.receiverlicenseplate,
         
         -- Request Details
         rd.id AS requestdetailid,
@@ -611,7 +617,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
       FROM requestdetails rd
       JOIN requests r ON rd.requestid = r.id
       JOIN servicepackages sp ON r.servicepackageid = sp.id
-      JOIN accounts c ON r.customerid = c.id
+      LEFT JOIN accounts c ON r.customerid = c.id
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       LEFT JOIN accounts d ON rd.staffid = d.id -- Get driver details
       LEFT JOIN dvehicles v ON d.id = v.driverid -- Get vehicle details
@@ -1006,7 +1012,10 @@ const getAllRequests = async () => {
       `SELECT 
         r.id AS requestid, 
         a.fullname AS customername, 
-        a.phone AS customerphone, 
+        a.phone AS customerphone,
+        r.receivername,
+        r.receiverphone,
+        r.receiverlicenseplate, 
         rt.name AS requesttype,
         sp.name AS servicepackagename,
         rd.id AS requestdetailid,
@@ -1017,7 +1026,7 @@ const getAllRequests = async () => {
         rd.staffid
       FROM requests r
       JOIN servicepackages sp ON r.servicepackageid = sp.id
-      JOIN accounts a ON r.customerid = a.id
+      LEFT JOIN accounts a ON r.customerid = a.id
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
       ORDER BY r.createddate DESC`

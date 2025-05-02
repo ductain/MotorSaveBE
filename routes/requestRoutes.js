@@ -22,7 +22,7 @@ router.post(
 );
 
 router.post(
-  "/driver/emergencyRescue",
+  "/guest/emergencyRescue",
   verifyDriver,
   requestController.createEmergencyRescueRequestForGuest
 );
@@ -219,7 +219,7 @@ router.get(
 
 /**
  * @swagger
- * /requests/driver/emergencyRescue:
+ * /requests/guest/emergencyRescue:
  *   post:
  *     summary: (Driver) Create a new emergency rescue request for unregistered user 
  *     tags: [Requests]
