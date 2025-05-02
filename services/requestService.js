@@ -295,7 +295,10 @@ const getPendingRepairRequestsByMechanic = async (staffId) => {
         `SELECT 
         r.id AS requestid, 
         a.fullname AS customername, 
-        a.phone AS customerphone, 
+        a.phone AS customerphone,
+        r.receivername,
+        r.receiverphone,
+        r.receiverlicenseplate, 
         rt.name AS requesttype,
         sp.name AS servicepackagename,
         rd.id AS requestdetailid,
@@ -305,7 +308,7 @@ const getPendingRepairRequestsByMechanic = async (staffId) => {
         r.stationid
         FROM requests r
         JOIN servicepackages sp ON r.servicepackageid = sp.id
-        JOIN accounts a ON r.customerid = a.id
+        LEFT JOIN accounts a ON r.customerid = a.id
         JOIN requestdetails rd ON r.id = rd.requestid
         JOIN stations s ON r.stationid = s.id
         JOIN requesttypes rt ON rd.requesttypeid = rt.id
@@ -420,7 +423,11 @@ const getRepairRequestsByMechanic = async (staffId) => {
       `SELECT 
         r.id AS requestid, 
         a.fullname AS customername, 
-        a.phone AS customerphone, 
+        a.phone AS customerphone,
+        r.receivername,
+        r.receiverphone,
+        r.receiverlicenseplate,
+         
         rt.name AS requesttype,
         sp.name AS servicepackagename,
         rd.id AS requestdetailid,
