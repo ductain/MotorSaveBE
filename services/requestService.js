@@ -134,7 +134,7 @@ const createEmergencyRescueRequest = async (data, customerId) => {
   }
 };
 
-const createEmergencyRescueRequestForGuest = async (data) => {
+const createEmergencyRescueRequestForGuest = async (data, staffid) => {
   const {
     receivername,
     receiverphone,
@@ -173,8 +173,8 @@ const createEmergencyRescueRequestForGuest = async (data) => {
     // Insert into RequestDetails table
     const requestDetailResult = await query(
       `INSERT INTO requestdetails (requestid, pickuplong, pickuplat, deslng, deslat, 
-        pickuplocation, destination, totalprice, createddate, updateddate, requeststatus, requesttypeid)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'Accepted', 1) RETURNING id`,
+        pickuplocation, destination, totalprice, createddate, updateddate, staffid, requeststatus, requesttypeid)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'Pickup', 1) RETURNING id`,
       [
         requestId,
         pickuplong,
@@ -186,6 +186,7 @@ const createEmergencyRescueRequestForGuest = async (data) => {
         totalprice,
         createdDate,
         updatedDate,
+        staffid
       ]
     );
 
