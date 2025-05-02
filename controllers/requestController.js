@@ -32,8 +32,10 @@ const createEmergencyRescueRequest = async (req, res) => {
 
 const createEmergencyRescueRequestForGuest = async (req, res) => {
   try {
+    const staffid = req.user.id;
     const result = await requestService.createEmergencyRescueRequestForGuest(
       req.body,
+      staffid
     );
     res.status(201).json(result);
   } catch (error) {
