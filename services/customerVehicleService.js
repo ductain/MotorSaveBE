@@ -92,9 +92,56 @@ const upsertCustomerVehicle = async ({ customerId, licensePlate, brandId }) => {
   return result.rows[0];
 };
 
+const createGuestVehicle = async ({ licensePlate, brandId }) => {
+  const exists = await checkVehicleExists(licensePlate);
+
+  let result = {}
+  if (exists) {
+    result = await query(
+      `UPDATE cvehicles 
+       SET brandid = $1
+       WHERE licenseplate = $2
+       RETURNING *`,
+      [brandId, licensePlate]
+    );
+  } else {
+    result = await query(
+      `INSERT INTO cvehicles (licenseplate, brandid)
+       VALUES ($1, $2)
+       RETURNING *`,
+      [licensePlate, brandId]
+    );
+  }
+  return result.rows[0];
+};
+
+const updateRequestVehicle = async (requestId, vehicleId) => {
+  try {
+    const updatedDate = new Date();
+    const result = await query(
+      `UPDATE requests 
+       SET vehicleid = $1, updateddate = $2
+       WHERE id = $3
+       RETURNING *`,
+      [vehicleId, updatedDate, requestId]
+    );
+
+    if (result.rowCount === 0) {
+      return null; // Request not found
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating request vehicle:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   getCustomerVehicles,
   getCustomerVehiclesById,
   getVehiclesByCustomerId,
-  upsertCustomerVehicle
+  upsertCustomerVehicle,
+  createGuestVehicle,
+  updateRequestVehicle,
 };
