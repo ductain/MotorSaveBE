@@ -26,7 +26,7 @@ const getRepairCostPreviewById = async (req, res) => {
 
 const createRepairCostPreview = async (req, res) => {
     try {
-        const adminid = req.user.id;
+        const managerid = req.user.id;
         const repCosPreData = req.body;
         const isTaken = await repCosPreService.isRepCosPreNameTaken(repCosPreData.name);
         if (isTaken) {
@@ -38,7 +38,10 @@ const createRepairCostPreview = async (req, res) => {
         if (repCosPreData.min >= repCosPreData.max) {
             return res.status(405).json({ message: "The max cost must be larger than min cost" });
         }
-        const result = await repCosPreService.createRepairCostPreview(adminid, repCosPreData);
+        if (repCosPreData.rate > 0.5) {
+            return res.status(406).json({ message: "The rate for calculating wage must be equal or smaller than 0.5" });
+        }
+        const result = await repCosPreService.createRepairCostPreview(managerid, repCosPreData);
         res.status(200).json(result);
     } catch (err) {
         console.error("Error adding repaircostpreview:", err);
@@ -48,7 +51,7 @@ const createRepairCostPreview = async (req, res) => {
 
 const updateRepairCostPreview = async (req, res) => {
     try {
-        const adminid = req.user.id;
+        const managerid = req.user.id;
         const repCosPreId = req.params.id;
         const repCosPreData = req.body;
         const isTaken = await repCosPreService.isRepCosPreNameTaken(repCosPreData.name, repCosPreId);
@@ -61,7 +64,10 @@ const updateRepairCostPreview = async (req, res) => {
         if (repCosPreData.min >= repCosPreData.max) {
             return res.status(405).json({ message: "The max cost must be larger than min cost" });
         }
-        const updatedRepCosPre = await repCosPreService.updateRepairCostPreview(adminid, repCosPreId, repCosPreData);
+        if (repCosPreData.rate >= 0.5) {
+            return res.status(406).json({ message: "The rate for calculating wage must be equal or smaller than 0.5" });
+        }
+        const updatedRepCosPre = await repCosPreService.updateRepairCostPreview(managerid, repCosPreId, repCosPreData);
         if (!updatedRepCosPre) {
             return res.status(404).json({ message: "Repair Cost Preview not found" });
         }

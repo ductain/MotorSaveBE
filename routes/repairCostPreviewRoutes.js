@@ -1,4 +1,4 @@
-const { verifyAdmin } = require("../config/verify");
+const { verifyManager } = require("../config/verify");
 const { createRepairCostPreview, getRepairCostPreviews, getRepairCostPreviewById, updateRepairCostPreview, deleteRepairCostPreview } = require("../controllers/repairCostPreviewController");
 
 const router = require("express").Router();
@@ -6,13 +6,13 @@ const router = require("express").Router();
 router.get("/", getRepairCostPreviews);
 router.get("/:id", getRepairCostPreviewById);
 router.post("/",
-    verifyAdmin,
+    verifyManager,
     createRepairCostPreview);
 router.put("/:id",
-    verifyAdmin,
+    verifyManager,
     updateRepairCostPreview);
 router.delete("/:id",
-    verifyAdmin,
+    verifyManager,
     deleteRepairCostPreview);
 
 module.exports = router;
@@ -101,28 +101,41 @@ module.exports = router;
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                     type: number
- *                     format: serial
+ *                   id:
+ *                     type: string
+ *                     format: uuid
  *                     description: Unique identifier of the repair cost preivew
- *                 name:
+ *                   name:
  *                     type: string
  *                     description: Name of the repair cost preivew
- *                 description:
+ *                   description:
  *                     type: string
  *                     description: Description of the repair cost preivew
- *                 min:
+ *                   repairpackagename:
+ *                     type: string
+ *                     description: Name of the repair package
+ *                   partcategoryname:
+ *                     type: string
+ *                     description: Name of the part category
+ *                   partcategoryid:
+ *                     type: number
+ *                     description: Id of the part category
+ *                   min:
  *                     type: number
  *                     format: integer
  *                     description: Minimum cost of the repair cost preivew
- *                 max:
+ *                   max:
  *                     type: number
  *                     format: integer
  *                     description: Maximum cost of the repair cost preivew
- *                 managedby:
- *                     type: string
- *                     format: uuid
- *                     description: the id of the admin
+ *                   wage:
+ *                     type: number
+ *                     format: integer
+ *                     description: Default wage of the repair cost preivew
+ *                   rate:
+ *                     type: number
+ *                     format: integer
+ *                     description: Wage rate based on part category
  *       404:
  *         description: RepairCostPreview not found
  *       500:
@@ -163,6 +176,20 @@ module.exports = router;
  *                 type: number
  *                 format: integer
  *                 description: Maximum cost of the repair cost preivew
+ *               wage:
+ *                 type: number
+ *                 description: Wage of the repair cost preview
+ *               repairpackageid:
+ *                 type: number
+ *                 format: integer
+ *                 description: Repair package of the repair cost preview
+ *               rate:
+ *                 type: number
+ *                 description: Rate for calculating the repair rate (for repair that requires accessories)
+ *               partcategoryid:
+ *                 type: number
+ *                 format: integer
+ *                 description: ID of the part category
  *     responses:
  *       200:
  *         description: RepairCostPreview created successfully
@@ -170,6 +197,8 @@ module.exports = router;
  *         description: RepairCostPreview name already exists
  *       403:
  *         description: You need to login as Admin
+ *       406:
+ *         description: The rate for calculating wage must be equal or smaller than 0.5
  *       500:
  *         description: Internal Server Error
  */
@@ -216,6 +245,20 @@ module.exports = router;
  *                 type: number
  *                 format: integer
  *                 description: Maximum cost of the repair cost preivew
+ *               wage:
+ *                 type: number
+ *                 description: Wage of the repair cost preview
+ *               repairpackageid:
+ *                 type: number
+ *                 format: integer
+ *                 description: Repair package of the repair cost preview
+ *               rate:
+ *                 type: number
+ *                 description: Rate for calculating the repair rate (for repair that requires accessories)
+ *               partcategoryid:
+ *                 type: number
+ *                 format: integer
+ *                 description: ID of the part category 
  *     responses:
  *       200:
  *         description: RepairCostPreview updated successfully
@@ -225,6 +268,8 @@ module.exports = router;
  *         description: You need to login as Admin
  *       404:
  *         description: RepairCostPreview not found
+ *       406:
+ *         description: The rate for calculating wage must be equal or smaller than 0.5
  *       500:
  *         description: Internal Server Error
  */

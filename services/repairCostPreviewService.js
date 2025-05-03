@@ -21,27 +21,42 @@ const getRepairCostPreviews = async () => {
 };
 
 const getRepairCostPreviewById = async (repCosPreId) => {
-  const results = await query(`SELECT * FROM repaircostpreview WHERE id = $1`, [repCosPreId]);
+  const results = await query(`
+    SELECT 
+        rcp.id,
+        rcp.name,
+        rcp.description,
+        rp.name AS repairpackagename,
+        pc.name AS partcategoryname,
+        rcp.partcategoryid,
+        rcp.min,
+        rcp.max,
+        rcp.wage,
+        rcp.rate
+    FROM repaircostpreview rcp
+    LEFT JOIN repairpackages rp ON rp.id = rcp.repairpackageid
+    LEFT JOIN partcategories pc ON pc.id = rcp.partcategoryid
+    WHERE id = $1`, [repCosPreId]);
   return results.rows[0];
 };
 
-const createRepairCostPreview = async (adminid, repCosPreData) => {
-  const { name, description, min, max } = repCosPreData;
+const createRepairCostPreview = async (managerid, repCosPreData) => {
+  const { name, description, min, max, wage, repairpackageid, rate, partcategoryid } = repCosPreData;
   await query(
-    `INSERT INTO repaircostpreview (name, description, min, max, managedby) 
-           VALUES ($1, $2, $3, $4, $5)`,
-    [name, description, min, max, adminid]
+    `INSERT INTO repaircostpreview (name, description, min, max, managedby, wage, repairpackageid, rate, partcategoryid) 
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [name, description, min, max, managerid, wage, repairpackageid, rate, partcategoryid]
   );
   return { message: "New servicePackage created!" };
 };
 
-const updateRepairCostPreview = async (adminid, repCosPreId, repCosPreData) => {
-  const { name, description, min, max } = repCosPreData;
+const updateRepairCostPreview = async (managerid, repCosPreId, repCosPreData) => {
+  const { name, description, min, max, wage, repairpackageid, rate, partcategoryid } = repCosPreData;
 
   const result = await query(
-    `UPDATE repaircostpreview SET name = $1, description = $2, min = $3, max = $4, managedby = $5
-       WHERE id = $6 RETURNING *`,
-    [name, description, min, max, adminid, repCosPreId]
+    `UPDATE repaircostpreview SET name = $1, description = $2, min = $3, max = $4, managedby = $5, wage = $6, repairpackageid = $7, rate = $8, partcategoryid = $9
+       WHERE id = $10 RETURNING *`,
+    [name, description, min, max, managerid, wage, repairpackageid, rate, partcategoryid, repCosPreId]
   );
 
   return result.rows[0];
