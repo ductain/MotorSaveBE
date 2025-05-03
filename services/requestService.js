@@ -778,6 +778,8 @@ const getRepairRequestDetailForMechanic = async (requestId) => {
     const result = await query(
       `SELECT 
         r.id AS requestid,
+        r.receivername,
+        r.receiverphone,
         rt.name AS requesttype,
         rd.id AS requestdetailid,
         rd.requeststatus,
