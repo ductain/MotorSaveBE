@@ -64,7 +64,7 @@ const updateRepairCostPreview = async (req, res) => {
         if (repCosPreData.min >= repCosPreData.max) {
             return res.status(405).json({ message: "The max cost must be larger than min cost" });
         }
-        if (repCosPreData.rate >= 0.5) {
+        if (repCosPreData.rate > 0.5) {
             return res.status(406).json({ message: "The rate for calculating wage must be equal or smaller than 0.5" });
         }
         const updatedRepCosPre = await repCosPreService.updateRepairCostPreview(managerid, repCosPreId, repCosPreData);
