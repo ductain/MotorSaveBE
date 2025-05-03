@@ -436,7 +436,7 @@ const getRepairRequestsByMechanic = async (staffId) => {
         rd.staffid
       FROM requests r
       JOIN servicepackages sp ON r.servicepackageid = sp.id
-      JOIN accounts a ON r.customerid = a.id
+      LEFT JOIN accounts a ON r.customerid = a.id
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN stations s ON r.stationid = s.id
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
