@@ -1,4 +1,4 @@
-const { verifyToken, verifyAdmin, verifyDriver } = require("../config/verify");
+const { verifyToken, verifyAdmin, verifyDriver, verifyManager } = require("../config/verify");
 const transactionController = require("../controllers/transactionController");
 
 const router = require("express").Router();
@@ -12,6 +12,7 @@ router.get("/payments", verifyAdmin, transactionController.getPayments);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyToken, transactionController.getTotalRevenue);
 router.get("/totalRevenue/total-by-date", verifyToken, transactionController.getTotalRevenueByDate);
+router.get("/performance/staff", verifyManager, transactionController.getStaffPerformance);
 
 /**
  * @swagger
@@ -272,6 +273,23 @@ router.get("/totalRevenue/total-by-date", verifyToken, transactionController.get
  *         description: total revenue in date
  *       403:
  *         description: You need to login as Driver or Admin
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/performance/staff:
+ *   get:
+ *     summary: Get staff performance (Manager)
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: all staff performance in day
+ *       403:
+ *         description: You need to login as Manager
  *       500:
  *         description: Internal Server Error
  */

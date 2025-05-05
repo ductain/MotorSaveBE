@@ -108,6 +108,16 @@ const getPayments = async (req, res) => {
   }
 };
 
+const getStaffPerformance = async (req, res) => {
+  try {
+    const performance = await transactionService.getStaffPerformance();
+    res.status(200).json(performance);
+  } catch (err) {
+    console.error("Error fetching performance:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
@@ -117,5 +127,6 @@ module.exports = {
   updatePaymentTotal,
   getUnpaiPaymentsByRequestId,
   updatePaymentInfo,
-  getPayments
+  getPayments,
+  getStaffPerformance,
 };

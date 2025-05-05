@@ -230,6 +230,29 @@ const getPayments = async () => {
   return results.rows;
 };
 
+const getStaffPerformance = async () => {
+  const results = await query(`
+    SELECT 
+      acc.id AS staffid,
+      acc.fullname AS staffname,
+      acc.phone AS staffphone,
+      r.name AS role,
+      DATE(rd.updateddate) AS day,
+      COUNT(rd.id) AS requestcount,
+      SUM(p.totalamount) AS totalearned
+    FROM payments p
+    JOIN requestdetails rd ON p.requestdetailid = rd.id
+    JOIN accounts acc ON rd.staffid = acc.id
+    JOIN roles r ON acc.roleid = r.id
+    WHERE p.paymentstatus = 'Success'
+      AND r.name IN ('Driver', 'Mechanic')
+    GROUP BY acc.id, acc.fullname, r.name, DATE(rd.updateddate)
+    ORDER BY day DESC, totalearned DESC
+  `);
+
+  return results.rows;
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
@@ -240,4 +263,5 @@ module.exports = {
   getUnpaidPaymentsByRequestId,
   updatePaymentInfo,
   getPayments,
+  getStaffPerformance,
 };
