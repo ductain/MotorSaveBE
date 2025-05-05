@@ -1,4 +1,4 @@
-const { verifyToken, verifyAdmin, verifyManager } = require("../config/verify");
+const { verifyToken, verifyAdmin } = require("../config/verify");
 const accountController = require("../controllers/accountController");
 
 const router = require("express").Router();
@@ -8,7 +8,7 @@ router.post("/login", accountController.login);
 router.get("/profile", verifyToken, accountController.getProfileById);
 router.put("/profile", verifyToken, accountController.updateAccountProfile);
 
-router.get("/staffs", verifyManager, accountController.getStaffList);
+router.get("/staffs", verifyAdmin, accountController.getStaffList);
 router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
 
 router.get("/count", verifyToken, accountController.getTotalAccounts);
