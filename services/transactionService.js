@@ -230,8 +230,9 @@ const getPayments = async () => {
   return results.rows;
 };
 
-const getStaffPerformance = async () => {
-  const results = await query(`
+const getStaffPerformance = async (date) => {
+  const results = await query(
+    `
     SELECT 
       acc.id AS staffid,
       acc.fullname AS staffname,
@@ -246,9 +247,12 @@ const getStaffPerformance = async () => {
     JOIN roles r ON acc.roleid = r.id
     WHERE p.paymentstatus = 'Success'
       AND r.name IN ('Driver', 'Mechanic')
-    GROUP BY acc.id, acc.fullname, r.name, DATE(rd.updateddate)
+      AND DATE(rd.updateddate) = $1
+    GROUP BY acc.id, acc.fullname, acc.phone, r.name, DATE(rd.updateddate)
     ORDER BY day DESC, totalearned DESC
-  `);
+    `,
+    [date]
+  );
 
   return results.rows;
 };

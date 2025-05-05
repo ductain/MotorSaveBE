@@ -285,6 +285,14 @@ router.get("/performance/staff", verifyManager, transactionController.getStaffPe
  *     tags: [Transactions]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-05-05"
  *     responses:
  *       200:
  *         description: all staff performance in day
