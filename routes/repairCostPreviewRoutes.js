@@ -248,10 +248,6 @@ module.exports = router;
  *               wage:
  *                 type: number
  *                 description: Wage of the repair cost preview
- *               repairpackageid:
- *                 type: number
- *                 format: integer
- *                 description: Repair package of the repair cost preview
  *               rate:
  *                 type: number
  *                 description: Rate for calculating the repair rate (for repair that requires accessories)

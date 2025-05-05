@@ -51,12 +51,12 @@ const createRepairCostPreview = async (managerid, repCosPreData) => {
 };
 
 const updateRepairCostPreview = async (managerid, repCosPreId, repCosPreData) => {
-  const { name, description, min, max, wage, repairpackageid, rate, partcategoryid } = repCosPreData;
+  const { name, description, min, max, wage, rate, partcategoryid } = repCosPreData;
 
   const result = await query(
-    `UPDATE repaircostpreview SET name = $1, description = $2, min = $3, max = $4, managedby = $5, wage = $6, repairpackageid = $7, rate = $8, partcategoryid = $9
-       WHERE id = $10 RETURNING *`,
-    [name, description, min, max, managerid, wage, repairpackageid, rate, partcategoryid, repCosPreId]
+    `UPDATE repaircostpreview SET name = $1, description = $2, min = $3, max = $4, managedby = $5, wage = $6, rate = $7, partcategoryid = $8
+       WHERE id = $9 RETURNING *`,
+    [name, description, min, max, managerid, wage, rate, partcategoryid, repCosPreId]
   );
 
   return result.rows[0];
