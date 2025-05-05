@@ -110,7 +110,13 @@ const getPayments = async (req, res) => {
 
 const getStaffPerformance = async (req, res) => {
   try {
-    const performance = await transactionService.getStaffPerformance();
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ message: "Missing required 'date' parameter" });
+    }
+
+    const performance = await transactionService.getStaffPerformance(date);
     res.status(200).json(performance);
   } catch (err) {
     console.error("Error fetching performance:", err);
