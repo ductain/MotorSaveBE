@@ -36,7 +36,7 @@ const getRepairCostPreviewById = async (repCosPreId) => {
     FROM repaircostpreview rcp
     LEFT JOIN repairpackages rp ON rp.id = rcp.repairpackageid
     LEFT JOIN partcategories pc ON pc.id = rcp.partcategoryid
-    WHERE id = $1`, [repCosPreId]);
+    WHERE rcp.id = $1`, [repCosPreId]);
   return results.rows[0];
 };
 
