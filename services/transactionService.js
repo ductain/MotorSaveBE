@@ -135,6 +135,7 @@ const updatePaymentStatus = async (requestDetailId, newStatus) => {
 
 const updatePaymentTotal = async (requestDetailId, newTotal) => {
   try {
+    const updatedDate = new Date();
     const foundPayment = await query(
       `SELECT * FROM payments
       WHERE requestdetailid = $1`
@@ -142,12 +143,21 @@ const updatePaymentTotal = async (requestDetailId, newTotal) => {
     )
     console.log(foundPayment)
     if (foundPayment.rows.length > 0) {
-      const result = await query(
+      const result1 = await query(
         `UPDATE payments SET totalamount = $1
         WHERE requestdetailid = $2 RETURNING *`,
         [newTotal, requestDetailId]
       );
-      return result.rows[0];
+      if (result1.rowCount > 0) {
+        const result2 = await query(
+          `UPDATE requestdetails 
+          SET totalprice = $1, updateddate = $2
+          WHERE id = $3
+          RETURNING *`,
+          [newTotal, updatedDate, requestDetailId]
+        );
+        return result2.rows[0];
+      }
     }
   } catch (error) {
     console.error("Error updating payment:", error);
