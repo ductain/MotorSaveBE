@@ -12,6 +12,7 @@ router.get("/payments", verifyAdmin, transactionController.getPayments);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyToken, transactionController.getTotalRevenue);
 router.get("/totalRevenue/total-by-date", verifyToken, transactionController.getTotalRevenueByDate);
+router.get("/totalRevenue/total-by-date/staff", verifyToken, transactionController.getStaffRevenue);
 router.get("/performance/staff", verifyManager, transactionController.getStaffPerformance);
 
 /**
@@ -298,6 +299,44 @@ router.get("/performance/staff", verifyManager, transactionController.getStaffPe
  *         description: all staff performance in day
  *       403:
  *         description: You need to login as Manager
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/totalRevenue/total-by-date/staff:
+ *   get:
+ *     summary: Get total revenue by date of staff
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: staffid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: staff id
+ *       - in: query
+ *         name: year
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The year (e.g., 2025)
+ *       - in: query
+ *         name: month
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 12
+ *         description: The month (1-12)
+ *     responses:
+ *       200:
+ *         description: total revenue in date
+ *       403:
+ *         description: You need to login as Driver or Admin
  *       500:
  *         description: Internal Server Error
  */
