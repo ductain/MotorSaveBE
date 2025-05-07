@@ -616,6 +616,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         -- Driver Information
         d.fullname AS drivername,
         d.phone AS driverphone,
+        d.avatar AS driverimage,
         v.licenseplate,
         br.name AS brandname,
         vt.name AS vehicletype,
