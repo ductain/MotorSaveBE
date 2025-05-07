@@ -87,6 +87,29 @@ const getTotalRevenueByDate = async (year, month) => {
   }
 };
 
+const getStaffRevenue = async (staffid, year, month) => {
+  const results = await query(
+    `
+    SELECT 
+      DATE(rd.updateddate) AS day,
+      SUM(p.totalamount) AS totalrevenue
+    FROM payments p
+    JOIN requestdetails rd ON p.requestdetailid = rd.id
+    JOIN accounts acc ON rd.staffid = acc.id
+    JOIN roles r ON acc.roleid = r.id
+    WHERE p.paymentstatus = 'Success'
+      AND acc.id = $1
+      AND EXTRACT(YEAR FROM rd.updateddate) = $2
+      AND EXTRACT(MONTH FROM rd.updateddate) = $3
+      AND r.name IN ('Driver', 'Mechanic')
+    GROUP BY DATE(rd.updateddate)
+    ORDER BY day ASC
+    `,
+    [staffid, year, month]
+  );
+  return results.rows;
+};
+
 const createPayment = async (data) => {
   const {
     requestdetailid,
@@ -278,4 +301,5 @@ module.exports = {
   updatePaymentInfo,
   getPayments,
   getStaffPerformance,
+  getStaffRevenue,
 };

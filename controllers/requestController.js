@@ -526,6 +526,21 @@ const getTotalRequestsByDate = async (req, res) => {
   }
 };
 
+const getStaffRequestCount = async (req, res) => {
+  try {
+    const { staffid, year, month } = req.query;
+    if (!staffid || !year || !month) {
+      return res.status(400).json({ message: "Missing staffid, year, or month" });
+    }
+
+    const dailyCount = await requestService.getStaffRequestCount(staffid, year, month);
+    res.status(200).json(dailyCount);
+  } catch (err) {
+    console.error("Error fetching request count:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const getAllRequests = async (req, res) => {
   try {
     const requests = await requestService.getAllRequests();
@@ -567,5 +582,6 @@ module.exports = {
   getReturnRequestDetail: getReturnRequestDetail,
   getTotalRequests: getTotalRequests,
   getTotalRequestsByDate: getTotalRequestsByDate,
+  getStaffRequestCount,
   getAllRequests,
 };
