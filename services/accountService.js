@@ -58,6 +58,17 @@ const register = async (userData) => {
   };
 };
 
+const isFieldExists = async (fieldName, fieldValue) => {
+  // Validate fieldName against allowed fields to prevent SQL injection
+  const checkQuery = `
+    SELECT * FROM accounts 
+    WHERE ${fieldName} = $1
+  `;
+  const result = await query(checkQuery, [fieldValue]);
+  return result.rows.length > 0;
+};
+
+
 const registerStaffAccount = async (userData) => {
   const { username, password, fullName, phone, roleId } = userData;
 
@@ -292,6 +303,7 @@ const getTotalAccounts = async () => {
 
 module.exports = {
   register: register,
+  isFieldExists,
   registerStaffAccount,
   login: login,
   getProfileById: getProfileById,

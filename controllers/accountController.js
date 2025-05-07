@@ -37,6 +37,22 @@ const register = async (req, res) => {
   }
 };
 
+const checkField = async (req, res) => {
+  try {
+    const { fieldName, fieldValue } = req.query;
+    const isExisted = await accountService.isFieldExists(fieldName, fieldValue);
+
+    if (isExisted) {
+      return res.status(409).json({ message: `${fieldName} đã tồn tại` });
+    }
+
+    return res.status(200).json({ message: `${fieldName} có thể sử dụng` });
+  } catch (err) {
+    console.error("Error during check fields:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const registerStaffAccount = async (req, res) => {
   try {
     const { username, password, fullName, phone, roleId } = req.body;
@@ -192,6 +208,7 @@ const getTotalAccounts = async (req, res) => {
 
 module.exports = {
   register: register,
+  checkField,
   registerStaffAccount,
   login: login,
   getProfileById: getProfileById,

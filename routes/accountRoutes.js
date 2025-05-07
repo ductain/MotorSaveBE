@@ -8,6 +8,7 @@ router.post("/login", accountController.login);
 router.get("/profile", verifyToken, accountController.getProfileById);
 router.put("/profile", verifyToken, accountController.updateAccountProfile);
 
+router.get("/check-field", accountController.checkField);
 router.get("/staffs", verifyAdmin, accountController.getStaffList);
 router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
 
@@ -245,5 +246,31 @@ router.get("/count", verifyToken, accountController.getTotalAccounts);
  *         description: The user profile
  *       500:
  *          description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /auth/check-field:
+ *   get:
+ *     summary: Check if field exists
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: query
+ *         name: fieldName
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: name of the field
+ *       - in: query
+ *         name: fieldValue
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: value
+ *     responses:
+ *       200:
+ *         description: Field value exists
+ *       500:
+ *         description: Internal Server Error
  */
 module.exports = router;
