@@ -614,6 +614,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         p.paymentstatus,
 
         -- Driver Information
+        d.id AS driverid,
         d.fullname AS drivername,
         d.phone AS driverphone,
         d.avatar AS driverimage,
