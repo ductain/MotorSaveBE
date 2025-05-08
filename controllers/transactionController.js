@@ -124,6 +124,21 @@ const getStaffPerformance = async (req, res) => {
   }
 };
 
+const getStaffRevenue = async (req, res) => {
+  try {
+    const { staffid, year, month } = req.query;
+    if (!staffid || !year || !month) {
+      return res.status(400).json({ message: "Missing staffid, year, or month" });
+    }
+
+    const revenue = await transactionService.getStaffRevenue(staffid, year, month);
+    res.status(200).json(revenue);
+  } catch (err) {
+    console.error("Error fetching revenue:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createTransaction: createTransaction,
   getTotalRevenue: getTotalRevenue,
@@ -135,4 +150,5 @@ module.exports = {
   updatePaymentInfo,
   getPayments,
   getStaffPerformance,
+  getStaffRevenue,
 };

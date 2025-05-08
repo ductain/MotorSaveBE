@@ -1017,6 +1017,28 @@ const getTotalRequestsByDate = async (year, month) => {
   }
 };
 
+const getStaffRequestCount = async (staffid, year, month) => {
+  const results = await query(
+    `
+    SELECT 
+      DATE(rd.updateddate) AS day,
+      COUNT(rd.id) AS requestcount
+    FROM requestdetails rd
+    JOIN accounts acc ON rd.staffid = acc.id
+    JOIN roles r ON acc.roleid = r.id
+    WHERE acc.id = $1
+      AND EXTRACT(YEAR FROM rd.updateddate) = $2
+      AND EXTRACT(MONTH FROM rd.updateddate) = $3
+      AND r.name IN ('Driver', 'Mechanic')
+      AND rd.requeststatus <> 'Cancel'
+    GROUP BY DATE(rd.updateddate)
+    ORDER BY day ASC
+    `,
+    [staffid, year, month]
+  );
+  return results.rows;
+};
+
 const getAllRequests = async () => {
   try {
     const result = await query(
@@ -1078,5 +1100,6 @@ module.exports = {
   getTotalRequests: getTotalRequests,
   getTotalRequestsByDate: getTotalRequestsByDate,
   getUndoneRequests,
-  getAllRequests
+  getAllRequests,
+  getStaffRequestCount,
 };

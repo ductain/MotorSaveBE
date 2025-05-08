@@ -9,7 +9,7 @@ router.get("/profile", verifyToken, accountController.getProfileById);
 router.put("/profile", verifyToken, accountController.updateAccountProfile);
 
 router.get("/check-field", accountController.checkField);
-router.get("/staffs", verifyAdmin, accountController.getStaffList);
+router.get("/staffs", verifyToken, accountController.getStaffList);
 router.post("/staffs", verifyAdmin, accountController.registerStaffAccount);
 
 router.get("/count", verifyToken, accountController.getTotalAccounts);

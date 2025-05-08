@@ -25,12 +25,7 @@ const createTransaction = async (data) => {
     const transactionResult = await query(
       `INSERT INTO transactions (requestdetailid, zptransid, paymentid, transactiondate)
          VALUES ($1, $2, $3, $4) RETURNING id`,
-      [
-        requestdetailid,
-        zptransid,
-        paymentId,
-        transactiondate
-      ]
+      [requestdetailid, zptransid, paymentId, transactiondate]
     );
 
     const transactionId = transactionResult.rows[0].id;
@@ -42,7 +37,7 @@ const createTransaction = async (data) => {
       totalamount,
       paymentmethod,
       paymentstatus,
-      transactiondate
+      transactiondate,
     };
   } catch (error) {
     console.error("Error creating transaction:", error);
@@ -87,13 +82,31 @@ const getTotalRevenueByDate = async (year, month) => {
   }
 };
 
+const getStaffRevenue = async (staffid, year, month) => {
+  const results = await query(
+    `
+    SELECT 
+      DATE(rd.updateddate) AS day,
+      SUM(p.totalamount) AS totalrevenue
+    FROM payments p
+    JOIN requestdetails rd ON p.requestdetailid = rd.id
+    JOIN accounts acc ON rd.staffid = acc.id
+    JOIN roles r ON acc.roleid = r.id
+    WHERE p.paymentstatus = 'Success'
+      AND acc.id = $1
+      AND EXTRACT(YEAR FROM rd.updateddate) = $2
+      AND EXTRACT(MONTH FROM rd.updateddate) = $3
+      AND r.name IN ('Driver', 'Mechanic')
+    GROUP BY DATE(rd.updateddate)
+    ORDER BY day ASC
+    `,
+    [staffid, year, month]
+  );
+  return results.rows;
+};
+
 const createPayment = async (data) => {
-  const {
-    requestdetailid,
-    totalamount,
-    paymentmethod,
-    paymentstatus,
-  } = data;
+  const { requestdetailid, totalamount, paymentmethod, paymentstatus } = data;
 
   try {
     const paymentResult = await query(
@@ -115,10 +128,10 @@ const updatePaymentStatus = async (requestDetailId, newStatus) => {
   try {
     const foundPayment = await query(
       `SELECT * FROM payments
-      WHERE requestdetailid = $1`
-      , [requestDetailId]
-    )
-    console.log(foundPayment)
+      WHERE requestdetailid = $1`,
+      [requestDetailId]
+    );
+    console.log(foundPayment);
     if (foundPayment.rows.length > 0) {
       const result = await query(
         `UPDATE payments SET paymentstatus = $1
@@ -138,10 +151,10 @@ const updatePaymentTotal = async (requestDetailId, newTotal) => {
     const updatedDate = new Date();
     const foundPayment = await query(
       `SELECT * FROM payments
-      WHERE requestdetailid = $1`
-      , [requestDetailId]
-    )
-    console.log(foundPayment)
+      WHERE requestdetailid = $1`,
+      [requestDetailId]
+    );
+    console.log(foundPayment);
     if (foundPayment.rows.length > 0) {
       const result1 = await query(
         `UPDATE payments SET totalamount = $1
@@ -182,21 +195,19 @@ const getUnpaidPaymentsByRequestId = async (requestId) => {
     LEFT JOIN requests r ON r.id = rd.requestid
     WHERE r.id = $1
     AND p.paymentstatus = 'Unpaid'
-    `
-    , [requestId]);
+    `,
+    [requestId]
+  );
   return results.rows;
-}
+};
 const updatePaymentInfo = async (requestDetailId, data) => {
-  const {
-    paymentmethod,
-    paymentstatus,
-  } = data;
+  const { paymentmethod, paymentstatus } = data;
   try {
     const foundPayment = await query(
       `SELECT * FROM payments
-      WHERE requestdetailid = $1`
-      , [requestDetailId]
-    )
+      WHERE requestdetailid = $1`,
+      [requestDetailId]
+    );
     if (foundPayment.rows.length > 0) {
       const result = await query(
         `UPDATE payments SET paymentstatus = $1, paymentmethod = $2
@@ -244,22 +255,20 @@ const getStaffPerformance = async (date) => {
   const results = await query(
     `
     SELECT 
-      acc.id AS staffid,
-      acc.fullname AS staffname,
-      acc.phone AS staffphone,
-      r.name AS role,
-      DATE(rd.updateddate) AS day,
-      COUNT(rd.id) AS requestcount,
-      SUM(p.totalamount) AS totalearned
-    FROM payments p
-    JOIN requestdetails rd ON p.requestdetailid = rd.id
-    JOIN accounts acc ON rd.staffid = acc.id
-    JOIN roles r ON acc.roleid = r.id
-    WHERE p.paymentstatus = 'Success'
-      AND r.name IN ('Driver', 'Mechanic')
-      AND DATE(rd.updateddate) = $1
-    GROUP BY acc.id, acc.fullname, acc.phone, r.name, DATE(rd.updateddate)
-    ORDER BY day DESC, totalearned DESC
+  acc.id AS staffid,
+  acc.fullname AS staffname,
+  acc.phone AS staffphone,
+  r.name AS role,
+  $1::date AS day,
+  COUNT(rd.id) FILTER (WHERE DATE(rd.updateddate) = $1) AS requestcount,
+  COALESCE(SUM(p.totalamount) FILTER (WHERE DATE(rd.updateddate) = $1), 0) AS totalearned
+FROM accounts acc
+JOIN roles r ON acc.roleid = r.id
+LEFT JOIN requestdetails rd ON rd.staffid = acc.id
+LEFT JOIN payments p ON p.requestdetailid = rd.id AND p.paymentstatus = 'Success'
+WHERE r.name IN ('Driver', 'Mechanic')
+GROUP BY acc.id, acc.fullname, acc.phone, r.name
+ORDER BY totalearned DESC
     `,
     [date]
   );
@@ -278,4 +287,5 @@ module.exports = {
   updatePaymentInfo,
   getPayments,
   getStaffPerformance,
+  getStaffRevenue,
 };
