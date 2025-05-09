@@ -258,7 +258,7 @@ const getPaymentsByCustomer = async (customerId) => {
       rd.requestid,
       rd.id AS requestdetailid,
       sp.name AS servicepackagename,
-      rt.name AS requestypename,
+      rt.name AS requesttypename,
       rd.requeststatus,
       rd.updateddate,
       p.requestdetailid,
@@ -266,6 +266,7 @@ const getPaymentsByCustomer = async (customerId) => {
       p.paymentstatus,
       p.totalamount,
       t.id AS transactionid,
+      t.zptransid,
       t.transactiondate
     FROM payments p
     LEFT JOIN requestdetails rd ON rd.id = p.requestdetailid
@@ -278,8 +279,8 @@ const getPaymentsByCustomer = async (customerId) => {
     AND p.requestdetailid IS NOT NULL
     AND rd.requeststatus <> 'Cancel'
     ORDER BY rd.updateddate DESC
-    LIMIT 25`,
-  [customerId]);
+    LIMIT 250`,
+    [customerId]);
   return results.rows;
 };
 
