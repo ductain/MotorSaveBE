@@ -246,7 +246,6 @@ const getPayments = async () => {
     LEFT JOIN transactions t ON t.paymentid = p.id
     LEFT JOIN requesttypes rt ON rt.id = rd.requesttypeid
     WHERE p.requestdetailid IS NOT NULL
-    AND rd.requeststatus <> 'Cancel'
     ORDER BY rd.updateddate DESC`);
   return results.rows;
 };
