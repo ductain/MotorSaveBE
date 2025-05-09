@@ -9,6 +9,7 @@ router.put("/payment/update", verifyToken, transactionController.updatePaymentSt
 router.put("/payment/update/total", verifyDriver, transactionController.updatePaymentTotal);
 router.put("/payment/info/:requestdetailid", verifyToken, transactionController.updatePaymentInfo);
 router.get("/payments", verifyAdmin, transactionController.getPayments);
+router.get("/payments/customer", verifyToken, transactionController.getPaymentsByCustomer);
 router.get("/payment/unpaid/request/:id", verifyToken, transactionController.getUnpaiPaymentsByRequestId);
 router.get("/totalRevenue", verifyToken, transactionController.getTotalRevenue);
 router.get("/totalRevenue/total-by-date", verifyToken, transactionController.getTotalRevenueByDate);
@@ -196,6 +197,21 @@ router.get("/performance/staff", verifyManager, transactionController.getStaffPe
  * /transactions/payments:
  *   get:
  *     summary: Get all payments
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all payments
+ *       500:
+ *         description: Internal Server Error
+ */
+
+/**
+ * @swagger
+ * /transactions/payments/customer:
+ *   get:
+ *     summary: Get all payments of a customer
  *     tags: [Transactions]
  *     security:
  *       - bearerAuth: []

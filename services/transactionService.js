@@ -251,6 +251,38 @@ const getPayments = async () => {
   return results.rows;
 };
 
+const getPaymentsByCustomer = async (customerId) => {
+  const results = await query(`
+    SELECT 
+      p.id AS paymentid,
+      rd.requestid,
+      rd.id AS requestdetailid,
+      sp.name AS servicepackagename,
+      rt.name AS requestypename,
+      rd.requeststatus,
+      rd.updateddate,
+      p.requestdetailid,
+      p.paymentmethod,
+      p.paymentstatus,
+      p.totalamount,
+      t.id AS transactionid,
+      t.transactiondate
+    FROM payments p
+    LEFT JOIN requestdetails rd ON rd.id = p.requestdetailid
+    JOIN requests r ON r.id = rd.requestid
+    LEFT JOIN servicepackages sp ON sp.id = r.servicepackageid
+    JOIN accounts a ON r.customerid = a.id
+    LEFT JOIN transactions t ON t.paymentid = p.id
+    LEFT JOIN requesttypes rt ON rt.id = rd.requesttypeid
+    WHERE a.id = $1
+    AND p.requestdetailid IS NOT NULL
+    AND rd.requeststatus <> 'Cancel'
+    ORDER BY rd.updateddate DESC
+    LIMIT 25`,
+  [customerId]);
+  return results.rows;
+};
+
 const getStaffPerformance = async (date) => {
   const results = await query(
     `
@@ -286,6 +318,7 @@ module.exports = {
   getUnpaidPaymentsByRequestId,
   updatePaymentInfo,
   getPayments,
+  getPaymentsByCustomer,
   getStaffPerformance,
   getStaffRevenue,
 };

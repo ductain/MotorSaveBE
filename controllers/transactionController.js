@@ -108,6 +108,17 @@ const getPayments = async (req, res) => {
   }
 };
 
+const getPaymentsByCustomer = async (req, res) => {
+  try {
+    const customerid = req.user.id;
+    const payments = await transactionService.getPaymentsByCustomer(customerid);
+    res.status(200).json(payments);
+  } catch (err) {
+    console.error("Error fetching payments:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const getStaffPerformance = async (req, res) => {
   try {
     const { date } = req.query;
@@ -149,6 +160,7 @@ module.exports = {
   getUnpaiPaymentsByRequestId,
   updatePaymentInfo,
   getPayments,
+  getPaymentsByCustomer,
   getStaffPerformance,
   getStaffRevenue,
 };
