@@ -612,6 +612,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
         sp.name AS servicepackagename,
         p.paymentmethod,
         p.paymentstatus,
+        t.zptransid,
 
         -- Driver Information
         d.id AS driverid,
@@ -633,6 +634,7 @@ const getRequestDetailByDriver = async (requestDetailId) => {
       LEFT JOIN brands br ON v.brandid = br.id
       LEFT JOIN vehicletypes vt ON v.vehicletypeid = vt.id
       LEFT JOIN payments p ON rd.id = p.requestdetailid
+      LEFT JOIN transactions t ON t.paymentid = p.id
       WHERE rd.id = $1
       AND (p.paymentstatus IS NULL OR p.paymentstatus = '' OR p.paymentstatus <> 'Cancel')`,
       [requestDetailId]
@@ -754,7 +756,8 @@ const getRepairRequestDetail = async (requestId) => {
         cv.photo AS vehiclephoto,
         cv.condition AS vehiclecondition,
         p.paymentmethod,
-        p.paymentstatus
+        p.paymentstatus,
+        t.zptransid
       FROM requests r
       JOIN requestdetails rd ON r.id = rd.requestid
       JOIN requesttypes rt ON rd.requesttypeid = rt.id
@@ -762,6 +765,7 @@ const getRepairRequestDetail = async (requestId) => {
       LEFT JOIN accounts m ON rd.staffid = m.id
       LEFT JOIN cvehicles cv ON r.vehicleid = cv.id
       LEFT JOIN payments p ON rd.id = p.requestdetailid
+      LEFT JOIN transactions t ON t.paymentid = p.id
       WHERE r.id = $1
       AND rd.requesttypeid = 2
       AND (p.paymentstatus IS NULL OR p.paymentstatus = '' OR p.paymentstatus <> 'Cancel')`,
