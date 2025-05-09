@@ -962,6 +962,7 @@ const getReturnRequestDetail = async (requestId) => {
         sp.name AS servicepackagename,
 
         -- Driver Information
+        d.id AS driverid,
         d.fullname AS drivername,
         d.phone AS driverphone,
         d.avatar AS driveravatar,
