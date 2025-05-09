@@ -279,7 +279,7 @@ const getPaymentsByCustomer = async (customerId) => {
     AND p.requestdetailid IS NOT NULL
     AND rd.requeststatus <> 'Cancel'
     ORDER BY rd.updateddate DESC
-    LIMIT 250`,
+    LIMIT 25`,
     [customerId]);
   return results.rows;
 };
