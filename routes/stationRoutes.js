@@ -5,15 +5,15 @@ const {
   updateStation,
   deleteStation,
 } = require("../controllers/stationController");
-const { verifyAdmin } = require("../config/verify");
+const { verifyAdmin, verifyManager } = require("../config/verify");
 
 const router = require("express").Router();
 
 router.get("/", getStations);
 router.get("/:id", getStationById);
-router.post("/", verifyAdmin, createStation);
-router.put("/:id", verifyAdmin, updateStation);
-router.delete("/:id", verifyAdmin, deleteStation);
+router.post("/", verifyManager, createStation);
+router.put("/:id", verifyManager, updateStation);
+router.delete("/:id", verifyManager, deleteStation);
 
 module.exports = router;
 
